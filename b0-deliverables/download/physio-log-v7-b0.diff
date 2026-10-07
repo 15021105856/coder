@@ -1,0 +1,379 @@
+diff -ru --exclude node_modules --exclude release --exclude download --exclude '*.zip' --exclude '.pack-*' --exclude '.inject-*' --exclude download.html ../evidence/source/scripts/check.mjs ./scripts/check.mjs
+--- ../evidence/source/scripts/check.mjs	2026-10-07 09:11:02.000000000 +0000
++++ ./scripts/check.mjs	2026-10-07 15:43:12.724578218 +0000
+@@ -14,8 +14,11 @@
+ 
+ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+ const RELEASE_DIR = resolve(process.env.PHYSIO_RELEASE_DIR || resolve(ROOT, "release"));
++const STAGING_RELEASE = Boolean(process.env.PHYSIO_RELEASE_DIR)
++  && resolve(process.env.PHYSIO_RELEASE_DIR) !== resolve(ROOT, "release");
+ const args = process.argv.slice(2);
+ const CHECK_RELEASE = args.includes("--release");
++const CHECK_PUBLISHED = args.includes("--published");
+ const DATA = resolve(ROOT, args.find((a) => !a.startsWith("--")) || "data/训练数据集.json");
+ const HISTORY = resolve(ROOT, "data/训练历史存档.md");
+ const MONITOR_HTML = resolve(RELEASE_DIR, RELEASE.monitor);
+@@ -153,13 +156,21 @@
+ }
+ 
+ const stamp = dataStamp(ds);
+-const DOWNLOAD_HTML = resolve(ROOT, "download.html");
+-if (existsSync(DOWNLOAD_HTML)) {
+-  const dl = readFileSync(DOWNLOAD_HTML, "utf8");
+-  const metaLine = `数据截止 ${last} · ${data.length} 天 · 指纹 ${stamp}`;
+-  if (!dl.includes(metaLine)) err("下载页", `download.html 与数据集不一致（期望：${metaLine}）`);
+-  else console.log("✓ download.html 与数据集一致");
+-} else warn("下载页", "缺少 download.html，请运行 npm run gen-download");
++const downloadMetaLine = `数据截止 ${last} · ${data.length} 天 · 指纹 ${stamp}`;
++
++function checkDownloadHtml(path, label) {
++  if (!existsSync(path)) return;
++  const dl = readFileSync(path, "utf8");
++  if (!dl.includes(downloadMetaLine)) err("下载页", `${label} 与数据集不一致（期望：${downloadMetaLine}）`);
++  else console.log(`✓ ${label} 与数据集一致`);
++}
++
++if (CHECK_RELEASE && !STAGING_RELEASE) {
++  checkDownloadHtml(resolve(ROOT, "download.html"), "download.html");
++  if (CHECK_PUBLISHED) {
++    checkDownloadHtml(resolve(ROOT, "download/download.html"), "download/download.html");
++  }
++}
+ 
+ console.log(`✓ ${data.length} 天 · ${order[0]} 至 ${last} · 指纹 ${stamp}`);
+ for (const w of warns) console.log(`! ${w}`);
+diff -ru --exclude node_modules --exclude release --exclude download --exclude '*.zip' --exclude '.pack-*' --exclude '.inject-*' --exclude download.html ../evidence/source/scripts/gen-download.mjs ./scripts/gen-download.mjs
+--- ../evidence/source/scripts/gen-download.mjs	2026-10-07 09:11:02.000000000 +0000
++++ ./scripts/gen-download.mjs	2026-10-07 15:41:32.002111914 +0000
+@@ -1,24 +1,34 @@
+ /** 从模板与数据集生成根目录 download.html（npm run build / pack / inject 自动调用） */
+ import { readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
+ import { resolve, dirname } from "node:path";
+-import { fileURLToPath } from "node:url";
++import { fileURLToPath, pathToFileURL } from "node:url";
+ import { dataStamp } from "../src/shared/stamp.js";
+ import { VERSION, RELEASE } from "../src/shared/release.js";
+ 
+ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+-const DATA = resolve(ROOT, process.argv[2] || "data/训练数据集.json");
+-const TEMPLATE = resolve(ROOT, "download.template.html");
+-const OUT = resolve(ROOT, "download.html");
+-const DOWNLOAD_DIR = resolve(ROOT, "download");
++const DEFAULT_TEMPLATE = resolve(ROOT, "download.template.html");
+ 
+-function fmtSize(bytes) {
++export function fmtSize(bytes) {
+   if (bytes == null) return null;
+   if (bytes < 1024) return `约 ${bytes} B`;
+   return `约 ${Math.round(bytes / 1024)} KB`;
+ }
+ 
+-function zipSize(name) {
+-  for (const p of [resolve(ROOT, name), resolve(DOWNLOAD_DIR, name)]) {
++export function buildDownloadMeta(ds) {
++  const days = ds.data?.length || 0;
++  const through = ds.data?.map((r) => r.d).sort().at(-1) || "—";
++  const stamp = dataStamp(ds);
++  return {
++    days,
++    through,
++    stamp,
++    metaLine: `数据截止 ${through} · ${days} 天 · 指纹 ${stamp}`,
++  };
++}
++
++export function defaultZipSize(name, root = ROOT) {
++  const downloadDir = resolve(root, "download");
++  for (const p of [resolve(root, name), resolve(downloadDir, name)]) {
+     if (existsSync(p)) {
+       const label = fmtSize(statSync(p).size);
+       return `${label}（${name}）`;
+@@ -27,23 +37,43 @@
+   return "打包后生成";
+ }
+ 
+-const ds = JSON.parse(readFileSync(DATA, "utf8"));
+-const days = ds.data?.length || 0;
+-const through = ds.data?.map((r) => r.d).sort().at(-1) || "—";
+-const stamp = dataStamp(ds);
+-const versionShort = VERSION.replace(/^v/, "");
+-
+-const html = readFileSync(TEMPLATE, "utf8")
+-  .replaceAll("{{version}}", VERSION)
+-  .replaceAll("{{versionShort}}", versionShort)
+-  .replaceAll("{{dataThrough}}", through)
+-  .replaceAll("{{dataDays}}", String(days))
+-  .replaceAll("{{dataStamp}}", stamp)
+-  .replaceAll("{{zipBundle}}", RELEASE.zipBundle)
+-  .replaceAll("{{sourceZip}}", RELEASE.sourceZip)
+-  .replaceAll("{{monitorFile}}", RELEASE.monitor)
+-  .replaceAll("{{zipBundleSize}}", zipSize(RELEASE.zipBundle))
+-  .replaceAll("{{sourceZipSize}}", zipSize(RELEASE.sourceZip));
++/** @param {object} ds 数据集
++ *  @param {{ root?: string, templatePath?: string, version?: string, zipSize?: (name: string) => string }} [opts] */
++export function renderDownloadHtml(ds, opts = {}) {
++  const root = opts.root ?? ROOT;
++  const templatePath = opts.templatePath ?? DEFAULT_TEMPLATE;
++  const version = opts.version ?? VERSION;
++  const zipSize = opts.zipSize ?? ((name) => defaultZipSize(name, root));
++  const { days, through, stamp } = buildDownloadMeta(ds);
++  const versionShort = version.replace(/^v/, "");
++
++  return readFileSync(templatePath, "utf8")
++    .replaceAll("{{version}}", version)
++    .replaceAll("{{versionShort}}", versionShort)
++    .replaceAll("{{dataThrough}}", through)
++    .replaceAll("{{dataDays}}", String(days))
++    .replaceAll("{{dataStamp}}", stamp)
++    .replaceAll("{{zipBundle}}", RELEASE.zipBundle)
++    .replaceAll("{{sourceZip}}", RELEASE.sourceZip)
++    .replaceAll("{{monitorFile}}", RELEASE.monitor)
++    .replaceAll("{{zipBundleSize}}", zipSize(RELEASE.zipBundle))
++    .replaceAll("{{sourceZipSize}}", zipSize(RELEASE.sourceZip));
++}
++
++export function writeDownloadHtml(outPath, ds, opts = {}) {
++  const html = renderDownloadHtml(ds, opts);
++  writeFileSync(outPath, html);
++  return html;
++}
++
++function main() {
++  const dataPath = resolve(ROOT, process.argv[2] || "data/训练数据集.json");
++  const ds = JSON.parse(readFileSync(dataPath, "utf8"));
++  const { metaLine } = buildDownloadMeta(ds);
++  writeDownloadHtml(resolve(ROOT, "download.html"), ds);
++  console.log(`✓ download.html（${metaLine.replace(/^数据截止 /, "").replace(/ · 指纹 /, " · ")}）`);
++}
+ 
+-writeFileSync(OUT, html);
+-console.log(`✓ download.html（${through} · ${days} 天 · ${stamp}）`);
++if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
++  main();
++}
+diff -ru --exclude node_modules --exclude release --exclude download --exclude '*.zip' --exclude '.pack-*' --exclude '.inject-*' --exclude download.html ../evidence/source/scripts/pack.mjs ./scripts/pack.mjs
+--- ../evidence/source/scripts/pack.mjs	2026-10-07 09:11:02.000000000 +0000
++++ ./scripts/pack.mjs	2026-10-07 15:42:26.925398927 +0000
+@@ -41,6 +41,7 @@
+   publishFiles([
+     [resolve(ROOT, "download.html"), resolve(DOWNLOAD_DIR, "download.html")],
+   ]);
++  execFileSync(process.execPath, [resolve(ROOT, "scripts/check.mjs"), DATA, "--release", "--published"], { stdio: "inherit" });
+   console.log(`✓ 已校验并发布 5 个交付文件、download.html 及 ZIP：${zipMain}`);
+ } finally {
+   rmSync(staging, { recursive: true, force: true });
+diff -ru --exclude node_modules --exclude release --exclude download --exclude '*.zip' --exclude '.pack-*' --exclude '.inject-*' --exclude download.html ../evidence/source/scripts/verify-update.mjs ./scripts/verify-update.mjs
+--- ../evidence/source/scripts/verify-update.mjs	2026-10-07 09:11:02.000000000 +0000
++++ ./scripts/verify-update.mjs	2026-10-07 15:41:31.534110217 +0000
+@@ -5,39 +5,103 @@
+ import { resolve, basename } from 'node:path';
+ import { execFileSync, spawnSync } from 'node:child_process';
+ import { readDatasetFromHtml, datasetPayloadEqual } from './dataset-from-html.mjs';
++import { dataStamp } from '../src/shared/stamp.js';
+ import { RELEASE } from '../src/shared/release.js';
+-const root=resolve(import.meta.dirname,'..'), temp=mkdtempSync(resolve(tmpdir(),'physio-update-'));
+-const npm=process.platform==='win32'?'npm.cmd':'npm';
+-function run(...args) {
+-  const result=spawnSync(npm,args,{cwd:temp,encoding:'utf8',env:process.env});
+-  if(result.status!==0) throw new Error(`${args.join(' ')} failed:\n${result.stdout}\n${result.stderr}`);
++
++const root = resolve(import.meta.dirname, '..');
++const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
++
++function run(cwd, ...args) {
++  const result = spawnSync(npm, args, { cwd, encoding: 'utf8', env: process.env });
++  if (result.status !== 0) throw new Error(`${args.join(' ')} failed:\n${result.stdout}\n${result.stderr}`);
+   return result;
+ }
++
++function runNode(cwd, script, ...scriptArgs) {
++  execFileSync(process.execPath, [script, ...scriptArgs], { cwd, stdio: 'inherit', env: process.env });
++}
++
++const temp = mkdtempSync(resolve(tmpdir(), 'physio-update-'));
+ try {
+-  cpSync(root,temp,{recursive:true,filter:p=>!['node_modules','download'].includes(basename(p))&&!basename(p).endsWith('.zip')&&!/^\.(pack|inject)-/.test(basename(p))});
+-  assert(existsSync(resolve(temp,'release',RELEASE.monitor)),'请先 npm run build 生成旧 release');
+-  symlinkSync(resolve(root,'node_modules'),resolve(temp,'node_modules'),'junction');
+-  const path=resolve(temp,'data/训练数据集.json'), ds=JSON.parse(readFileSync(path,'utf8'));
+-  const originalBaseline=structuredClone(ds._baseline), n=ds.data.length;
+-  ds.data.at(-1).pro+=1; writeFileSync(path,JSON.stringify(ds,null,2));
+-  run('run','check');
+-  assert.notEqual(spawnSync(npm,['run','check:release'],{cwd:temp,encoding:'utf8'}).status,0,'旧产物应被交付校验识别');
+-  run('run','build');
+-  for(const name of [RELEASE.monitor,RELEASE.archive]) assert(datasetPayloadEqual(readDatasetFromHtml(resolve(temp,'release',name)),ds));
++  cpSync(root, temp, {
++    recursive: true,
++    filter: (p) => {
++      const base = basename(p);
++      return !['node_modules', 'download', 'release'].includes(base)
++        && !base.endsWith('.zip')
++        && !/^\.(pack|inject)-/.test(base);
++    },
++  });
++  symlinkSync(resolve(root, 'node_modules'), resolve(temp, 'node_modules'), 'junction');
++
++  // 从空产物目录完成首次构建，验证冷启动链路。
++  run(temp, 'run', 'build');
++  assert(existsSync(resolve(temp, 'release', RELEASE.monitor)), 'bootstrap build 应生成 release HTML');
++
++  const path = resolve(temp, 'data/训练数据集.json');
++  const ds = JSON.parse(readFileSync(path, 'utf8'));
++  const originalBaseline = structuredClone(ds._baseline);
++  const n = ds.data.length;
++  const beforeStamp = dataStamp(ds);
++
++  ds.data.at(-1).pro += 1;
++  writeFileSync(path, JSON.stringify(ds, null, 2));
++  const afterStamp = dataStamp(ds);
++  assert.notEqual(afterStamp, beforeStamp, '测试数据修改应改变指纹');
++
++  runNode(temp, resolve(temp, 'scripts/check.mjs'), path);
++  assert.notEqual(
++    spawnSync(npm, ['run', 'check:release'], { cwd: temp, encoding: 'utf8' }).status,
++    0,
++    '旧产物应被交付校验识别',
++  );
++
++  run(temp, 'run', 'build');
++  for (const name of [RELEASE.monitor, RELEASE.archive]) {
++    assert(datasetPayloadEqual(readDatasetFromHtml(resolve(temp, 'release', name)), ds), `${name} 应包含更新后的数据`);
++  }
++  assert.equal(readFileSync(resolve(temp, 'download.html'), 'utf8').includes(afterStamp), true, 'download.html 应包含新指纹');
++
++  const zipPath = resolve(temp, RELEASE.zipBundle);
++  assert(existsSync(zipPath), 'build 应生成成品 ZIP');
++  const zipJson = JSON.parse(readFileSync(resolve(temp, 'release/训练数据集.json'), 'utf8'));
++  assert.equal(zipJson.data.at(-1).pro, ds.data.at(-1).pro, 'release 内嵌 JSON 应与源数据一致');
++
+   // 注入失败不得先覆盖监测页面或 Word。
+-  const mp=resolve(temp,'release',RELEASE.monitor), ap=resolve(temp,'release',RELEASE.archive), dp=resolve(temp,'release',RELEASE.docx);
+-  const oldMonitor=readFileSync(mp),oldWord=readFileSync(dp);
+-  ds.data.at(-1).pro+=1; writeFileSync(path,JSON.stringify(ds,null,2));
+-  renameSync(ap,ap+'.saved');
+-  assert.notEqual(spawnSync(npm,['run','inject'],{cwd:temp,encoding:'utf8'}).status,0);
+-  assert.deepEqual(readFileSync(mp),oldMonitor);assert.deepEqual(readFileSync(dp),oldWord);renameSync(ap+'.saved',ap);
++  const mp = resolve(temp, 'release', RELEASE.monitor);
++  const ap = resolve(temp, 'release', RELEASE.archive);
++  const dp = resolve(temp, 'release', RELEASE.docx);
++  const oldMonitor = readFileSync(mp);
++  const oldWord = readFileSync(dp);
++
++  ds.data.at(-1).pro += 1;
++  writeFileSync(path, JSON.stringify(ds, null, 2));
++  const injectStamp = dataStamp(ds);
++  renameSync(ap, `${ap}.saved`);
++  assert.notEqual(spawnSync(npm, ['run', 'inject'], { cwd: temp, encoding: 'utf8' }).status, 0);
++  assert.deepEqual(readFileSync(mp), oldMonitor);
++  assert.deepEqual(readFileSync(dp), oldWord);
++  renameSync(`${ap}.saved`, ap);
++
+   // 旧 zip 中的多余成员必须在下次打包时消失。
+-  writeFileSync(resolve(temp,'stale.txt'),'stale');
+-  execFileSync('zip',['-q',resolve(temp,'个人训练系统_v7.zip'),'stale.txt'],{cwd:temp});
+-  run('run','inject'); run('run','check:release');
+-  for(const name of [RELEASE.monitor,RELEASE.archive]) assert(datasetPayloadEqual(readDatasetFromHtml(resolve(temp,'release',name)),ds));
+-  assert.deepEqual(ds._baseline,originalBaseline);assert.equal(ds.data.length,n);
+-  const members=execFileSync('unzip',['-Z1',resolve(temp,'个人训练系统_v7.zip')],{encoding:'utf8'}).trim().split('\n');
+-  assert.equal(members.length,5);assert(!members.includes('stale.txt'));
+-  console.log('✓ 更新集成测试：源校验与交付校验分离；build / inject 同步；注入失败无部分写入；ZIP 无陈旧成员；记录数与固定基线不变');
+-} finally { rmSync(temp,{recursive:true,force:true}); }
++  writeFileSync(resolve(temp, 'stale.txt'), 'stale');
++  execFileSync('zip', ['-q', zipPath, 'stale.txt'], { cwd: temp });
++  run(temp, 'run', 'inject');
++  run(temp, 'run', 'check:release');
++
++  for (const name of [RELEASE.monitor, RELEASE.archive]) {
++    assert(datasetPayloadEqual(readDatasetFromHtml(resolve(temp, 'release', name)), ds), `inject 后 ${name} 应与源数据一致`);
++  }
++  assert.equal(readFileSync(resolve(temp, 'download.html'), 'utf8').includes(injectStamp), true, 'inject 后 download.html 应包含新指纹');
++
++  assert.deepEqual(ds._baseline, originalBaseline);
++  assert.equal(ds.data.length, n);
++
++  const members = execFileSync('unzip', ['-Z1', zipPath], { encoding: 'utf8' }).trim().split('\n');
++  assert.equal(members.length, 5);
++  assert(!members.includes('stale.txt'));
++
++  console.log('✓ 更新集成测试：冷启动 build；源校验与交付校验分离；build / inject 同步；注入失败无部分写入；ZIP 无陈旧成员；记录数与固定基线不变');
++} finally {
++  rmSync(temp, { recursive: true, force: true });
++}
+diff -ru --exclude node_modules --exclude release --exclude download --exclude '*.zip' --exclude '.pack-*' --exclude '.inject-*' --exclude download.html ../evidence/source/tests/gen-download.test.js ./tests/gen-download.test.js
+--- ../evidence/source/tests/gen-download.test.js	2026-10-07 09:11:02.000000000 +0000
++++ ./tests/gen-download.test.js	2026-10-07 15:41:41.934099825 +0000
+@@ -1,14 +1,39 @@
+ import { describe, it, expect } from 'vitest';
+-import { readFileSync, existsSync } from 'node:fs';
+-import { join } from 'node:path';
++import { readFileSync, mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
++import { tmpdir } from 'node:os';
++import { join, resolve } from 'node:path';
++import { FIELDS } from '../src/shared/schema.js';
++import { dataStamp } from '../src/shared/stamp.js';
++import { VERSION, RELEASE } from '../src/shared/release.js';
++import { buildDownloadMeta, renderDownloadHtml, defaultZipSize } from '../scripts/gen-download.mjs';
+ 
+-const genSrc = readFileSync(join(import.meta.dirname, '../scripts/gen-download.mjs'), 'utf8');
+ const packSrc = readFileSync(join(import.meta.dirname, '../scripts/pack.mjs'), 'utf8');
++const templatePath = join(import.meta.dirname, '../download.template.html');
++
++function fixtureRow(d, patch = {}) {
++  const row = Object.fromEntries(FIELDS.map((k) => [k, null]));
++  row.d = d;
++  return { ...row, ...patch };
++}
++
++const FIXTURE = {
++  data: [fixtureRow('2026-01-01'), fixtureRow('2026-01-02', { pro: 120 })],
++  _daily: { '2026-01-02': { nutrition: { kcal_range: [2000, 2200], protein_range: [100, 110] } } },
++};
+ 
+ describe('gen-download 与 pack 集成', () => {
+-  it('gen-download 支持根目录与 download/ 双路径查 zip 大小', () => {
+-    expect(genSrc).toMatch(/resolve\(ROOT, name\)/);
+-    expect(genSrc).toMatch(/resolve\(DOWNLOAD_DIR, name\)/);
++  it('defaultZipSize 依次查找根目录与 download/ 下的 zip', () => {
++    const dir = mkdtempSync(join(tmpdir(), 'physio-zip-'));
++    try {
++      writeFileSync(resolve(dir, RELEASE.zipBundle), 'abc');
++      expect(defaultZipSize(RELEASE.zipBundle, dir)).toMatch(RELEASE.zipBundle);
++      rmSync(resolve(dir, RELEASE.zipBundle));
++      mkdirSync(resolve(dir, 'download'));
++      writeFileSync(resolve(dir, 'download', RELEASE.zipBundle), 'abcd');
++      expect(defaultZipSize(RELEASE.zipBundle, dir)).toMatch(RELEASE.zipBundle);
++    } finally {
++      rmSync(dir, { recursive: true, force: true });
++    }
+   });
+ 
+   it('pack 在 zip 生成后再次 gen-download 并同步 download/', () => {
+@@ -16,13 +41,20 @@
+     expect(packSrc).toMatch(/resolve\(ROOT, "download\.html"\), resolve\(DOWNLOAD_DIR, "download\.html"\)/);
+   });
+ 
+-  it('download.html 存在且 zip 大小占位已替换', () => {
+-    const p = join(import.meta.dirname, '../download/download.html');
+-    expect(existsSync(p)).toBe(true);
+-    const html = readFileSync(p, 'utf8');
+-    expect(html).toMatch(/02808fbb/);
+-    expect(html).toMatch(/73 天/);
+-    expect(html).not.toMatch(/\{\{ZIP_SIZE\}\}/);
+-    expect(html).not.toMatch(/\{\{zipBundleSize\}\}/);
++  it('renderDownloadHtml 从输入数据集推导元数据并替换全部占位符', () => {
++    const html = renderDownloadHtml(FIXTURE, {
++      templatePath,
++      version: VERSION,
++      zipSize: (name) => `mock-size（${name}）`,
++    });
++    const { days, through, stamp, metaLine } = buildDownloadMeta(FIXTURE);
++
++    expect(days).toBe(2);
++    expect(through).toBe('2026-01-02');
++    expect(stamp).toBe(dataStamp(FIXTURE));
++    expect(html).toContain(metaLine);
++    expect(html).not.toMatch(/\{\{/);
++    expect(html).toContain('mock-size（个人训练系统_v7.zip）');
++    expect(html).toContain('v7.0');
+   });
+ });
