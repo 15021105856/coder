@@ -1,0 +1,17 @@
+[WebServer]  INFO  Accepting connections at http://localhost:4173
+
+Running 1 test using 1 worker
+
+(node:43672) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43672) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]  HTTP  10/8/2026 1:02:46 PM 127.0.0.1 GET /%E8%AE%AD%E7%BB%83%E7%9B%91%E6%B5%8B%E7%B3%BB%E7%BB%9F_v7.html
+[WebServer]  HTTP  10/8/2026 1:02:46 PM 127.0.0.1 Returned 301 in 9 ms
+[WebServer]  HTTP  10/8/2026 1:02:46 PM 127.0.0.1 GET /%E8%AE%AD%E7%BB%83%E7%9B%91%E6%B5%8B%E7%B3%BB%E7%BB%9F_v7
+[WebServer]  HTTP  10/8/2026 1:02:46 PM 127.0.0.1 Returned 200 in 4 ms
+[WebServer]  HTTP  10/8/2026 1:02:47 PM 127.0.0.1 GET /%E8%AE%AD%E7%BB%83%E7%9B%91%E6%B5%8B%E7%B3%BB%E7%BB%9F_v7
+[WebServer]  HTTP  10/8/2026 1:02:47 PM 127.0.0.1 Returned 304 in 1 ms
+  ✓  1 tests/browser/monitor-persist.spec.js:15:3 › 训练监测系统成品 HTML · 持久化路径 › R01: 坏行缓存刷新后仍保留独有记录 (452ms)
+
+  1 passed (1.9s)

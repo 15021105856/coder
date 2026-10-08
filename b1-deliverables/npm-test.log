@@ -1,0 +1,32 @@
+
+> physio-log@7.0.0 test
+> vitest run
+
+
+ RUN  v3.2.7 /tmp/b1-work/src
+
+ ✓ tests/validate-dataset.test.js (6 tests) 10ms
+ ✓ tests/storage-b1.test.js (7 tests) 10ms
+ ✓ tests/check-download-gate.test.js (7 tests) 206ms
+ ✓ tests/derive.test.js (4 tests) 12ms
+ ✓ tests/publish-files.test.js (1 test) 6ms
+ ✓ tests/records-io.test.js (7 tests) 5ms
+ ✓ tests/section-data.test.js (10 tests) 4ms
+ ✓ tests/gen-download.test.js (3 tests) 4ms
+ ✓ tests/schema.test.js (2 tests) 3ms
+ ✓ tests/daily-merge-sessions.test.js (1 test) 2ms
+ ✓ tests/check-range.test.js (3 tests) 2ms
+ ✓ tests/daily-merge.test.js (3 tests) 2ms
+ ✓ tests/import-daily.test.js (2 tests) 3ms
+ ✓ tests/stamp.test.js (2 tests) 2ms
+ ✓ tests/training.test.js (3 tests) 2ms
+ ✓ tests/time.test.js (3 tests) 2ms
+ ✓ tests/release.test.js (1 test) 2ms
+ ✓ tests/history.test.js (2 tests) 2ms
+ ✓ tests/chart-uid.test.js (2 tests) 2ms
+
+ Test Files  19 passed (19)
+      Tests  69 passed (69)
+   Start at  13:02:43
+   Duration  1.29s (transform 237ms, setup 0ms, collect 554ms, tests 281ms, environment 2ms, prepare 1.14s)
+
