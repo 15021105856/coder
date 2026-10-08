@@ -1,0 +1,35 @@
+/* 图表共用样式：监测系统与个人档案共用 */
+svg{display:block;width:100%;height:auto}
+.chart .ax{font-size:10.5px;fill:var(--faint);font-family:var(--sans)}
+.chart .ax2{fill:var(--accent-2);fill-opacity:.8}
+.chart .lb-band{fill:var(--cyan);fill-opacity:.85}
+.chart .lb-ref{fill:var(--accent);font-weight:500}
+@media (prefers-reduced-motion:no-preference){
+  :is(.view.on,.fig.inview) .chart .ln:not([data-dash]){stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s var(--ease) .1s forwards}
+  :is(.view.on,.fig.inview) .chart .area{animation:fadeIn 1.2s var(--ease) both}
+  :is(.view.on,.fig.inview) .chart .bar{transform-box:fill-box;transform-origin:bottom;animation:grow .7s var(--spring) both;animation-delay:calc(var(--i) * 14ms)}
+  .chart .mk-pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.2s ease-out infinite}
+}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes pulse{0%{transform:scale(.8);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+.chart-tip{position:absolute;pointer-events:none;z-index:6;min-width:160px;max-width:230px;padding:10px 12px;border-radius:14px;
+  background:var(--tip);-webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%);
+  box-shadow:var(--elev),inset 0 0 0 1px var(--stroke);font-size:12px;line-height:1.45;
+  opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .18s,transform .25s var(--spring),visibility .18s;overflow-wrap:anywhere}
+.chart-tip.on{opacity:1;visibility:visible;transform:none}
+.chart-tip .t-d{font-weight:700;padding-bottom:5px;margin-bottom:5px;border-bottom:1px solid var(--stroke)}
+.chart-tip .t-row{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
+.chart-tip .t-row .k{color:var(--mut)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:6px 20px 4px;font-size:11.5px;color:var(--mut)}
+.lg-dot{width:8px;height:8px;border-radius:50%;box-shadow:inset 0 0 0 1.6px var(--cyan)}
+.lg-mark{width:9px;height:9px;border-radius:50%;background:var(--warm);box-shadow:0 0 8px var(--warm)}
+.lg-dash{width:16px;height:0;border-top:1.5px dashed var(--faint)}
+.lg-line{width:16px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--accent))}
+.lg-box{width:10px;height:10px;border-radius:3px}
+.lg-sym{width:9px;height:9px;border:1.6px solid var(--cyan);border-radius:50%}
+.lg-sym.s1{border-color:var(--accent-2);border-radius:2px}
+.lg-sym.s2{width:0;height:0;border:none;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--mint)}
+.g-legend i,.legend i{display:inline-block;vertical-align:-1px;margin-right:5px}
+.lg-band{width:14px;height:8px;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--accent))}

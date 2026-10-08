@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<!--BUILD_META-->
+<!--RUNTIME_INJECT-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#04060c">
+<title>训练生理观测 · 粒子光感版</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3CradialGradient id='g' cx='.35' cy='.3'%3E%3Cstop offset='0' stop-color='%2380f0ff'/%3E%3Cstop offset='.55' stop-color='%235b8cff'/%3E%3Cstop offset='1' stop-color='%239a7bff'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='13' fill='url(%23g)'/%3E%3C/svg%3E">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("physio-log.theme")||"dark";}catch(e){}</script>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="#today" aria-label="训练生理观测">
+    <span class="brand-orb" aria-hidden="true"></span>
+    <span class="brand-txt"><b>训练生理观测</b><small>PHYSIO LOG · v7</small></span>
+  </a>
+  <nav class="tabs" role="tablist" aria-label="视图切换" id="tabs">
+    <span class="tab-slider" aria-hidden="true"></span>
+  </nav>
+  <div class="top-actions">
+    <span class="pill" id="verBadge" title="内嵌数据的截止日期"><span class="dot"></span>DATA —</span>
+    <span class="pill" id="storBadge" title="数据存储位置">本机</span>
+    <a class="icon-btn" id="archiveLink" href="archive.html" title="个人训练档案" aria-label="个人训练档案"></a>
+    <button class="icon-btn" id="menuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="更多操作"></button>
+    <div class="menu" id="menu" role="menu" hidden></div>
+  </div>
+  <input type="file" id="fileInput" accept=".json,application/json" hidden>
+</header>
+
+<div class="banner" id="memBanner" role="alert" aria-live="assertive">
+  内存模式：此浏览器不允许 file:// 协议写入 localStorage，数据只保存在当前页面，关闭即丢失 —— 请用右上角菜单「导出 JSON」备份。
+</div>
+<div class="banner" id="verBanner" role="alert" aria-live="assertive"></div>
+<div class="banner" id="storRecoverBanner" role="alert" aria-live="assertive"></div>
+<div class="banner" id="dsBanner" role="alert" aria-live="assertive">数据集自检发现 <span id="dsBannerCount">0</span> 项异常，请查看浏览器控制台。</div>
+
+<main>
+  <section class="view on" id="view-today" role="tabpanel" aria-label="今日状态"></section>
+  <section class="view" id="view-trend" role="tabpanel" aria-label="趋势图表"></section>
+  <section class="view" id="view-source" role="tabpanel" aria-label="数据来源与导入"></section>
+  <section class="view" id="view-data" role="tabpanel" aria-label="数据表"></section>
+  <section class="view" id="view-docs" role="tabpanel" aria-label="阈值说明"></section>
+</main>
+
+<footer class="foot">
+  <span>单文件 · 离线可用 · 数据仅存本机</span>
+  <span>本应用只提示「数值是否越界」，不提供训练处方</span>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button class="to-top" id="toTop" aria-label="回到顶部" title="回到顶部"></button>
+
+<!--DATASET-->
+<script type="module" src="/src/monitor/main.js"></script>
+</body>
+</html>

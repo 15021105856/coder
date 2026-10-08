@@ -1,0 +1,237 @@
+{
+  "2026-09-25": {
+    "weight": [
+      {
+        "time": "09:02",
+        "kg": 62.3,
+        "body_fat_pct": null,
+        "period": "morning",
+        "protocol_confirmed": false,
+        "source": "用户截图；9月25日来自既有档案"
+      }
+    ]
+  },
+  "2026-09-26": {
+    "weight": [
+      {
+        "time": "09:14",
+        "kg": 61.05,
+        "body_fat_pct": 13.8,
+        "period": "morning",
+        "protocol_confirmed": false,
+        "source": "用户截图；9月25日来自既有档案"
+      }
+    ],
+    "day_totals": {
+      "run_km": 13.81,
+      "scope": "已报告两段跑合计"
+    }
+  },
+  "2026-09-27": {
+    "weight": [
+      {
+        "time": "10:07",
+        "kg": 61.4,
+        "body_fat_pct": 13.5,
+        "period": "morning",
+        "protocol_confirmed": false,
+        "source": "用户截图；9月25日来自既有档案"
+      }
+    ],
+    "day_totals": {
+      "run_km": 11.25,
+      "scope": "已报告两段跑合计"
+    }
+  },
+  "2026-09-28": {
+    "weight": [
+      {
+        "time": "20:39",
+        "kg": 62.35,
+        "body_fat_pct": 13.2,
+        "period": "evening",
+        "protocol_confirmed": false,
+        "source": "用户截图；9月25日来自既有档案"
+      }
+    ]
+  },
+  "2026-09-29": {
+    "weight": [
+      {
+        "time": "10:23",
+        "kg": 61.65,
+        "body_fat_pct": 13.3,
+        "period": "morning",
+        "protocol_confirmed": false,
+        "source": "用户截图；9月25日来自既有档案"
+      }
+    ]
+  },
+  "2026-09-30": {
+    "weight": [
+      {
+        "time": "08:56",
+        "kg": 60.6,
+        "body_fat_pct": 13.5,
+        "period": "morning",
+        "protocol_confirmed": false,
+        "source": "用户截图；9月25日来自既有档案"
+      }
+    ],
+    "day_totals": {
+      "run_km": 12.19,
+      "scope": "已报告两段跑合计"
+    }
+  },
+  "2026-10-01": {
+    "weight": [
+      {
+        "time": "09:40",
+        "kg": 60.45,
+        "body_fat_pct": 13.3,
+        "period": "morning",
+        "protocol_confirmed": false,
+        "source": "用户截图；9月25日来自既有档案"
+      }
+    ]
+  },
+  "2026-10-02": {
+    "weight": [
+      {
+        "time": "10:13",
+        "kg": 61.15,
+        "body_fat_pct": 13.4,
+        "period": "morning",
+        "protocol_confirmed": false,
+        "source": "用户截图；9月25日来自既有档案"
+      }
+    ],
+    "sessions": [
+      {
+        "kind": "strength",
+        "start": "13:55",
+        "tsec": 3636,
+        "vol": 2650,
+        "hr": 114,
+        "hrmax": 151,
+        "load": 19,
+        "active_kcal": 290,
+        "total_kcal": 372
+      },
+      {
+        "kind": "run",
+        "start": "17:41",
+        "km": 2.28,
+        "tsec": 866,
+        "hr": 133,
+        "hrmax": 148,
+        "load": 9,
+        "active_kcal": 109,
+        "total_kcal": 128
+      },
+      {
+        "kind": "run",
+        "start": "18:04",
+        "km": 7.55,
+        "tsec": 2605,
+        "hr": 140,
+        "hrmax": 170,
+        "load": 39,
+        "active_kcal": 360,
+        "total_kcal": 417
+      }
+    ],
+    "day_totals": {
+      "run_km": 9.83,
+      "training_tsec": 7107,
+      "active_kcal": 759,
+      "total_kcal": 917,
+      "scope": "已报告三课合计"
+    },
+    "hrr": {
+      "seconds": 60,
+      "start": 181,
+      "end": 124,
+      "drop": 57,
+      "source": "用户报告腕式光电",
+      "timing_protocol": "unconfirmed"
+    },
+    "nutrition": {
+      "kcal_range": [
+        2650,
+        3600
+      ],
+      "protein_range": [
+        100,
+        145
+      ],
+      "estimated": true
+    }
+  },
+  "2026-10-03": {
+    "weight": [
+      {
+        "time": "09:38",
+        "kg": 60.25,
+        "body_fat_pct": 13.4,
+        "period": "morning",
+        "protocol_confirmed": false,
+        "source": "用户截图；9月25日来自既有档案"
+      }
+    ],
+    "sleep": {
+      "score": 84,
+      "wake_time": "09:01",
+      "deep_min": 114,
+      "light_min": 290,
+      "rem_min": 45,
+      "hw_range": [
+        83,
+        118
+      ],
+      "hr_range": [
+        43,
+        87
+      ],
+      "shr_range": [
+        45,
+        51
+      ],
+      "spo2_pct": 96,
+      "respiratory_rate": 15,
+      "breathing_score": 98
+    },
+    "sessions": [
+      {
+        "kind": "strength",
+        "name": "手臂＋深蹲",
+        "start": "14:03",
+        "tsec": 3393,
+        "vol": 3560,
+        "hr": 108,
+        "hrmax": 147,
+        "load": 12,
+        "active_kcal": 230,
+        "total_kcal": 305,
+        "squat_assisted": false,
+        "squat_top_set": {
+          "kg": 60,
+          "reps": 3
+        },
+        "other_assistance": null
+      }
+    ],
+    "nutrition": {
+      "kcal_range": [
+        2500,
+        3500
+      ],
+      "protein_range": [
+        90,
+        135
+      ],
+      "estimated": true,
+      "main_uncertainty": "面量、红油、个人火锅肉量和肥瘦、豆浆糖量"
+    }
+  }
+}
