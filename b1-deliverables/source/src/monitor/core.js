@@ -6,7 +6,7 @@ import { dayMs, pad2, DAY_MS, lastDataDate } from "../shared/time.js";
 import { esc, fmtTsec, fmtDur, normPace, fmtPace } from "../shared/format.js";
 import { runTotalKg, strengthTotalDetail } from "../shared/daily.js";
 import { normalizeRec, upsertIntoList, byDate as recByDate } from "../shared/records-io.js";
-import { loadAppState, commitAppState, exportRescueBundle } from "../shared/app-storage.js";
+import { loadAppState, commitAppState, exportRescueBundle, reconcileMemoryWithAuthority } from "../shared/app-storage.js";
 import { createMemoryStorageAdapter, wrapLocalStorage } from "../shared/local-storage-adapter.js";
 
 export { FIELDS, NUM_FIELDS, dayMs, pad2, esc, fmtTsec, fmtDur, normPace, fmtPace };
@@ -211,6 +211,8 @@ export const storage = {
   storageBanner: null,
   migrationPending: false,
   pendingCommit: false,
+  writeOk: true,
+  corruptAuthority: false,
 };
 export const state = { recs: [], sel: null, view: "today" };
 
@@ -244,20 +246,41 @@ export function bootstrapStorage() {
   storage.quarantine = loaded.quarantine;
   storage.storageBanner = loaded.storageBanner;
   storage.migrationPending = loaded.migrationPending;
+  storage.writeOk = loaded.writeOk !== false;
+  storage.corruptAuthority = !!loaded.corruptAuthority;
   storage.memStore = loaded.memMode ? loaded.records : null;
   storage.bootstrapped = true;
 }
 
 export function persistAppState() {
   bootstrapStorage();
-  if (!getStorageAdapter().probe()) {
+  const ls = getStorageAdapter();
+  const writeOk = ls.probeWrite?.() ?? ls.probe?.() ?? true;
+  storage.writeOk = writeOk;
+  const reconciled = reconcileMemoryWithAuthority(ls, storageCtx(), {
+    records: state.recs,
+    dailyMeta: store.dailyMeta,
+    baseline: memBaseline,
+    quarantine: storage.quarantine,
+  });
+  state.recs = reconciled.records;
+  store.dailyMeta = reconciled.dailyMeta;
+  memBaseline = reconciled.baseline;
+  storage.quarantine = reconciled.quarantine;
+  if (!writeOk) {
     storage.memMode = true;
     storage.memStore = state.recs;
     storage.pendingCommit = true;
     storage.onMem?.();
     return { ok: false, status: "failed", reason: "storage-probe-failed" };
   }
-  const r = commitAppState(getStorageAdapter(), storageCtx(), {
+  if (storage.corruptAuthority) {
+    storage.memMode = true;
+    storage.pendingCommit = true;
+    storage.onMem?.();
+    return { ok: false, status: "failed", reason: "corrupt-authority-no-overwrite" };
+  }
+  const r = commitAppState(ls, storageCtx(), {
     records: state.recs,
     dailyMeta: store.dailyMeta,
     baseline: memBaseline,
@@ -304,6 +327,8 @@ export function buildRescueExportPayload() {
     baseline: memBaseline,
     quarantine: storage.quarantine,
     readErrors: storage.readErrors,
+    writeOk: storage.writeOk,
+    corruptAuthority: storage.corruptAuthority,
   });
 }
 

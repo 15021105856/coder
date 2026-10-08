@@ -1,4 +1,4 @@
-# 个人训练系统 v7 · B1 本地存储契约与迁移
+# 个人训练系统 v7 · B1 / B1-R1 本地存储契约与迁移
 
 ## 权威读源
 
@@ -30,7 +30,10 @@
 
 ## 读取与异常
 
+- **可读 / 可写分离**：`probeWrite()` 失败只影响写入，**不**阻止读取已有 v2 / legacy。
+- 诊断性 `snapshot()` **不得**因单键 `getItem` 失败而抛错（与浏览器 localStorage 行为一致）。
 - 某键 `getItem` 抛错：记入 `readErrors`，界面 **如实说明无法读取该键**，不宣称已备份。
+- **损坏的 v2 原文**：进入 `quarantine.corruptAppStateRaw`，**禁止**自动用 seed 覆盖该键；`corruptAuthority` 时拒绝 commit。
 - 记录 JSON **整包损坏**：**不** 用 seed 覆盖 legacy 原键；`quarantine.legacyRecordsRaw` 保留原文；内存展示仍可按 seed 合并规则计算，但持久化时 **不把 seed-only 结果当作救援完成**（`persistRecords` 可为空数组 + quarantine）。
 - 记录数组 **部分坏行**：救援可读行；坏行进入 `quarantine`，**不** 无声改写原文。
 - **不** 在读取失败时自动 `setItem` 覆盖 legacy `records.v1`。
@@ -44,7 +47,9 @@
 
 ## 未保存编辑与导出
 
-- `storage.memMode` / `storage.pendingCommit`：显示内存横幅；导出 JSON 始终从 **当前内存** 生成（含救援包字段 `buildRescueExportPayload`）。
+- `storage.memMode` / `storage.pendingCommit` / `!writeOk`：显示内存或只读横幅。
+- **菜单「导出 JSON」** 合并 `buildRescueExportPayload`：`quarantine`、`readErrors`、`storage` 摘要随文件下载。
+- 写入前 `reconcileMemoryWithAuthority`：若磁盘 v2 可解析，与内存记录按日期并集，避免 probe 降级后 seed-only 内存覆盖独有行。
 - 救援导出为 **独立恢复材料**，不替代 B6 完整备份恢复产品能力。
 
 ## seed 合并规则（未改）

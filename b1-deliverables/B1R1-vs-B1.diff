@@ -1,0 +1,1007 @@
+diff --git a/b1-deliverables/source/docs/storage-contract-v7-b1.md b/b1-deliverables/source/docs/storage-contract-v7-b1.md
+index aa5332a..4af8564 100644
+--- a/b1-deliverables/source/docs/storage-contract-v7-b1.md
++++ b/b1-deliverables/source/docs/storage-contract-v7-b1.md
+@@ -1,4 +1,4 @@
+-# 个人训练系统 v7 · B1 本地存储契约与迁移
++# 个人训练系统 v7 · B1 / B1-R1 本地存储契约与迁移
+ 
+ ## 权威读源
+ 
+@@ -30,7 +30,10 @@
+ 
+ ## 读取与异常
+ 
++- **可读 / 可写分离**：`probeWrite()` 失败只影响写入，**不**阻止读取已有 v2 / legacy。
++- 诊断性 `snapshot()` **不得**因单键 `getItem` 失败而抛错（与浏览器 localStorage 行为一致）。
+ - 某键 `getItem` 抛错：记入 `readErrors`，界面 **如实说明无法读取该键**，不宣称已备份。
++- **损坏的 v2 原文**：进入 `quarantine.corruptAppStateRaw`，**禁止**自动用 seed 覆盖该键；`corruptAuthority` 时拒绝 commit。
+ - 记录 JSON **整包损坏**：**不** 用 seed 覆盖 legacy 原键；`quarantine.legacyRecordsRaw` 保留原文；内存展示仍可按 seed 合并规则计算，但持久化时 **不把 seed-only 结果当作救援完成**（`persistRecords` 可为空数组 + quarantine）。
+ - 记录数组 **部分坏行**：救援可读行；坏行进入 `quarantine`，**不** 无声改写原文。
+ - **不** 在读取失败时自动 `setItem` 覆盖 legacy `records.v1`。
+@@ -44,7 +47,9 @@
+ 
+ ## 未保存编辑与导出
+ 
+-- `storage.memMode` / `storage.pendingCommit`：显示内存横幅；导出 JSON 始终从 **当前内存** 生成（含救援包字段 `buildRescueExportPayload`）。
++- `storage.memMode` / `storage.pendingCommit` / `!writeOk`：显示内存或只读横幅。
++- **菜单「导出 JSON」** 合并 `buildRescueExportPayload`：`quarantine`、`readErrors`、`storage` 摘要随文件下载。
++- 写入前 `reconcileMemoryWithAuthority`：若磁盘 v2 可解析，与内存记录按日期并集，避免 probe 降级后 seed-only 内存覆盖独有行。
+ - 救援导出为 **独立恢复材料**，不替代 B6 完整备份恢复产品能力。
+ 
+ ## seed 合并规则（未改）
+diff --git a/b1-deliverables/source/src/monitor/core.js b/b1-deliverables/source/src/monitor/core.js
+index 8109f6b..86cc1c0 100644
+--- a/b1-deliverables/source/src/monitor/core.js
++++ b/b1-deliverables/source/src/monitor/core.js
+@@ -6,7 +6,7 @@ import { dayMs, pad2, DAY_MS, lastDataDate } from "../shared/time.js";
+ import { esc, fmtTsec, fmtDur, normPace, fmtPace } from "../shared/format.js";
+ import { runTotalKg, strengthTotalDetail } from "../shared/daily.js";
+ import { normalizeRec, upsertIntoList, byDate as recByDate } from "../shared/records-io.js";
+-import { loadAppState, commitAppState, exportRescueBundle } from "../shared/app-storage.js";
++import { loadAppState, commitAppState, exportRescueBundle, reconcileMemoryWithAuthority } from "../shared/app-storage.js";
+ import { createMemoryStorageAdapter, wrapLocalStorage } from "../shared/local-storage-adapter.js";
+ 
+ export { FIELDS, NUM_FIELDS, dayMs, pad2, esc, fmtTsec, fmtDur, normPace, fmtPace };
+@@ -211,6 +211,8 @@ export const storage = {
+   storageBanner: null,
+   migrationPending: false,
+   pendingCommit: false,
++  writeOk: true,
++  corruptAuthority: false,
+ };
+ export const state = { recs: [], sel: null, view: "today" };
+ 
+@@ -244,20 +246,41 @@ export function bootstrapStorage() {
+   storage.quarantine = loaded.quarantine;
+   storage.storageBanner = loaded.storageBanner;
+   storage.migrationPending = loaded.migrationPending;
++  storage.writeOk = loaded.writeOk !== false;
++  storage.corruptAuthority = !!loaded.corruptAuthority;
+   storage.memStore = loaded.memMode ? loaded.records : null;
+   storage.bootstrapped = true;
+ }
+ 
+ export function persistAppState() {
+   bootstrapStorage();
+-  if (!getStorageAdapter().probe()) {
++  const ls = getStorageAdapter();
++  const writeOk = ls.probeWrite?.() ?? ls.probe?.() ?? true;
++  storage.writeOk = writeOk;
++  const reconciled = reconcileMemoryWithAuthority(ls, storageCtx(), {
++    records: state.recs,
++    dailyMeta: store.dailyMeta,
++    baseline: memBaseline,
++    quarantine: storage.quarantine,
++  });
++  state.recs = reconciled.records;
++  store.dailyMeta = reconciled.dailyMeta;
++  memBaseline = reconciled.baseline;
++  storage.quarantine = reconciled.quarantine;
++  if (!writeOk) {
+     storage.memMode = true;
+     storage.memStore = state.recs;
+     storage.pendingCommit = true;
+     storage.onMem?.();
+     return { ok: false, status: "failed", reason: "storage-probe-failed" };
+   }
+-  const r = commitAppState(getStorageAdapter(), storageCtx(), {
++  if (storage.corruptAuthority) {
++    storage.memMode = true;
++    storage.pendingCommit = true;
++    storage.onMem?.();
++    return { ok: false, status: "failed", reason: "corrupt-authority-no-overwrite" };
++  }
++  const r = commitAppState(ls, storageCtx(), {
+     records: state.recs,
+     dailyMeta: store.dailyMeta,
+     baseline: memBaseline,
+@@ -304,6 +327,8 @@ export function buildRescueExportPayload() {
+     baseline: memBaseline,
+     quarantine: storage.quarantine,
+     readErrors: storage.readErrors,
++    writeOk: storage.writeOk,
++    corruptAuthority: storage.corruptAuthority,
+   });
+ }
+ 
+diff --git a/b1-deliverables/source/src/monitor/io.js b/b1-deliverables/source/src/monitor/io.js
+index 1292528..f5b94d5 100644
+--- a/b1-deliverables/source/src/monitor/io.js
++++ b/b1-deliverables/source/src/monitor/io.js
+@@ -1,7 +1,7 @@
+ import {
+   DATA_STAMP, DATA_DATE, DATASET_META, FIELDS, store, state,
+-  loadBaselineLock, hydrateBaseline, windowStats,
+-  sortedRecs, hrrNorm, applyImportState, saveResultMessage,
++  loadBaselineLock, hydrateBaseline, windowStats, storage,
++  sortedRecs, hrrNorm, applyImportState, saveResultMessage, buildRescueExportPayload,
+ } from "./core.js";
+ import { validateImportPayload, upsertIntoList, IMPORT_MAX_BYTES } from "../shared/records-io.js";
+ import { mergeImportedDaily } from "../shared/payload-validation.js";
+@@ -15,10 +15,17 @@ export function download(name, text, mime) {
+ }
+ 
+ export function exportJSON(toast) {
+-  const payload = { app: "physio-log", version: 2, dataStamp: DATA_STAMP, dataDate: DATA_DATE, exported: new Date().toISOString(),
+-    baseline: loadBaselineLock(), ...DATASET_META, _daily: store.dailyMeta, data: sortedRecs(), records: sortedRecs() };
++  const rescue = buildRescueExportPayload();
++  const payload = {
++    ...rescue,
++    version: 2,
++    baseline: loadBaselineLock(),
++    ...DATASET_META,
++    data: sortedRecs(),
++    records: sortedRecs(),
++  };
+   download("physio-log-" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify(payload, null, 1));
+-  toast("已导出 JSON");
++  toast(storage.quarantine || storage.readErrors?.length ? "已导出 JSON（含救援/异常摘要）" : "已导出 JSON");
+ }
+ 
+ export function exportCSV(toast) {
+diff --git a/b1-deliverables/source/src/monitor/main.js b/b1-deliverables/source/src/monitor/main.js
+index 7db8636..c8d8ef4 100644
+--- a/b1-deliverables/source/src/monitor/main.js
++++ b/b1-deliverables/source/src/monitor/main.js
+@@ -44,7 +44,11 @@ function init() {
+   storage.onMem = showMemBanner;
+   state.recs = loadRecords();
+   loadDaily();
+-  if (storage.memMode || storage.pendingCommit) showMemBanner();
++  if (storage.memMode || storage.pendingCommit || !storage.writeOk) showMemBanner();
++  if (!storage.writeOk) {
++    const b = $("#storBadge");
++    if (b) { b.textContent = "只读/内存"; b.classList.add("warn"); }
++  }
+   showStorageRecoveryBanner({
+     readErrors: storage.readErrors,
+     migrationPending: storage.migrationPending,
+diff --git a/b1-deliverables/source/src/monitor/ui.js b/b1-deliverables/source/src/monitor/ui.js
+index 504f511..385cf04 100644
+--- a/b1-deliverables/source/src/monitor/ui.js
++++ b/b1-deliverables/source/src/monitor/ui.js
+@@ -40,6 +40,9 @@ export function showStorageRecoveryBanner({ readErrors, migrationPending, pendin
+     const keys = [...new Set(readErrors.map((e) => e.key))].join("、");
+     parts.push(`部分存储键无法读取（${keys}），未宣称已自动备份；请用「导出 JSON」保存当前可用数据。`);
+   }
++  if (quarantine?.corruptAppStateRaw) {
++    parts.push("权威快照已损坏，原文已保留在 quarantine 中，不会自动用内嵌数据覆盖；请导出 JSON 后人工处理。");
++  }
+   if (quarantine?.legacyRecordsRaw || quarantine?.parseError) {
+     parts.push("本机缓存含无法完全解析的记录，已保留原文并救援可读行；刷新后仍会提示直至成功写入新快照。");
+   }
+diff --git a/b1-deliverables/source/src/shared/app-storage.js b/b1-deliverables/source/src/shared/app-storage.js
+index 40a7e5e..4297bc7 100644
+--- a/b1-deliverables/source/src/shared/app-storage.js
++++ b/b1-deliverables/source/src/shared/app-storage.js
+@@ -1,12 +1,12 @@
+ /**
+- * 应用存储契约（B1）：单键版本化逻辑快照 + 旧 v1 只读迁移。
+- * 权威读源：physio-log.app-state.v2（存在且 JSON 可解析时）；否则从 v1 键组装并尝试写入 v2。
++ * 应用存储契约（B1-R1）：单键版本化逻辑快照 + 旧 v1 只读迁移。
+  */
+ import LEGACY_DAILY_SEED from "../../data/legacy-daily-seed.json";
+-import { mergeRecordLists } from "./records-io.js";
++import { mergeRecordLists, byDate } from "./records-io.js";
+ import { mergeDailyStore } from "./daily-merge.js";
+-import { parseRecordsRaw } from "./record-parse.js";
++import { parseRecordsRaw, parseRecordsArray } from "./record-parse.js";
+ import { STORAGE_KEYS } from "./release.js";
++import { safeGetItem } from "./local-storage-adapter.js";
+ 
+ export const APP_STATE_KEY = STORAGE_KEYS.appState;
+ export const SNAPSHOT_FORMAT = 2;
+@@ -19,31 +19,30 @@ const LEGACY = {
+ };
+ 
+ const plainObject = (x) => x !== null && typeof x === "object" && !Array.isArray(x);
++const isUnreadable = (v) => v && typeof v === "object" && v.__unreadable;
+ 
+ function readVerMeta(ls, readErrors) {
+   let vStamp = null;
+   let vDate = null;
++  const rawVer = safeGetItem(ls, LEGACY.dataVersion, readErrors);
++  if (isUnreadable(rawVer)) return { vStamp, vDate };
++  if (!rawVer) return { vStamp, vDate };
+   try {
+-    const rawVer = ls.getItem(LEGACY.dataVersion);
+-    if (!rawVer) return { vStamp, vDate };
+     if (rawVer[0] === "{") {
+       const o = JSON.parse(rawVer);
+       vStamp = o.s || null;
+       vDate = o.d || null;
+     } else vDate = rawVer;
+   } catch (e) {
+-    readErrors.push({ key: LEGACY.dataVersion, message: e?.message || "read-failed" });
++    readErrors.push({ key: LEGACY.dataVersion, message: e?.message || "parse-failed" });
+   }
+   return { vStamp, vDate };
+ }
+ 
+ function readLegacyRecords(ls, readErrors) {
+-  let raw = null;
+-  try {
+-    raw = ls.getItem(LEGACY.records);
+-  } catch (e) {
+-    readErrors.push({ key: LEGACY.records, message: e?.message || "read-failed" });
+-    return { records: [], quarantine: { legacyRecordsRaw: null, recordErrors: [{ reason: "key-unreadable" }] } };
++  const raw = safeGetItem(ls, LEGACY.records, readErrors);
++  if (isUnreadable(raw)) {
++    return { records: [], quarantine: { recordErrors: [{ reason: "key-unreadable" }] } };
+   }
+   if (!raw) return { records: [], quarantine: null };
+   const parsed = parseRecordsRaw(raw);
+@@ -59,34 +58,37 @@ function readLegacyRecords(ls, readErrors) {
+   return { records: parsed.records, quarantine };
+ }
+ 
+-function readLegacyDaily(ls, readErrors, { DAILY_SEED, DATA_STAMP }) {
++function readLegacyDaily(ls, readErrors, ctx) {
++  const raw = safeGetItem(ls, LEGACY.daily, readErrors);
++  if (isUnreadable(raw)) return { dailyMeta: null, raw: null, unreadable: true };
++  if (!raw) return { dailyMeta: null, raw: null };
+   try {
+-    const raw = ls.getItem(LEGACY.daily);
+-    if (!raw) return { dailyMeta: null, raw: null };
+     const c = JSON.parse(raw);
+     if (c && plainObject(c.data)) {
+-      const base = plainObject(c.seed) ? c.seed : (c.stamp === DATA_STAMP ? DAILY_SEED : LEGACY_DAILY_SEED);
+-      return { dailyMeta: mergeDailyStore(DAILY_SEED, c.data, base), raw };
++      const base = plainObject(c.seed) ? c.seed : (c.stamp === ctx.DATA_STAMP ? ctx.DAILY_SEED : LEGACY_DAILY_SEED);
++      return { dailyMeta: mergeDailyStore(ctx.DAILY_SEED, c.data, base), raw };
+     }
+     return { dailyMeta: null, raw };
+   } catch (e) {
+-    readErrors.push({ key: LEGACY.daily, message: e?.message || "read-failed" });
++    readErrors.push({ key: LEGACY.daily, message: e?.message || "parse-failed" });
+     return { dailyMeta: null, raw: null, unreadable: true };
+   }
+ }
+ 
+ function readLegacyBaseline(ls, readErrors) {
++  const raw = safeGetItem(ls, LEGACY.baseline, readErrors);
++  if (isUnreadable(raw)) return { baseline: null, raw: null, unreadable: true };
++  if (!raw) return { baseline: null, raw: null };
+   try {
+-    const raw = ls.getItem(LEGACY.baseline);
+-    if (!raw) return { baseline: null, raw: null };
+     return { baseline: JSON.parse(raw), raw };
+   } catch (e) {
+-    readErrors.push({ key: LEGACY.baseline, message: e?.message || "read-failed" });
++    readErrors.push({ key: LEGACY.baseline, message: e?.message || "parse-failed" });
+     return { baseline: null, raw: null, unreadable: true };
+   }
+ }
+ 
+-function resolveRecordsForSeedMerge({
++/** 既定 seed / stale 规则（legacy 与 v2 共用） */
++export function resolveRecordsForSeedMerge({
+   rescued, vStamp, vDate, DATA_STAMP, DATA_DATE, SEED, wholeJsonFailed,
+ }) {
+   const working = () => {
+@@ -96,49 +98,53 @@ function resolveRecordsForSeedMerge({
+     return mergeRecordLists(SEED, rescued);
+   };
+   if (wholeJsonFailed && !rescued.length) {
++    const w = working();
+     return {
+-      records: working(),
+-      persistRecords: [],
++      records: w,
++      persistRecords: w,
+       staleVer: null,
+       shouldPersistMerge: false,
++      seedMergeApplied: false,
+     };
+   }
+   if (!rescued.length) {
++    const w = working();
+     return {
+-      records: working(),
+-      persistRecords: mergeRecordLists(SEED, null),
++      records: w,
++      persistRecords: w,
+       staleVer: null,
+       shouldPersistMerge: true,
++      seedMergeApplied: true,
+     };
+   }
+   if (vStamp === DATA_STAMP || (!vStamp && vDate === DATA_DATE)) {
+-    return { records: rescued, persistRecords: rescued, staleVer: null, shouldPersistMerge: false };
++    return { records: rescued, persistRecords: rescued, staleVer: null, shouldPersistMerge: false, seedMergeApplied: false };
+   }
+   if (vDate && DATA_DATE && vDate > DATA_DATE) {
+-    return { records: rescued, persistRecords: rescued, staleVer: vDate, shouldPersistMerge: false };
++    return { records: rescued, persistRecords: rescued, staleVer: vDate, shouldPersistMerge: false, seedMergeApplied: false };
+   }
+   const merged = mergeRecordLists(SEED, rescued);
+-  return { records: merged, persistRecords: merged, staleVer: null, shouldPersistMerge: true };
++  return { records: merged, persistRecords: merged, staleVer: null, shouldPersistMerge: true, seedMergeApplied: true };
+ }
+ 
+-function buildDailyEnvelope(dailyMeta, { DAILY_SEED, DATA_STAMP, DATA_DATE }) {
++function buildDailyEnvelope(dailyMeta, ctx) {
+   const dates = Object.keys(dailyMeta || {});
+-  const last = dates.length ? [...dates, DATA_DATE].sort().at(-1) : DATA_DATE;
++  const last = dates.length ? [...dates, ctx.DATA_DATE].sort().at(-1) : ctx.DATA_DATE;
+   return {
+-    stamp: DATA_STAMP,
++    stamp: ctx.DATA_STAMP,
+     date: last,
+-    seed: DAILY_SEED,
++    seed: ctx.DAILY_SEED,
+     data: dailyMeta || {},
+   };
+ }
+ 
+-export function buildLogicalSnapshot({ records, dailyMeta, baseline, quarantine, DATA_STAMP, DATA_DATE, DAILY_SEED }) {
++export function buildLogicalSnapshot({ records, dailyMeta, baseline, quarantine, ...ctx }) {
+   return {
+     format: SNAPSHOT_FORMAT,
+-    dataStamp: DATA_STAMP,
+-    dataDate: DATA_DATE,
++    dataStamp: ctx.DATA_STAMP,
++    dataDate: ctx.DATA_DATE,
+     records: records || [],
+-    daily: buildDailyEnvelope(dailyMeta, { DAILY_SEED, DATA_STAMP, DATA_DATE }),
++    daily: buildDailyEnvelope(dailyMeta, ctx),
+     baseline: baseline ?? null,
+     quarantine: quarantine || undefined,
+     savedAt: new Date().toISOString(),
+@@ -156,62 +162,133 @@ export function parseSnapshot(jsonText) {
+   }
+ }
+ 
+-/**
+- * @returns {{
+- *   records, dailyMeta, baselineStored, staleVer, memMode,
+- *   readErrors, quarantine, storageBanner, migrationPending,
+- *   legacyKeysUntouched: boolean
+- * }}
+- */
+-export function loadAppState(ls, ctx) {
+-  const readErrors = [];
+-  const probeOk = ls.probe?.() ?? true;
+-  if (!probeOk) {
+-    return {
+-      records: ctx.SEED.map((r) => ctx.normalizeRec(r)),
+-      dailyMeta: structuredClone(ctx.DAILY_SEED),
+-      baselineStored: null,
+-      staleVer: null,
+-      memMode: true,
+-      readErrors: [{ key: "*", message: "storage-probe-failed" }],
+-      quarantine: null,
+-      storageBanner: "storage-probe-failed",
+-      migrationPending: false,
+-      legacyKeysUntouched: true,
+-    };
++function hydrateSnapshotRecords(snapshot, ctx) {
++  const arr = Array.isArray(snapshot.records) ? snapshot.records : [];
++  const { records, errors, badRows } = parseRecordsArray(arr);
++  const quarantine = errors.length
++    ? {
++        ...(snapshot.quarantine || {}),
++        recordErrors: [...(snapshot.quarantine?.recordErrors || []), ...errors],
++        badRows: [...(snapshot.quarantine?.badRows || []), ...badRows],
++      }
++    : snapshot.quarantine || null;
++  return { records, quarantine };
++}
++
++function mergeAuthorityRecords(memory, stored) {
++  const map = new Map();
++  for (const r of stored || []) if (r?.d) map.set(r.d, r);
++  for (const r of memory || []) if (r?.d) map.set(r.d, r);
++  return [...map.values()].sort(byDate);
++}
++
++function readLegacyKeysOnly(ls, readErrors) {
++  const snap = {};
++  for (const k of Object.values(LEGACY)) {
++    const v = safeGetItem(ls, k, readErrors);
++    if (!isUnreadable(v) && v != null) snap[k] = v;
+   }
++  return snap;
++}
+ 
+-  let v2Raw = null;
+-  try {
+-    v2Raw = ls.getItem(APP_STATE_KEY);
+-  } catch (e) {
+-    readErrors.push({ key: APP_STATE_KEY, message: e?.message || "read-failed" });
++function loadFromValidV2(v2Raw, parsed, ctx, readErrors, writeOk) {
++  const s = parsed.snapshot;
++  const { records: rescued, quarantine: rowQuarantine } = hydrateSnapshotRecords(s, ctx);
++  const merged = resolveRecordsForSeedMerge({
++    rescued,
++    vStamp: s.dataStamp,
++    vDate: s.dataDate,
++    DATA_STAMP: ctx.DATA_STAMP,
++    DATA_DATE: ctx.DATA_DATE,
++    SEED: ctx.SEED,
++    wholeJsonFailed: false,
++  });
++  let dailyMeta = s.daily?.data ? structuredClone(s.daily.data) : structuredClone(ctx.DAILY_SEED);
++  if (merged.seedMergeApplied && merged.shouldPersistMerge) {
++    dailyMeta = structuredClone(ctx.DAILY_SEED);
+   }
++  const quarantine = rowQuarantine || s.quarantine || null;
++  let migrationPending = false;
++  let memMode = !writeOk;
+ 
+-  if (v2Raw) {
+-    const parsed = parseSnapshot(v2Raw);
+-    if (parsed.ok) {
+-      const s = parsed.snapshot;
+-      return {
+-        records: Array.isArray(s.records) ? s.records : [],
+-        dailyMeta: s.daily?.data ? structuredClone(s.daily.data) : structuredClone(ctx.DAILY_SEED),
+-        baselineStored: s.baseline ?? null,
+-        staleVer: null,
+-        memMode: false,
+-        readErrors,
+-        quarantine: s.quarantine || null,
+-        storageBanner: readErrors.length ? "partial-read" : null,
+-        migrationPending: false,
+-        legacyKeysUntouched: true,
+-      };
++  if (merged.shouldPersistMerge && writeOk) {
++    const commit = commitAppStateInternal(ctx.ls, ctx, {
++      records: merged.persistRecords,
++      dailyMeta,
++      baseline: s.baseline ?? null,
++      quarantine,
++    });
++    if (commit.status !== "ok") {
++      migrationPending = true;
++      if (commit.status === "failed") memMode = true;
+     }
+-    readErrors.push({ key: APP_STATE_KEY, message: parsed.reason || "corrupt-snapshot" });
++  } else if (merged.shouldPersistMerge && !writeOk) {
++    migrationPending = true;
++    memMode = true;
+   }
+ 
+-  const { vStamp, vDate } = readVerMeta(ls, readErrors);
+-  const { records: rescued, quarantine: recQuarantine } = readLegacyRecords(ls, readErrors);
++  return {
++    records: merged.records,
++    dailyMeta,
++    baselineStored: s.baseline ?? null,
++    staleVer: merged.staleVer,
++    memMode,
++    readErrors,
++    quarantine,
++    storageBanner: buildLoadBanner({ readErrors, migrationPending, commitFailed: memMode, hasQuarantine: !!quarantine }),
++    migrationPending,
++    writeOk,
++    legacyKeysUntouched: true,
++    corruptAuthority: false,
++  };
++}
++
++function loadFromCorruptV2(v2Raw, parsed, ctx, readErrors, writeOk) {
++  const quarantine = {
++    corruptAppStateRaw: v2Raw,
++    parseReason: parsed.reason,
++    readErrors: readErrors.length ? readErrors.slice() : undefined,
++  };
++  const legacyRec = readLegacyRecords(ctx.ls, readErrors);
++  const { vStamp, vDate } = readVerMeta(ctx.ls, readErrors);
++  const rescued = legacyRec.records.length ? legacyRec.records : [];
++  const wholeJsonFailed = !rescued.length;
++  const merged = resolveRecordsForSeedMerge({
++    rescued,
++    vStamp,
++    vDate,
++    DATA_STAMP: ctx.DATA_STAMP,
++    DATA_DATE: ctx.DATA_DATE,
++    SEED: ctx.SEED,
++    wholeJsonFailed,
++  });
++  const dailyRead = readLegacyDaily(ctx.ls, readErrors, ctx);
++  const dailyMeta = dailyRead.dailyMeta != null ? dailyRead.dailyMeta : structuredClone(ctx.DAILY_SEED);
++  const baselineRead = readLegacyBaseline(ctx.ls, readErrors);
++  Object.assign(quarantine, legacyRec.quarantine || {});
++
++  return {
++    records: merged.records,
++    dailyMeta,
++    baselineStored: baselineRead.baseline,
++    staleVer: merged.staleVer,
++    memMode: !writeOk,
++    readErrors,
++    quarantine,
++    storageBanner: "corrupt-authority",
++    migrationPending: true,
++    writeOk,
++    legacyKeysUntouched: true,
++    corruptAuthority: true,
++  };
++}
++
++function loadFromLegacy(ctx, readErrors, writeOk, v2Raw) {
++  const legacyBefore = readLegacyKeysOnly(ctx.ls, readErrors);
++  const { vStamp, vDate } = readVerMeta(ctx.ls, readErrors);
++  const { records: rescued, quarantine: recQuarantine } = readLegacyRecords(ctx.ls, readErrors);
+   const wholeJsonFailed = Boolean(recQuarantine?.parseError && !rescued.length);
+-  const { records, persistRecords, staleVer, shouldPersistMerge } = resolveRecordsForSeedMerge({
++  const merged = resolveRecordsForSeedMerge({
+     rescued,
+     vStamp,
+     vDate,
+@@ -221,9 +298,9 @@ export function loadAppState(ls, ctx) {
+     wholeJsonFailed,
+   });
+ 
+-  const dailyRead = readLegacyDaily(ls, readErrors, ctx);
++  const dailyRead = readLegacyDaily(ctx.ls, readErrors, ctx);
+   const dailyMeta = dailyRead.dailyMeta != null ? dailyRead.dailyMeta : structuredClone(ctx.DAILY_SEED);
+-  const baselineRead = readLegacyBaseline(ls, readErrors);
++  const baselineRead = readLegacyBaseline(ctx.ls, readErrors);
+   const baselineStored = baselineRead.baseline;
+ 
+   const quarantine = {
+@@ -238,55 +315,66 @@ export function loadAppState(ls, ctx) {
+     quarantine.legacyDailyRaw ||
+     quarantine.legacyBaselineRaw;
+ 
+-  const recordsToPersist = persistRecords ?? records;
+-  const snapshot = buildLogicalSnapshot({
+-    records: recordsToPersist,
+-    dailyMeta,
+-    baseline: baselineStored,
+-    quarantine: hasQuarantine ? quarantine : null,
+-    ...ctx,
+-  });
+-
++  const recordsToPersist = merged.persistRecords ?? merged.records;
+   let migrationPending = false;
+   let memMode = false;
+-  const legacyBefore = ls.snapshot?.() || {};
+ 
+-  if (shouldPersistMerge || !v2Raw) {
+-    const commit = commitAppState(ls, ctx, {
++  const needsFirstV2FromLegacy = !v2Raw && rescued.length > 0 && !wholeJsonFailed;
++  if (writeOk && (merged.shouldPersistMerge || needsFirstV2FromLegacy)) {
++    const commit = commitAppStateInternal(ctx.ls, ctx, {
+       records: recordsToPersist,
+       dailyMeta,
+       baseline: baselineStored,
+-      quarantine: snapshot.quarantine,
++      quarantine: hasQuarantine ? quarantine : null,
+     });
+-    if (commit.status === "ok") {
+-      /* v2 成为权威；不删除 v1 键（旧 HTML / B3 边界） */
+-    } else {
++    if (commit.status !== "ok") {
+       migrationPending = true;
+       if (commit.status === "failed") memMode = true;
+     }
++  } else if (merged.shouldPersistMerge || needsFirstV2FromLegacy) {
++    migrationPending = true;
++    memMode = true;
+   }
+ 
+-  const legacyAfter = ls.snapshot?.() || {};
+-  const legacyKeysUntouched = JSON.stringify(pickLegacy(legacyBefore)) === JSON.stringify(pickLegacy(legacyAfter));
++  const legacyAfter = readLegacyKeysOnly(ctx.ls, readErrors);
++  const legacyKeysUntouched = JSON.stringify(legacyBefore) === JSON.stringify(legacyAfter);
+ 
+   return {
+-    records,
++    records: merged.records,
+     dailyMeta,
+     baselineStored,
+-    staleVer,
++    staleVer: merged.staleVer,
+     memMode,
+     readErrors,
+     quarantine: hasQuarantine ? quarantine : null,
+     storageBanner: buildLoadBanner({ readErrors, migrationPending, commitFailed: memMode, hasQuarantine }),
+     migrationPending,
++    writeOk,
+     legacyKeysUntouched,
++    corruptAuthority: false,
+   };
+ }
+ 
+-function pickLegacy(snap) {
+-  const o = {};
+-  for (const k of Object.values(LEGACY)) if (snap[k] != null) o[k] = snap[k];
+-  return o;
++export function loadAppState(ls, ctx) {
++  const readErrors = [];
++  const writeOk = ls.probeWrite?.() ?? ls.probe?.() ?? true;
++  const fullCtx = { ...ctx, ls };
++
++  const v2RawVal = safeGetItem(ls, APP_STATE_KEY, readErrors);
++  const v2Raw = isUnreadable(v2RawVal) ? null : v2RawVal;
++
++  if (v2Raw) {
++    const parsed = parseSnapshot(v2Raw);
++    if (parsed.ok) return loadFromValidV2(v2Raw, parsed, fullCtx, readErrors, writeOk);
++    readErrors.push({ key: APP_STATE_KEY, message: parsed.reason || "corrupt-snapshot" });
++    return loadFromCorruptV2(v2Raw, parsed, fullCtx, readErrors, writeOk);
++  }
++
++  if (isUnreadable(v2RawVal)) {
++    readErrors.push({ key: APP_STATE_KEY, message: "read-failed" });
++  }
++
++  return loadFromLegacy(fullCtx, readErrors, writeOk, v2Raw);
+ }
+ 
+ function buildLoadBanner({ readErrors, migrationPending, commitFailed, hasQuarantine }) {
+@@ -297,16 +385,18 @@ function buildLoadBanner({ readErrors, migrationPending, commitFailed, hasQuaran
+   return null;
+ }
+ 
+-/**
+- * 保存结果：ok = 完整快照已写入且可读回一致；failed = 确认未写入；unknown = 无法确认（如写入后读失败）
+- */
+-export function commitAppState(ls, ctx, { records, dailyMeta, baseline, quarantine }) {
+-  if (!ls.probe?.()) {
++function commitAppStateInternal(ls, ctx, { records, dailyMeta, baseline, quarantine }) {
++  if (!(ls.probeWrite?.() ?? ls.probe?.() ?? true)) {
+     return { status: "failed", reason: "storage-probe-failed" };
+   }
+   const snapshot = buildLogicalSnapshot({ records, dailyMeta, baseline, quarantine, ...ctx });
+   const payload = JSON.stringify(snapshot);
+-  const before = ls.getItem(APP_STATE_KEY);
++  let before = null;
++  try {
++    before = ls.getItem(APP_STATE_KEY);
++  } catch (e) {
++    return { status: "failed", reason: e?.message || "pre-read-failed", snapshot };
++  }
+   try {
+     ls.setItem(APP_STATE_KEY, payload);
+   } catch (e) {
+@@ -319,7 +409,7 @@ export function commitAppState(ls, ctx, { records, dailyMeta, baseline, quaranti
+         try {
+           ls.setItem(APP_STATE_KEY, before);
+         } catch {
+-          /* leave unknown */
++          /* unknown */
+         }
+       }
+       return { status: "unknown", reason: "readback-mismatch", snapshot };
+@@ -330,17 +420,39 @@ export function commitAppState(ls, ctx, { records, dailyMeta, baseline, quaranti
+   }
+ }
+ 
+-/** 逻辑快照与 v2 键 raw 是否一致（用于单测） */
+-export function logicalSnapshotFromStorage(ls, _ctx) {
+-  const raw = ls.getItem(APP_STATE_KEY);
+-  const parsed = parseSnapshot(raw);
+-  if (!parsed.ok) return { ok: false, raw, logical: null };
++export function commitAppState(ls, ctx, state) {
++  return commitAppStateInternal(ls, ctx, state);
++}
++
++/** 写入前与磁盘权威快照对齐，避免 probe 降级后 seed-only 内存覆盖独有记录 */
++export function reconcileMemoryWithAuthority(ls, ctx, memory) {
++  const readErrors = [];
++  const rawVal = safeGetItem(ls, APP_STATE_KEY, readErrors);
++  if (isUnreadable(rawVal) || !rawVal) return memory;
++  const parsed = parseSnapshot(rawVal);
++  if (!parsed.ok) return memory;
++  const { records: stored } = hydrateSnapshotRecords(parsed.snapshot, ctx);
++  return {
++    records: mergeAuthorityRecords(memory.records, stored),
++    dailyMeta: memory.dailyMeta,
++    baseline: memory.baseline,
++    quarantine: memory.quarantine ?? parsed.snapshot.quarantine ?? null,
++  };
++}
++
++export function logicalSnapshotFromStorage(ls, ctx) {
++  const readErrors = [];
++  const rawVal = safeGetItem(ls, APP_STATE_KEY, readErrors);
++  if (isUnreadable(rawVal)) return { ok: false, raw: null, logical: null, readErrors };
++  const parsed = parseSnapshot(rawVal);
++  if (!parsed.ok) return { ok: false, raw: rawVal, logical: null };
+   const s = parsed.snapshot;
++  const { records } = hydrateSnapshotRecords(s, ctx);
+   return {
+     ok: true,
+-    raw,
++    raw: rawVal,
+     logical: {
+-      records: s.records,
++      records,
+       daily: s.daily,
+       baseline: s.baseline,
+       quarantine: s.quarantine,
+@@ -348,7 +460,7 @@ export function logicalSnapshotFromStorage(ls, _ctx) {
+   };
+ }
+ 
+-export function exportRescueBundle(ctx, { records, dailyMeta, baseline, quarantine, readErrors }) {
++export function exportRescueBundle(ctx, { records, dailyMeta, baseline, quarantine, readErrors, writeOk, corruptAuthority }) {
+   return {
+     app: "physio-log",
+     kind: "storage-rescue",
+@@ -361,6 +473,11 @@ export function exportRescueBundle(ctx, { records, dailyMeta, baseline, quaranti
+     baseline,
+     quarantine,
+     readErrors,
++    storage: {
++      writeOk: writeOk !== false,
++      corruptAuthority: !!corruptAuthority,
++      unreadableKeys: (readErrors || []).filter((e) => e.message?.includes("read-failed") || e.key),
++    },
+   };
+ }
+ 
+diff --git a/b1-deliverables/source/src/shared/local-storage-adapter.js b/b1-deliverables/source/src/shared/local-storage-adapter.js
+index 0514cf9..3485d2f 100644
+--- a/b1-deliverables/source/src/shared/local-storage-adapter.js
++++ b/b1-deliverables/source/src/shared/local-storage-adapter.js
+@@ -1,8 +1,17 @@
+ /** 可注入的 localStorage 适配层（浏览器 / 单测 mock） */
+ 
++export function safeGetItem(ls, key, readErrors) {
++  try {
++    return ls.getItem(key);
++  } catch (e) {
++    readErrors?.push({ key, message: e?.message || "read-failed" });
++    return { __unreadable: true, key };
++  }
++}
++
+ export function createMemoryStorageAdapter(initial = {}, faults = {}) {
+   const map = new Map(Object.entries(initial));
+-  return {
++  const api = {
+     getItem(key) {
+       if (faults.getItem?.[key]) throw faults.getItem[key];
+       return map.has(key) ? map.get(key) : null;
+@@ -15,17 +24,29 @@ export function createMemoryStorageAdapter(initial = {}, faults = {}) {
+       if (faults.removeItem?.[key]) throw faults.removeItem[key];
+       map.delete(key);
+     },
+-    probe() {
++    probeWrite() {
+       const k = "__physio_probe_" + Date.now();
+-      this.setItem(k, "1");
+-      this.removeItem(k);
++      api.setItem(k, "1");
++      api.removeItem(k);
+       return true;
+     },
++    probe() {
++      return api.probeWrite();
++    },
+     snapshot() {
+-      return Object.fromEntries(map);
++      const out = {};
++      for (const key of [...map.keys()]) {
++        try {
++          out[key] = api.getItem(key);
++        } catch {
++          /* 与浏览器适配器一致：不可读键跳过，不抛到调用方 */
++        }
++      }
++      return out;
+     },
+     _map: map,
+   };
++  return api;
+ }
+ 
+ export function wrapLocalStorage(localStorage, faults = {}) {
+@@ -42,7 +63,7 @@ export function wrapLocalStorage(localStorage, faults = {}) {
+       if (faults.removeItem?.[key]) throw faults.removeItem[key];
+       localStorage.removeItem(key);
+     },
+-    probe() {
++    probeWrite() {
+       try {
+         const k = "__physio_probe_" + Date.now();
+         localStorage.setItem(k, "1");
+@@ -52,11 +73,19 @@ export function wrapLocalStorage(localStorage, faults = {}) {
+         return false;
+       }
+     },
++    probe() {
++      return this.probeWrite();
++    },
+     snapshot() {
+       const out = {};
+       for (let i = 0; i < localStorage.length; i++) {
+         const k = localStorage.key(i);
+-        out[k] = localStorage.getItem(k);
++        if (k == null) continue;
++        try {
++          out[k] = localStorage.getItem(k);
++        } catch {
++          /* 诊断扫描不得因单键失败而中断 */
++        }
+       }
+       return out;
+     },
+diff --git a/b1-deliverables/source/tests/storage-b1.test.js b/b1-deliverables/source/tests/storage-b1.test.js
+index 4a115c4..8ff8374 100644
+--- a/b1-deliverables/source/tests/storage-b1.test.js
++++ b/b1-deliverables/source/tests/storage-b1.test.js
+@@ -11,6 +11,7 @@ import {
+   logicalSnapshotFromStorage,
+   APP_STATE_KEY,
+   LEGACY_STORAGE_KEYS,
++  buildLogicalSnapshot,
+ } from "../src/shared/app-storage.js";
+ import {
+   legacyLoadRecords,
+@@ -32,11 +33,7 @@ function ctx() {
+   return { SEED, DAILY_SEED, DATA_STAMP, DATA_DATE, normalizeRec };
+ }
+ 
+-const UNIQUE = {
+-  d: "2099-01-01",
+-  el: 88,
+-  type: "测试",
+-};
++const UNIQUE = { d: "2099-01-01", el: 88, type: "测试" };
+ 
+ describe("B0-R1 baseline failures (R01/R04/R17)", () => {
+   it("R01: legacy drops rescued unique row when cache contains null", () => {
+@@ -80,8 +77,8 @@ describe("B0-R1 baseline failures (R01/R04/R17)", () => {
+   });
+ });
+ 
+-describe("B1 fixed storage (R01/R04/R17)", () => {
+-  it("R01: rescues unique row, preserves legacy raw, writes v2 without seed-only overwrite", () => {
++describe("B1-R1 fixed storage", () => {
++  it("R01: rescues unique row, preserves legacy raw, writes v2", () => {
+     const legacyRaw = JSON.stringify([UNIQUE, null]);
+     const ls = createMemoryStorageAdapter({
+       [LS_KEY]: legacyRaw,
+@@ -91,48 +88,122 @@ describe("B1 fixed storage (R01/R04/R17)", () => {
+     expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
+     expect(ls.getItem(LS_KEY)).toBe(legacyRaw);
+     const snap = logicalSnapshotFromStorage(ls, ctx());
+-    expect(snap.ok).toBe(true);
+     expect(snap.logical.records.some((r) => r.d === UNIQUE.d)).toBe(true);
+     expect(snap.logical.quarantine?.legacyRecordsRaw).toBe(legacyRaw);
+   });
+ 
+-  it("R04: single-key commit — setItem failure leaves no v2 snapshot", () => {
+-    const ls = createMemoryStorageAdapter({}, {
+-      setItem: { [APP_STATE_KEY]: new Error("quota") },
++  it("B1-A01: getItem fault on version key does not throw; snapshot matches browser semantics", () => {
++    const ls = createMemoryStorageAdapter({
++      [LS_KEY]: JSON.stringify([UNIQUE]),
++      [LS_VER]: "x",
++    }, {
++      getItem: { [LS_VER]: new Error("SecurityError") },
+     });
+-    const r = commitAppState(ls, ctx(), {
+-      records: [normalizeRec(UNIQUE)],
+-      dailyMeta: { "2099-01-01": { note: "x" } },
++    expect(() => ls.snapshot()).not.toThrow();
++    const loaded = loadAppState(ls, ctx());
++    expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
++    expect(loaded.readErrors.some((e) => e.key === LEGACY_STORAGE_KEYS.dataVersion)).toBe(true);
++  });
++
++  it("B1-A02: corrupt v2 raw is not overwritten by seed migration", () => {
++    const good = buildLogicalSnapshot({
++      records: [...SEED.slice(0, 2).map(normalizeRec), normalizeRec(UNIQUE)],
++      dailyMeta: DAILY_SEED,
+       baseline: null,
+       quarantine: null,
++      ...ctx(),
+     });
+-    expect(r.status).toBe("failed");
++    const corrupt = JSON.stringify(good).slice(0, -1);
++    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: corrupt });
++    loadAppState(ls, ctx());
++    expect(ls.getItem(APP_STATE_KEY)).toBe(corrupt);
++    const loaded = loadAppState(ls, ctx());
++    expect(loaded.corruptAuthority).toBe(true);
++    expect(loaded.quarantine?.corruptAppStateRaw).toBe(corrupt);
++  });
++
++  it("B1-A02: v2 records with null row do not crash load", () => {
++    const snap = buildLogicalSnapshot({
++      records: [normalizeRec(UNIQUE), null],
++      dailyMeta: DAILY_SEED,
++      baseline: null,
++      quarantine: null,
++      ...ctx(),
++    });
++    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: JSON.stringify(snap) });
++    expect(() => loadAppState(ls, ctx())).not.toThrow();
++    const loaded = loadAppState(ls, ctx());
++    expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
++  });
++
++  it("B1-A02: malformed legacy JSON keeps consistent row count after reload", () => {
++    const ls = createMemoryStorageAdapter({ [LS_KEY]: "{bad legacy raw" });
++    const first = loadAppState(ls, ctx());
++    expect(first.records.length).toBe(SEED.length);
++    const second = loadAppState(ls, ctx());
++    expect(second.records.length).toBe(first.records.length);
+     expect(ls.getItem(APP_STATE_KEY)).toBeNull();
+   });
+ 
+-  it("R17: version key getItem throws but init completes with readable records", () => {
+-    const ls = createMemoryStorageAdapter({
+-      [LS_KEY]: JSON.stringify([UNIQUE]),
+-    }, {
+-      getItem: { [LS_VER]: new Error("SecurityError") },
++  it("B1-A03: probe write failure still reads existing v2", () => {
++    const snap = buildLogicalSnapshot({
++      records: [...SEED.map(normalizeRec), normalizeRec(UNIQUE)],
++      dailyMeta: DAILY_SEED,
++      baseline: null,
++      quarantine: null,
++      ...ctx(),
+     });
++    const raw = JSON.stringify(snap);
++    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: raw });
++    ls.probeWrite = () => false;
++    ls.probe = () => false;
+     const loaded = loadAppState(ls, ctx());
+     expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
+-    expect(loaded.readErrors.some((e) => e.key === LEGACY_STORAGE_KEYS.dataVersion)).toBe(true);
++    expect(loaded.writeOk).toBe(false);
+   });
+ 
+-  it("refresh simulation: v2 round-trip matches logical snapshot after save", () => {
+-    const ls = createMemoryStorageAdapter();
+-    const commit = commitAppState(ls, ctx(), {
+-      records: [...SEED.slice(0, 2).map(normalizeRec), normalizeRec(UNIQUE)],
++  it("B1-A04: newer embedded seed merges into existing v2 on load", () => {
++    const oldDate = DATA_DATE;
++    const snap = buildLogicalSnapshot({
++      records: [...SEED.map(normalizeRec), normalizeRec(UNIQUE)],
+       dailyMeta: DAILY_SEED,
+       baseline: null,
+       quarantine: null,
++      dataStamp: DATA_STAMP,
++      dataDate: oldDate,
++      DAILY_SEED,
++      SEED,
++      normalizeRec,
+     });
+-    expect(commit.status).toBe("ok");
+-    const reloaded = loadAppState(ls, ctx());
+-    expect(reloaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
+-    const snap = logicalSnapshotFromStorage(ls, ctx());
+-    expect(snap.logical.records.some((r) => r.d === UNIQUE.d)).toBe(true);
++    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: JSON.stringify(snap) });
++    const newerCtx = {
++      ...ctx(),
++      SEED: [...SEED, normalizeRec({ d: "2099-12-31", el: 99 })],
++      DATA_DATE: "2099-12-31",
++    };
++    const loaded = loadAppState(ls, newerCtx);
++    expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
++    expect(loaded.records.some((r) => r.d === "2099-12-31")).toBe(true);
++  });
++
++  it("R04: single-key commit failure leaves prior v2", () => {
++    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: JSON.stringify(buildLogicalSnapshot({
++      records: SEED.slice(0, 1).map(normalizeRec),
++      dailyMeta: DAILY_SEED,
++      baseline: null,
++      quarantine: null,
++      ...ctx(),
++    })) }, {
++      setItem: { [APP_STATE_KEY]: new Error("quota") },
++    });
++    const before = ls.getItem(APP_STATE_KEY);
++    const r = commitAppState(ls, ctx(), {
++      records: [normalizeRec(UNIQUE)],
++      dailyMeta: DAILY_SEED,
++      baseline: null,
++      quarantine: null,
++    });
++    expect(r.status).toBe("failed");
++    expect(ls.getItem(APP_STATE_KEY)).toBe(before);
+   });
+ });

@@ -1,7 +1,7 @@
 import {
   DATA_STAMP, DATA_DATE, DATASET_META, FIELDS, store, state,
-  loadBaselineLock, hydrateBaseline, windowStats,
-  sortedRecs, hrrNorm, applyImportState, saveResultMessage,
+  loadBaselineLock, hydrateBaseline, windowStats, storage,
+  sortedRecs, hrrNorm, applyImportState, saveResultMessage, buildRescueExportPayload,
 } from "./core.js";
 import { validateImportPayload, upsertIntoList, IMPORT_MAX_BYTES } from "../shared/records-io.js";
 import { mergeImportedDaily } from "../shared/payload-validation.js";
@@ -15,10 +15,17 @@ export function download(name, text, mime) {
 }
 
 export function exportJSON(toast) {
-  const payload = { app: "physio-log", version: 2, dataStamp: DATA_STAMP, dataDate: DATA_DATE, exported: new Date().toISOString(),
-    baseline: loadBaselineLock(), ...DATASET_META, _daily: store.dailyMeta, data: sortedRecs(), records: sortedRecs() };
+  const rescue = buildRescueExportPayload();
+  const payload = {
+    ...rescue,
+    version: 2,
+    baseline: loadBaselineLock(),
+    ...DATASET_META,
+    data: sortedRecs(),
+    records: sortedRecs(),
+  };
   download("physio-log-" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify(payload, null, 1));
-  toast("已导出 JSON");
+  toast(storage.quarantine || storage.readErrors?.length ? "已导出 JSON（含救援/异常摘要）" : "已导出 JSON");
 }
 
 export function exportCSV(toast) {

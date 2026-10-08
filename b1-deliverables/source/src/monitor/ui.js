@@ -40,6 +40,9 @@ export function showStorageRecoveryBanner({ readErrors, migrationPending, pendin
     const keys = [...new Set(readErrors.map((e) => e.key))].join("、");
     parts.push(`部分存储键无法读取（${keys}），未宣称已自动备份；请用「导出 JSON」保存当前可用数据。`);
   }
+  if (quarantine?.corruptAppStateRaw) {
+    parts.push("权威快照已损坏，原文已保留在 quarantine 中，不会自动用内嵌数据覆盖；请导出 JSON 后人工处理。");
+  }
   if (quarantine?.legacyRecordsRaw || quarantine?.parseError) {
     parts.push("本机缓存含无法完全解析的记录，已保留原文并救援可读行；刷新后仍会提示直至成功写入新快照。");
   }

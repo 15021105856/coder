@@ -44,7 +44,11 @@ function init() {
   storage.onMem = showMemBanner;
   state.recs = loadRecords();
   loadDaily();
-  if (storage.memMode || storage.pendingCommit) showMemBanner();
+  if (storage.memMode || storage.pendingCommit || !storage.writeOk) showMemBanner();
+  if (!storage.writeOk) {
+    const b = $("#storBadge");
+    if (b) { b.textContent = "只读/内存"; b.classList.add("warn"); }
+  }
   showStorageRecoveryBanner({
     readErrors: storage.readErrors,
     migrationPending: storage.migrationPending,

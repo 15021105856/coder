@@ -1,8 +1,17 @@
 /** 可注入的 localStorage 适配层（浏览器 / 单测 mock） */
 
+export function safeGetItem(ls, key, readErrors) {
+  try {
+    return ls.getItem(key);
+  } catch (e) {
+    readErrors?.push({ key, message: e?.message || "read-failed" });
+    return { __unreadable: true, key };
+  }
+}
+
 export function createMemoryStorageAdapter(initial = {}, faults = {}) {
   const map = new Map(Object.entries(initial));
-  return {
+  const api = {
     getItem(key) {
       if (faults.getItem?.[key]) throw faults.getItem[key];
       return map.has(key) ? map.get(key) : null;
@@ -15,17 +24,29 @@ export function createMemoryStorageAdapter(initial = {}, faults = {}) {
       if (faults.removeItem?.[key]) throw faults.removeItem[key];
       map.delete(key);
     },
-    probe() {
+    probeWrite() {
       const k = "__physio_probe_" + Date.now();
-      this.setItem(k, "1");
-      this.removeItem(k);
+      api.setItem(k, "1");
+      api.removeItem(k);
       return true;
     },
+    probe() {
+      return api.probeWrite();
+    },
     snapshot() {
-      return Object.fromEntries(map);
+      const out = {};
+      for (const key of [...map.keys()]) {
+        try {
+          out[key] = api.getItem(key);
+        } catch {
+          /* 与浏览器适配器一致：不可读键跳过，不抛到调用方 */
+        }
+      }
+      return out;
     },
     _map: map,
   };
+  return api;
 }
 
 export function wrapLocalStorage(localStorage, faults = {}) {
@@ -42,7 +63,7 @@ export function wrapLocalStorage(localStorage, faults = {}) {
       if (faults.removeItem?.[key]) throw faults.removeItem[key];
       localStorage.removeItem(key);
     },
-    probe() {
+    probeWrite() {
       try {
         const k = "__physio_probe_" + Date.now();
         localStorage.setItem(k, "1");
@@ -52,11 +73,19 @@ export function wrapLocalStorage(localStorage, faults = {}) {
         return false;
       }
     },
+    probe() {
+      return this.probeWrite();
+    },
     snapshot() {
       const out = {};
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
-        out[k] = localStorage.getItem(k);
+        if (k == null) continue;
+        try {
+          out[k] = localStorage.getItem(k);
+        } catch {
+          /* 诊断扫描不得因单键失败而中断 */
+        }
       }
       return out;
     },

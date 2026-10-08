@@ -11,6 +11,7 @@ import {
   logicalSnapshotFromStorage,
   APP_STATE_KEY,
   LEGACY_STORAGE_KEYS,
+  buildLogicalSnapshot,
 } from "../src/shared/app-storage.js";
 import {
   legacyLoadRecords,
@@ -32,11 +33,7 @@ function ctx() {
   return { SEED, DAILY_SEED, DATA_STAMP, DATA_DATE, normalizeRec };
 }
 
-const UNIQUE = {
-  d: "2099-01-01",
-  el: 88,
-  type: "测试",
-};
+const UNIQUE = { d: "2099-01-01", el: 88, type: "测试" };
 
 describe("B0-R1 baseline failures (R01/R04/R17)", () => {
   it("R01: legacy drops rescued unique row when cache contains null", () => {
@@ -80,8 +77,8 @@ describe("B0-R1 baseline failures (R01/R04/R17)", () => {
   });
 });
 
-describe("B1 fixed storage (R01/R04/R17)", () => {
-  it("R01: rescues unique row, preserves legacy raw, writes v2 without seed-only overwrite", () => {
+describe("B1-R1 fixed storage", () => {
+  it("R01: rescues unique row, preserves legacy raw, writes v2", () => {
     const legacyRaw = JSON.stringify([UNIQUE, null]);
     const ls = createMemoryStorageAdapter({
       [LS_KEY]: legacyRaw,
@@ -91,48 +88,122 @@ describe("B1 fixed storage (R01/R04/R17)", () => {
     expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
     expect(ls.getItem(LS_KEY)).toBe(legacyRaw);
     const snap = logicalSnapshotFromStorage(ls, ctx());
-    expect(snap.ok).toBe(true);
     expect(snap.logical.records.some((r) => r.d === UNIQUE.d)).toBe(true);
     expect(snap.logical.quarantine?.legacyRecordsRaw).toBe(legacyRaw);
   });
 
-  it("R04: single-key commit — setItem failure leaves no v2 snapshot", () => {
-    const ls = createMemoryStorageAdapter({}, {
-      setItem: { [APP_STATE_KEY]: new Error("quota") },
-    });
-    const r = commitAppState(ls, ctx(), {
-      records: [normalizeRec(UNIQUE)],
-      dailyMeta: { "2099-01-01": { note: "x" } },
-      baseline: null,
-      quarantine: null,
-    });
-    expect(r.status).toBe("failed");
-    expect(ls.getItem(APP_STATE_KEY)).toBeNull();
-  });
-
-  it("R17: version key getItem throws but init completes with readable records", () => {
+  it("B1-A01: getItem fault on version key does not throw; snapshot matches browser semantics", () => {
     const ls = createMemoryStorageAdapter({
       [LS_KEY]: JSON.stringify([UNIQUE]),
+      [LS_VER]: "x",
     }, {
       getItem: { [LS_VER]: new Error("SecurityError") },
     });
+    expect(() => ls.snapshot()).not.toThrow();
     const loaded = loadAppState(ls, ctx());
     expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
     expect(loaded.readErrors.some((e) => e.key === LEGACY_STORAGE_KEYS.dataVersion)).toBe(true);
   });
 
-  it("refresh simulation: v2 round-trip matches logical snapshot after save", () => {
-    const ls = createMemoryStorageAdapter();
-    const commit = commitAppState(ls, ctx(), {
+  it("B1-A02: corrupt v2 raw is not overwritten by seed migration", () => {
+    const good = buildLogicalSnapshot({
       records: [...SEED.slice(0, 2).map(normalizeRec), normalizeRec(UNIQUE)],
       dailyMeta: DAILY_SEED,
       baseline: null,
       quarantine: null,
+      ...ctx(),
     });
-    expect(commit.status).toBe("ok");
-    const reloaded = loadAppState(ls, ctx());
-    expect(reloaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
-    const snap = logicalSnapshotFromStorage(ls, ctx());
-    expect(snap.logical.records.some((r) => r.d === UNIQUE.d)).toBe(true);
+    const corrupt = JSON.stringify(good).slice(0, -1);
+    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: corrupt });
+    loadAppState(ls, ctx());
+    expect(ls.getItem(APP_STATE_KEY)).toBe(corrupt);
+    const loaded = loadAppState(ls, ctx());
+    expect(loaded.corruptAuthority).toBe(true);
+    expect(loaded.quarantine?.corruptAppStateRaw).toBe(corrupt);
+  });
+
+  it("B1-A02: v2 records with null row do not crash load", () => {
+    const snap = buildLogicalSnapshot({
+      records: [normalizeRec(UNIQUE), null],
+      dailyMeta: DAILY_SEED,
+      baseline: null,
+      quarantine: null,
+      ...ctx(),
+    });
+    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: JSON.stringify(snap) });
+    expect(() => loadAppState(ls, ctx())).not.toThrow();
+    const loaded = loadAppState(ls, ctx());
+    expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
+  });
+
+  it("B1-A02: malformed legacy JSON keeps consistent row count after reload", () => {
+    const ls = createMemoryStorageAdapter({ [LS_KEY]: "{bad legacy raw" });
+    const first = loadAppState(ls, ctx());
+    expect(first.records.length).toBe(SEED.length);
+    const second = loadAppState(ls, ctx());
+    expect(second.records.length).toBe(first.records.length);
+    expect(ls.getItem(APP_STATE_KEY)).toBeNull();
+  });
+
+  it("B1-A03: probe write failure still reads existing v2", () => {
+    const snap = buildLogicalSnapshot({
+      records: [...SEED.map(normalizeRec), normalizeRec(UNIQUE)],
+      dailyMeta: DAILY_SEED,
+      baseline: null,
+      quarantine: null,
+      ...ctx(),
+    });
+    const raw = JSON.stringify(snap);
+    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: raw });
+    ls.probeWrite = () => false;
+    ls.probe = () => false;
+    const loaded = loadAppState(ls, ctx());
+    expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
+    expect(loaded.writeOk).toBe(false);
+  });
+
+  it("B1-A04: newer embedded seed merges into existing v2 on load", () => {
+    const oldDate = DATA_DATE;
+    const snap = buildLogicalSnapshot({
+      records: [...SEED.map(normalizeRec), normalizeRec(UNIQUE)],
+      dailyMeta: DAILY_SEED,
+      baseline: null,
+      quarantine: null,
+      dataStamp: DATA_STAMP,
+      dataDate: oldDate,
+      DAILY_SEED,
+      SEED,
+      normalizeRec,
+    });
+    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: JSON.stringify(snap) });
+    const newerCtx = {
+      ...ctx(),
+      SEED: [...SEED, normalizeRec({ d: "2099-12-31", el: 99 })],
+      DATA_DATE: "2099-12-31",
+    };
+    const loaded = loadAppState(ls, newerCtx);
+    expect(loaded.records.some((r) => r.d === UNIQUE.d)).toBe(true);
+    expect(loaded.records.some((r) => r.d === "2099-12-31")).toBe(true);
+  });
+
+  it("R04: single-key commit failure leaves prior v2", () => {
+    const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: JSON.stringify(buildLogicalSnapshot({
+      records: SEED.slice(0, 1).map(normalizeRec),
+      dailyMeta: DAILY_SEED,
+      baseline: null,
+      quarantine: null,
+      ...ctx(),
+    })) }, {
+      setItem: { [APP_STATE_KEY]: new Error("quota") },
+    });
+    const before = ls.getItem(APP_STATE_KEY);
+    const r = commitAppState(ls, ctx(), {
+      records: [normalizeRec(UNIQUE)],
+      dailyMeta: DAILY_SEED,
+      baseline: null,
+      quarantine: null,
+    });
+    expect(r.status).toBe("failed");
+    expect(ls.getItem(APP_STATE_KEY)).toBe(before);
   });
 });

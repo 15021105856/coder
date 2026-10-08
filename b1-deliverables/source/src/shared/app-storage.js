@@ -1,12 +1,12 @@
 /**
- * 应用存储契约（B1）：单键版本化逻辑快照 + 旧 v1 只读迁移。
- * 权威读源：physio-log.app-state.v2（存在且 JSON 可解析时）；否则从 v1 键组装并尝试写入 v2。
+ * 应用存储契约（B1-R1）：单键版本化逻辑快照 + 旧 v1 只读迁移。
  */
 import LEGACY_DAILY_SEED from "../../data/legacy-daily-seed.json";
-import { mergeRecordLists } from "./records-io.js";
+import { mergeRecordLists, byDate } from "./records-io.js";
 import { mergeDailyStore } from "./daily-merge.js";
-import { parseRecordsRaw } from "./record-parse.js";
+import { parseRecordsRaw, parseRecordsArray } from "./record-parse.js";
 import { STORAGE_KEYS } from "./release.js";
+import { safeGetItem } from "./local-storage-adapter.js";
 
 export const APP_STATE_KEY = STORAGE_KEYS.appState;
 export const SNAPSHOT_FORMAT = 2;
@@ -19,31 +19,30 @@ const LEGACY = {
 };
 
 const plainObject = (x) => x !== null && typeof x === "object" && !Array.isArray(x);
+const isUnreadable = (v) => v && typeof v === "object" && v.__unreadable;
 
 function readVerMeta(ls, readErrors) {
   let vStamp = null;
   let vDate = null;
+  const rawVer = safeGetItem(ls, LEGACY.dataVersion, readErrors);
+  if (isUnreadable(rawVer)) return { vStamp, vDate };
+  if (!rawVer) return { vStamp, vDate };
   try {
-    const rawVer = ls.getItem(LEGACY.dataVersion);
-    if (!rawVer) return { vStamp, vDate };
     if (rawVer[0] === "{") {
       const o = JSON.parse(rawVer);
       vStamp = o.s || null;
       vDate = o.d || null;
     } else vDate = rawVer;
   } catch (e) {
-    readErrors.push({ key: LEGACY.dataVersion, message: e?.message || "read-failed" });
+    readErrors.push({ key: LEGACY.dataVersion, message: e?.message || "parse-failed" });
   }
   return { vStamp, vDate };
 }
 
 function readLegacyRecords(ls, readErrors) {
-  let raw = null;
-  try {
-    raw = ls.getItem(LEGACY.records);
-  } catch (e) {
-    readErrors.push({ key: LEGACY.records, message: e?.message || "read-failed" });
-    return { records: [], quarantine: { legacyRecordsRaw: null, recordErrors: [{ reason: "key-unreadable" }] } };
+  const raw = safeGetItem(ls, LEGACY.records, readErrors);
+  if (isUnreadable(raw)) {
+    return { records: [], quarantine: { recordErrors: [{ reason: "key-unreadable" }] } };
   }
   if (!raw) return { records: [], quarantine: null };
   const parsed = parseRecordsRaw(raw);
@@ -59,34 +58,37 @@ function readLegacyRecords(ls, readErrors) {
   return { records: parsed.records, quarantine };
 }
 
-function readLegacyDaily(ls, readErrors, { DAILY_SEED, DATA_STAMP }) {
+function readLegacyDaily(ls, readErrors, ctx) {
+  const raw = safeGetItem(ls, LEGACY.daily, readErrors);
+  if (isUnreadable(raw)) return { dailyMeta: null, raw: null, unreadable: true };
+  if (!raw) return { dailyMeta: null, raw: null };
   try {
-    const raw = ls.getItem(LEGACY.daily);
-    if (!raw) return { dailyMeta: null, raw: null };
     const c = JSON.parse(raw);
     if (c && plainObject(c.data)) {
-      const base = plainObject(c.seed) ? c.seed : (c.stamp === DATA_STAMP ? DAILY_SEED : LEGACY_DAILY_SEED);
-      return { dailyMeta: mergeDailyStore(DAILY_SEED, c.data, base), raw };
+      const base = plainObject(c.seed) ? c.seed : (c.stamp === ctx.DATA_STAMP ? ctx.DAILY_SEED : LEGACY_DAILY_SEED);
+      return { dailyMeta: mergeDailyStore(ctx.DAILY_SEED, c.data, base), raw };
     }
     return { dailyMeta: null, raw };
   } catch (e) {
-    readErrors.push({ key: LEGACY.daily, message: e?.message || "read-failed" });
+    readErrors.push({ key: LEGACY.daily, message: e?.message || "parse-failed" });
     return { dailyMeta: null, raw: null, unreadable: true };
   }
 }
 
 function readLegacyBaseline(ls, readErrors) {
+  const raw = safeGetItem(ls, LEGACY.baseline, readErrors);
+  if (isUnreadable(raw)) return { baseline: null, raw: null, unreadable: true };
+  if (!raw) return { baseline: null, raw: null };
   try {
-    const raw = ls.getItem(LEGACY.baseline);
-    if (!raw) return { baseline: null, raw: null };
     return { baseline: JSON.parse(raw), raw };
   } catch (e) {
-    readErrors.push({ key: LEGACY.baseline, message: e?.message || "read-failed" });
+    readErrors.push({ key: LEGACY.baseline, message: e?.message || "parse-failed" });
     return { baseline: null, raw: null, unreadable: true };
   }
 }
 
-function resolveRecordsForSeedMerge({
+/** 既定 seed / stale 规则（legacy 与 v2 共用） */
+export function resolveRecordsForSeedMerge({
   rescued, vStamp, vDate, DATA_STAMP, DATA_DATE, SEED, wholeJsonFailed,
 }) {
   const working = () => {
@@ -96,49 +98,53 @@ function resolveRecordsForSeedMerge({
     return mergeRecordLists(SEED, rescued);
   };
   if (wholeJsonFailed && !rescued.length) {
+    const w = working();
     return {
-      records: working(),
-      persistRecords: [],
+      records: w,
+      persistRecords: w,
       staleVer: null,
       shouldPersistMerge: false,
+      seedMergeApplied: false,
     };
   }
   if (!rescued.length) {
+    const w = working();
     return {
-      records: working(),
-      persistRecords: mergeRecordLists(SEED, null),
+      records: w,
+      persistRecords: w,
       staleVer: null,
       shouldPersistMerge: true,
+      seedMergeApplied: true,
     };
   }
   if (vStamp === DATA_STAMP || (!vStamp && vDate === DATA_DATE)) {
-    return { records: rescued, persistRecords: rescued, staleVer: null, shouldPersistMerge: false };
+    return { records: rescued, persistRecords: rescued, staleVer: null, shouldPersistMerge: false, seedMergeApplied: false };
   }
   if (vDate && DATA_DATE && vDate > DATA_DATE) {
-    return { records: rescued, persistRecords: rescued, staleVer: vDate, shouldPersistMerge: false };
+    return { records: rescued, persistRecords: rescued, staleVer: vDate, shouldPersistMerge: false, seedMergeApplied: false };
   }
   const merged = mergeRecordLists(SEED, rescued);
-  return { records: merged, persistRecords: merged, staleVer: null, shouldPersistMerge: true };
+  return { records: merged, persistRecords: merged, staleVer: null, shouldPersistMerge: true, seedMergeApplied: true };
 }
 
-function buildDailyEnvelope(dailyMeta, { DAILY_SEED, DATA_STAMP, DATA_DATE }) {
+function buildDailyEnvelope(dailyMeta, ctx) {
   const dates = Object.keys(dailyMeta || {});
-  const last = dates.length ? [...dates, DATA_DATE].sort().at(-1) : DATA_DATE;
+  const last = dates.length ? [...dates, ctx.DATA_DATE].sort().at(-1) : ctx.DATA_DATE;
   return {
-    stamp: DATA_STAMP,
+    stamp: ctx.DATA_STAMP,
     date: last,
-    seed: DAILY_SEED,
+    seed: ctx.DAILY_SEED,
     data: dailyMeta || {},
   };
 }
 
-export function buildLogicalSnapshot({ records, dailyMeta, baseline, quarantine, DATA_STAMP, DATA_DATE, DAILY_SEED }) {
+export function buildLogicalSnapshot({ records, dailyMeta, baseline, quarantine, ...ctx }) {
   return {
     format: SNAPSHOT_FORMAT,
-    dataStamp: DATA_STAMP,
-    dataDate: DATA_DATE,
+    dataStamp: ctx.DATA_STAMP,
+    dataDate: ctx.DATA_DATE,
     records: records || [],
-    daily: buildDailyEnvelope(dailyMeta, { DAILY_SEED, DATA_STAMP, DATA_DATE }),
+    daily: buildDailyEnvelope(dailyMeta, ctx),
     baseline: baseline ?? null,
     quarantine: quarantine || undefined,
     savedAt: new Date().toISOString(),
@@ -156,62 +162,133 @@ export function parseSnapshot(jsonText) {
   }
 }
 
-/**
- * @returns {{
- *   records, dailyMeta, baselineStored, staleVer, memMode,
- *   readErrors, quarantine, storageBanner, migrationPending,
- *   legacyKeysUntouched: boolean
- * }}
- */
-export function loadAppState(ls, ctx) {
-  const readErrors = [];
-  const probeOk = ls.probe?.() ?? true;
-  if (!probeOk) {
-    return {
-      records: ctx.SEED.map((r) => ctx.normalizeRec(r)),
-      dailyMeta: structuredClone(ctx.DAILY_SEED),
-      baselineStored: null,
-      staleVer: null,
-      memMode: true,
-      readErrors: [{ key: "*", message: "storage-probe-failed" }],
-      quarantine: null,
-      storageBanner: "storage-probe-failed",
-      migrationPending: false,
-      legacyKeysUntouched: true,
-    };
-  }
+function hydrateSnapshotRecords(snapshot, ctx) {
+  const arr = Array.isArray(snapshot.records) ? snapshot.records : [];
+  const { records, errors, badRows } = parseRecordsArray(arr);
+  const quarantine = errors.length
+    ? {
+        ...(snapshot.quarantine || {}),
+        recordErrors: [...(snapshot.quarantine?.recordErrors || []), ...errors],
+        badRows: [...(snapshot.quarantine?.badRows || []), ...badRows],
+      }
+    : snapshot.quarantine || null;
+  return { records, quarantine };
+}
 
-  let v2Raw = null;
-  try {
-    v2Raw = ls.getItem(APP_STATE_KEY);
-  } catch (e) {
-    readErrors.push({ key: APP_STATE_KEY, message: e?.message || "read-failed" });
-  }
+function mergeAuthorityRecords(memory, stored) {
+  const map = new Map();
+  for (const r of stored || []) if (r?.d) map.set(r.d, r);
+  for (const r of memory || []) if (r?.d) map.set(r.d, r);
+  return [...map.values()].sort(byDate);
+}
 
-  if (v2Raw) {
-    const parsed = parseSnapshot(v2Raw);
-    if (parsed.ok) {
-      const s = parsed.snapshot;
-      return {
-        records: Array.isArray(s.records) ? s.records : [],
-        dailyMeta: s.daily?.data ? structuredClone(s.daily.data) : structuredClone(ctx.DAILY_SEED),
-        baselineStored: s.baseline ?? null,
-        staleVer: null,
-        memMode: false,
-        readErrors,
-        quarantine: s.quarantine || null,
-        storageBanner: readErrors.length ? "partial-read" : null,
-        migrationPending: false,
-        legacyKeysUntouched: true,
-      };
+function readLegacyKeysOnly(ls, readErrors) {
+  const snap = {};
+  for (const k of Object.values(LEGACY)) {
+    const v = safeGetItem(ls, k, readErrors);
+    if (!isUnreadable(v) && v != null) snap[k] = v;
+  }
+  return snap;
+}
+
+function loadFromValidV2(v2Raw, parsed, ctx, readErrors, writeOk) {
+  const s = parsed.snapshot;
+  const { records: rescued, quarantine: rowQuarantine } = hydrateSnapshotRecords(s, ctx);
+  const merged = resolveRecordsForSeedMerge({
+    rescued,
+    vStamp: s.dataStamp,
+    vDate: s.dataDate,
+    DATA_STAMP: ctx.DATA_STAMP,
+    DATA_DATE: ctx.DATA_DATE,
+    SEED: ctx.SEED,
+    wholeJsonFailed: false,
+  });
+  let dailyMeta = s.daily?.data ? structuredClone(s.daily.data) : structuredClone(ctx.DAILY_SEED);
+  if (merged.seedMergeApplied && merged.shouldPersistMerge) {
+    dailyMeta = structuredClone(ctx.DAILY_SEED);
+  }
+  const quarantine = rowQuarantine || s.quarantine || null;
+  let migrationPending = false;
+  let memMode = !writeOk;
+
+  if (merged.shouldPersistMerge && writeOk) {
+    const commit = commitAppStateInternal(ctx.ls, ctx, {
+      records: merged.persistRecords,
+      dailyMeta,
+      baseline: s.baseline ?? null,
+      quarantine,
+    });
+    if (commit.status !== "ok") {
+      migrationPending = true;
+      if (commit.status === "failed") memMode = true;
     }
-    readErrors.push({ key: APP_STATE_KEY, message: parsed.reason || "corrupt-snapshot" });
+  } else if (merged.shouldPersistMerge && !writeOk) {
+    migrationPending = true;
+    memMode = true;
   }
 
-  const { vStamp, vDate } = readVerMeta(ls, readErrors);
-  const { records: rescued, quarantine: recQuarantine } = readLegacyRecords(ls, readErrors);
+  return {
+    records: merged.records,
+    dailyMeta,
+    baselineStored: s.baseline ?? null,
+    staleVer: merged.staleVer,
+    memMode,
+    readErrors,
+    quarantine,
+    storageBanner: buildLoadBanner({ readErrors, migrationPending, commitFailed: memMode, hasQuarantine: !!quarantine }),
+    migrationPending,
+    writeOk,
+    legacyKeysUntouched: true,
+    corruptAuthority: false,
+  };
+}
+
+function loadFromCorruptV2(v2Raw, parsed, ctx, readErrors, writeOk) {
+  const quarantine = {
+    corruptAppStateRaw: v2Raw,
+    parseReason: parsed.reason,
+    readErrors: readErrors.length ? readErrors.slice() : undefined,
+  };
+  const legacyRec = readLegacyRecords(ctx.ls, readErrors);
+  const { vStamp, vDate } = readVerMeta(ctx.ls, readErrors);
+  const rescued = legacyRec.records.length ? legacyRec.records : [];
+  const wholeJsonFailed = !rescued.length;
+  const merged = resolveRecordsForSeedMerge({
+    rescued,
+    vStamp,
+    vDate,
+    DATA_STAMP: ctx.DATA_STAMP,
+    DATA_DATE: ctx.DATA_DATE,
+    SEED: ctx.SEED,
+    wholeJsonFailed,
+  });
+  const dailyRead = readLegacyDaily(ctx.ls, readErrors, ctx);
+  const dailyMeta = dailyRead.dailyMeta != null ? dailyRead.dailyMeta : structuredClone(ctx.DAILY_SEED);
+  const baselineRead = readLegacyBaseline(ctx.ls, readErrors);
+  Object.assign(quarantine, legacyRec.quarantine || {});
+
+  return {
+    records: merged.records,
+    dailyMeta,
+    baselineStored: baselineRead.baseline,
+    staleVer: merged.staleVer,
+    memMode: !writeOk,
+    readErrors,
+    quarantine,
+    storageBanner: "corrupt-authority",
+    migrationPending: true,
+    writeOk,
+    legacyKeysUntouched: true,
+    corruptAuthority: true,
+  };
+}
+
+function loadFromLegacy(ctx, readErrors, writeOk, v2Raw) {
+  const legacyBefore = readLegacyKeysOnly(ctx.ls, readErrors);
+  const { vStamp, vDate } = readVerMeta(ctx.ls, readErrors);
+  const { records: rescued, quarantine: recQuarantine } = readLegacyRecords(ctx.ls, readErrors);
   const wholeJsonFailed = Boolean(recQuarantine?.parseError && !rescued.length);
-  const { records, persistRecords, staleVer, shouldPersistMerge } = resolveRecordsForSeedMerge({
+  const merged = resolveRecordsForSeedMerge({
     rescued,
     vStamp,
     vDate,
@@ -221,9 +298,9 @@ export function loadAppState(ls, ctx) {
     wholeJsonFailed,
   });
 
-  const dailyRead = readLegacyDaily(ls, readErrors, ctx);
+  const dailyRead = readLegacyDaily(ctx.ls, readErrors, ctx);
   const dailyMeta = dailyRead.dailyMeta != null ? dailyRead.dailyMeta : structuredClone(ctx.DAILY_SEED);
-  const baselineRead = readLegacyBaseline(ls, readErrors);
+  const baselineRead = readLegacyBaseline(ctx.ls, readErrors);
   const baselineStored = baselineRead.baseline;
 
   const quarantine = {
@@ -238,55 +315,66 @@ export function loadAppState(ls, ctx) {
     quarantine.legacyDailyRaw ||
     quarantine.legacyBaselineRaw;
 
-  const recordsToPersist = persistRecords ?? records;
-  const snapshot = buildLogicalSnapshot({
-    records: recordsToPersist,
-    dailyMeta,
-    baseline: baselineStored,
-    quarantine: hasQuarantine ? quarantine : null,
-    ...ctx,
-  });
-
+  const recordsToPersist = merged.persistRecords ?? merged.records;
   let migrationPending = false;
   let memMode = false;
-  const legacyBefore = ls.snapshot?.() || {};
 
-  if (shouldPersistMerge || !v2Raw) {
-    const commit = commitAppState(ls, ctx, {
+  const needsFirstV2FromLegacy = !v2Raw && rescued.length > 0 && !wholeJsonFailed;
+  if (writeOk && (merged.shouldPersistMerge || needsFirstV2FromLegacy)) {
+    const commit = commitAppStateInternal(ctx.ls, ctx, {
       records: recordsToPersist,
       dailyMeta,
       baseline: baselineStored,
-      quarantine: snapshot.quarantine,
+      quarantine: hasQuarantine ? quarantine : null,
     });
-    if (commit.status === "ok") {
-      /* v2 成为权威；不删除 v1 键（旧 HTML / B3 边界） */
-    } else {
+    if (commit.status !== "ok") {
       migrationPending = true;
       if (commit.status === "failed") memMode = true;
     }
+  } else if (merged.shouldPersistMerge || needsFirstV2FromLegacy) {
+    migrationPending = true;
+    memMode = true;
   }
 
-  const legacyAfter = ls.snapshot?.() || {};
-  const legacyKeysUntouched = JSON.stringify(pickLegacy(legacyBefore)) === JSON.stringify(pickLegacy(legacyAfter));
+  const legacyAfter = readLegacyKeysOnly(ctx.ls, readErrors);
+  const legacyKeysUntouched = JSON.stringify(legacyBefore) === JSON.stringify(legacyAfter);
 
   return {
-    records,
+    records: merged.records,
     dailyMeta,
     baselineStored,
-    staleVer,
+    staleVer: merged.staleVer,
     memMode,
     readErrors,
     quarantine: hasQuarantine ? quarantine : null,
     storageBanner: buildLoadBanner({ readErrors, migrationPending, commitFailed: memMode, hasQuarantine }),
     migrationPending,
+    writeOk,
     legacyKeysUntouched,
+    corruptAuthority: false,
   };
 }
 
-function pickLegacy(snap) {
-  const o = {};
-  for (const k of Object.values(LEGACY)) if (snap[k] != null) o[k] = snap[k];
-  return o;
+export function loadAppState(ls, ctx) {
+  const readErrors = [];
+  const writeOk = ls.probeWrite?.() ?? ls.probe?.() ?? true;
+  const fullCtx = { ...ctx, ls };
+
+  const v2RawVal = safeGetItem(ls, APP_STATE_KEY, readErrors);
+  const v2Raw = isUnreadable(v2RawVal) ? null : v2RawVal;
+
+  if (v2Raw) {
+    const parsed = parseSnapshot(v2Raw);
+    if (parsed.ok) return loadFromValidV2(v2Raw, parsed, fullCtx, readErrors, writeOk);
+    readErrors.push({ key: APP_STATE_KEY, message: parsed.reason || "corrupt-snapshot" });
+    return loadFromCorruptV2(v2Raw, parsed, fullCtx, readErrors, writeOk);
+  }
+
+  if (isUnreadable(v2RawVal)) {
+    readErrors.push({ key: APP_STATE_KEY, message: "read-failed" });
+  }
+
+  return loadFromLegacy(fullCtx, readErrors, writeOk, v2Raw);
 }
 
 function buildLoadBanner({ readErrors, migrationPending, commitFailed, hasQuarantine }) {
@@ -297,16 +385,18 @@ function buildLoadBanner({ readErrors, migrationPending, commitFailed, hasQuaran
   return null;
 }
 
-/**
- * 保存结果：ok = 完整快照已写入且可读回一致；failed = 确认未写入；unknown = 无法确认（如写入后读失败）
- */
-export function commitAppState(ls, ctx, { records, dailyMeta, baseline, quarantine }) {
-  if (!ls.probe?.()) {
+function commitAppStateInternal(ls, ctx, { records, dailyMeta, baseline, quarantine }) {
+  if (!(ls.probeWrite?.() ?? ls.probe?.() ?? true)) {
     return { status: "failed", reason: "storage-probe-failed" };
   }
   const snapshot = buildLogicalSnapshot({ records, dailyMeta, baseline, quarantine, ...ctx });
   const payload = JSON.stringify(snapshot);
-  const before = ls.getItem(APP_STATE_KEY);
+  let before = null;
+  try {
+    before = ls.getItem(APP_STATE_KEY);
+  } catch (e) {
+    return { status: "failed", reason: e?.message || "pre-read-failed", snapshot };
+  }
   try {
     ls.setItem(APP_STATE_KEY, payload);
   } catch (e) {
@@ -319,7 +409,7 @@ export function commitAppState(ls, ctx, { records, dailyMeta, baseline, quaranti
         try {
           ls.setItem(APP_STATE_KEY, before);
         } catch {
-          /* leave unknown */
+          /* unknown */
         }
       }
       return { status: "unknown", reason: "readback-mismatch", snapshot };
@@ -330,17 +420,39 @@ export function commitAppState(ls, ctx, { records, dailyMeta, baseline, quaranti
   }
 }
 
-/** 逻辑快照与 v2 键 raw 是否一致（用于单测） */
-export function logicalSnapshotFromStorage(ls, _ctx) {
-  const raw = ls.getItem(APP_STATE_KEY);
-  const parsed = parseSnapshot(raw);
-  if (!parsed.ok) return { ok: false, raw, logical: null };
+export function commitAppState(ls, ctx, state) {
+  return commitAppStateInternal(ls, ctx, state);
+}
+
+/** 写入前与磁盘权威快照对齐，避免 probe 降级后 seed-only 内存覆盖独有记录 */
+export function reconcileMemoryWithAuthority(ls, ctx, memory) {
+  const readErrors = [];
+  const rawVal = safeGetItem(ls, APP_STATE_KEY, readErrors);
+  if (isUnreadable(rawVal) || !rawVal) return memory;
+  const parsed = parseSnapshot(rawVal);
+  if (!parsed.ok) return memory;
+  const { records: stored } = hydrateSnapshotRecords(parsed.snapshot, ctx);
+  return {
+    records: mergeAuthorityRecords(memory.records, stored),
+    dailyMeta: memory.dailyMeta,
+    baseline: memory.baseline,
+    quarantine: memory.quarantine ?? parsed.snapshot.quarantine ?? null,
+  };
+}
+
+export function logicalSnapshotFromStorage(ls, ctx) {
+  const readErrors = [];
+  const rawVal = safeGetItem(ls, APP_STATE_KEY, readErrors);
+  if (isUnreadable(rawVal)) return { ok: false, raw: null, logical: null, readErrors };
+  const parsed = parseSnapshot(rawVal);
+  if (!parsed.ok) return { ok: false, raw: rawVal, logical: null };
   const s = parsed.snapshot;
+  const { records } = hydrateSnapshotRecords(s, ctx);
   return {
     ok: true,
-    raw,
+    raw: rawVal,
     logical: {
-      records: s.records,
+      records,
       daily: s.daily,
       baseline: s.baseline,
       quarantine: s.quarantine,
@@ -348,7 +460,7 @@ export function logicalSnapshotFromStorage(ls, _ctx) {
   };
 }
 
-export function exportRescueBundle(ctx, { records, dailyMeta, baseline, quarantine, readErrors }) {
+export function exportRescueBundle(ctx, { records, dailyMeta, baseline, quarantine, readErrors, writeOk, corruptAuthority }) {
   return {
     app: "physio-log",
     kind: "storage-rescue",
@@ -361,6 +473,11 @@ export function exportRescueBundle(ctx, { records, dailyMeta, baseline, quaranti
     baseline,
     quarantine,
     readErrors,
+    storage: {
+      writeOk: writeOk !== false,
+      corruptAuthority: !!corruptAuthority,
+      unreadableKeys: (readErrors || []).filter((e) => e.message?.includes("read-failed") || e.key),
+    },
   };
 }
 
