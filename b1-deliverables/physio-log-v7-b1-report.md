@@ -68,6 +68,15 @@
 | `docs/storage-contract-v7-b1.md` | 契约（在 source 内） |
 | `npm-test.log` / `playwright-test.log` | 测试原始输出 |
 
+### GitHub 下载（分支 `cursor/b1-storage-5f59`）
+
+- [交付报告](https://github.com/15021105856/coder/blob/cursor/b1-storage-5f59/b1-deliverables/physio-log-v7-b1-report.md)
+- [源码 ZIP](https://github.com/15021105856/coder/raw/cursor/b1-storage-5f59/b1-deliverables/physio-log-v7-b1-source.zip)
+- [成品 ZIP](https://github.com/15021105856/coder/raw/cursor/b1-storage-5f59/b1-deliverables/physio-log-v7-b1-product.zip)
+- [B1 diff](https://github.com/15021105856/coder/blob/cursor/b1-storage-5f59/b1-deliverables/B1-vs-B0R1.diff)
+- [存储契约](https://github.com/15021105856/coder/blob/cursor/b1-storage-5f59/b1-deliverables/source/docs/storage-contract-v7-b1.md)
+- Draft PR: https://github.com/15021105856/coder/pull/1
+
 ## 剩余问题
 
 - B3：跨标签页 / 旧版 HTML 写 legacy 键与 v2 并发。
