@@ -1,0 +1,26 @@
+import { describe, it, expect } from "vitest";
+import { reconcileConcurrentState, withStorageLock, STORAGE_LOCK } from "../src/shared/concurrent-storage.js";
+import { stabilizeDailyMeta } from "../src/shared/entity-id.js";
+import { buildLogicalSnapshot, commitAppState, loadAppState, APP_STATE_KEY, isOlderSeed } from "../src/shared/app-storage.js";
+import { createMemoryStorageAdapter } from "../src/shared/local-storage-adapter.js";
+const base = () => ({ records: [{d:"2026-10-01",note:"a"},{d:"2026-10-02",note:"b"}], dailyMeta: {"2026-10-01":{note:"x",sleep:{score:80},sessions:[{kind:"run",km:1}]}}, baseline:null });
+const ctx = { SEED: base().records, DAILY_SEED: base().dailyMeta, DATA_DATE:"2026-10-02", DATA_STAMP:"new" };
+const state = () => ({...ctx,...base()});
+describe("B3 three-way concurrency",()=>{
+  it("independent dates merge without mutating inputs",()=>{const b=base(),l=base(),r=base();l.records[0].note="L";r.records[1].note="R";const before=JSON.stringify([b,l,r]);const m=reconcileConcurrentState(b,l,r);expect(m.ok).toBe(true);expect(m.records.map(x=>x.note)).toEqual(["L","R"]);expect(JSON.stringify([b,l,r])).toBe(before)});
+  it("same-day edits conflict",()=>{const b=base(),l=base(),r=base();l.records[0].note="L";r.records[0].el=99;expect(reconcileConcurrentState(b,l,r).conflicts).toEqual(["records.2026-10-01"])});
+  it.each([true,false])("delete vs edit both directions %s",reverse=>{const b=base(),l=base(),r=base();l.records.shift();r.records[0].note="R";expect(reconcileConcurrentState(b,reverse?r:l,reverse?l:r).ok).toBe(false)});
+  it("identical writes are idempotent",()=>{const b=base(),l=base();l.records[0].note="same";expect(reconcileConcurrentState(b,l,l).ok).toBe(true)});
+  it("daily fields merge; identified sessions merge independent edits",()=>{const b=base(),l=base(),r=base(),d="2026-10-01";l.dailyMeta[d].note="L";r.dailyMeta[d].sleep.score=99;expect(reconcileConcurrentState(b,l,r).dailyMeta[d]).toMatchObject({note:"L",sleep:{score:99}});const stamped=stabilizeDailyMeta(b.dailyMeta).dailyMeta;b.dailyMeta=structuredClone(stamped);l.dailyMeta=structuredClone(stamped);r.dailyMeta=structuredClone(stamped);l.dailyMeta[d].sessions[0].km=2;r.dailyMeta[d].sessions.push({kind:"run",km:3});const merged=reconcileConcurrentState(b,l,r);expect(merged.ok).toBe(true);expect(merged.dailyMeta[d].sessions[0].km).toBe(2);expect(merged.dailyMeta[d].sessions).toHaveLength(2)});
+  it("baseline conflicts",()=>{const b=base(),l=base(),r=base();l.baseline={mean:1};r.baseline={mean:2};expect(reconcileConcurrentState(b,l,r).conflicts).toEqual(["baseline"])});
+  it("distinct new dates merge; same date conflicts",()=>{const b=base(),l=base(),r=base();l.records.push({d:"2026-10-03",note:"L"});r.records.push({d:"2026-10-04",note:"R"});expect(reconcileConcurrentState(b,l,r).records).toHaveLength(4);r.records.at(-1).d="2026-10-03";expect(reconcileConcurrentState(b,l,r).ok).toBe(false)});
+});
+describe("B3 authority and locks",()=>{
+  it.each([{}, {request:()=>{throw Error("denied")}}])("unavailable locks forbid action %#",async locks=>{let writes=0;expect((await withStorageLock(()=>writes++,locks)).ok).toBe(false);expect(writes).toBe(0)});
+  it("exclusive origin lock and cancellation",async()=>{await withStorageLock(()=>({ok:true}),{request:(name,opts,fn)=>{expect(name).toBe(STORAGE_LOCK);expect(opts.mode).toBe("exclusive");expect(opts.signal).toBeInstanceOf(AbortSignal);return fn()}})});
+  it("v2 migration leaves old key intact and ignores later old HTML writes",()=>{const old=JSON.stringify({...buildLogicalSnapshot(state()),format:2});const ls=createMemoryStorageAdapter({"physio-log.app-state.v2":old});loadAppState(ls,ctx);expect(JSON.parse(ls.getItem(APP_STATE_KEY)).format).toBe(3);expect(ls.getItem("physio-log.app-state.v2")).toBe(old);ls.setItem("physio-log.app-state.v2","OLD OVERWRITE");expect(loadAppState(ls,ctx).records[0].note).toBe("a")});
+  it("read-only initialization never migrates",()=>{const ls=createMemoryStorageAdapter({});loadAppState(ls,{...ctx,readOnly:true});expect(ls.getItem(APP_STATE_KEY)).toBeNull()});
+  it("preserves envelope extensions and revision",()=>{const previous={...buildLogicalSnapshot(state()),extra:{keep:1},revision:7};previous.daily.extra="KEEP";const ls=createMemoryStorageAdapter({[APP_STATE_KEY]:JSON.stringify(previous)});const r=commitAppState(ls,ctx,base());expect(r.snapshot.extra).toEqual({keep:1});expect(r.snapshot.daily.extra).toBe("KEEP");expect(r.snapshot.revision).toBe(8)});
+  it("older date / previously seen stamp cannot downgrade",()=>{expect(isOlderSeed({dataDate:"2026-10-03",dataStamp:"future"},ctx)).toBe(true);const s={...buildLogicalSnapshot(state()),dataStamp:"next",seedHistory:["new"]};const ls=createMemoryStorageAdapter({[APP_STATE_KEY]:JSON.stringify(s)}),raw=ls.getItem(APP_STATE_KEY);expect(commitAppState(ls,ctx,base()).reason).toBe("older-seed");expect(ls.getItem(APP_STATE_KEY)).toBe(raw)});
+  it("mismatch never rolls back another snapshot",()=>{let writes=0;const old=JSON.stringify(buildLogicalSnapshot(state())),other=JSON.stringify({...buildLogicalSnapshot(state()),extra:"OTHER"});let value=old;const ls={getItem:()=>value,setItem:()=>{writes++;value=other}};expect(commitAppState(ls,ctx,base()).status).toBe("unknown");expect(writes).toBe(1);expect(value).toBe(other)});
+});

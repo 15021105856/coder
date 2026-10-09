@@ -1,0 +1,89 @@
+[
+  {
+    "id": "three-same-start",
+    "status": "completed",
+    "pass": true,
+    "result": {
+      "pass": true,
+      "kms": [
+        1,
+        9,
+        3
+      ],
+      "ids": [
+        "s_d8886b02438388a8",
+        "s_91ea827e8feb734c",
+        "s_b97ac74e7c653738"
+      ],
+      "errors": []
+    }
+  },
+  {
+    "id": "same-time-weights",
+    "status": "completed",
+    "pass": true,
+    "result": {
+      "pass": true,
+      "errors": []
+    }
+  },
+  {
+    "id": "reorder-edit-reload-export",
+    "status": "completed",
+    "pass": true,
+    "result": {
+      "pass": true,
+      "ids": [
+        "s_b97ac74e7c653738",
+        "s_91ea827e8feb734c",
+        "s_d8886b02438388a8"
+      ],
+      "errors": []
+    }
+  },
+  {
+    "id": "two-pages-different-entities",
+    "status": "completed",
+    "pass": true,
+    "result": {
+      "pass": true,
+      "left": {
+        "ok": true,
+        "status": "ok"
+      },
+      "right": {
+        "ok": true,
+        "status": "ok"
+      },
+      "kms": [
+        11,
+        2,
+        3
+      ],
+      "names": [
+        "A",
+        "B",
+        "from-b"
+      ]
+    }
+  },
+  {
+    "id": "delete-versus-edit-conflict",
+    "status": "completed",
+    "pass": true,
+    "result": {
+      "pass": true,
+      "toast": "另一页面已修改相同数据，草稿未保存；请先导出 JSON，再放弃草稿并重载",
+      "stored": 0
+    }
+  },
+  {
+    "id": "illegal-eid-does-not-overwrite",
+    "status": "completed",
+    "pass": true,
+    "result": {
+      "pass": true,
+      "toast": "课次或体重身份无效，未覆盖已保存数据；请导出 JSON 后处理重复或非法身份"
+    }
+  }
+]

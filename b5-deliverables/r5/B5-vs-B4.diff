@@ -1,0 +1,830 @@
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/docs/identity-contract-v7-b5.md b5-deliverables/source/docs/identity-contract-v7-b5.md
+--- /tmp/b4-incoming/docs/identity-contract-v7-b5.md	1970-01-01 00:00:00.000000000 +0000
++++ b5-deliverables/source/docs/identity-contract-v7-b5.md	2026-10-09 14:08:21.039626609 +0000
+@@ -0,0 +1,40 @@
++# v7 B5 课次与体重身份契约
++
++产品仍为 v7 / 7.0.0。本契约不修改真实训练数据文件；身份在读取、导入和保存时写入权威快照，而不是改写内嵌数据集。
++
++## 身份
++
++- 字段名 `eid`。课次必须以 `s_` 开头，体重必须以 `w_` 开头，后接 16 位十六进制。
++- 作用域是**同一日期**的 `sessions` 或 `weight` 数组。另一天可以出现相同字符串；跨数组前缀不同，不能把课次身份当作体重身份。
++- `eid` 不是开始时刻、测量时间、名称、数值或当前下标。相同开始时刻的多条课次、相同测量时间的多条体重各自拥有身份。
++- 编辑内容、修改时刻、重排、保存、导出、刷新都不改变已分配的 `eid`。
++- 历史无身份数据按 `种类 + 日期 + 同一内容指纹的出现次序 + 去掉 eid 后的规范内容` 计算确定性身份。重复加载同一历史内容得到同一身份，不使用随机数。
++- 内容完全相同的历史项靠出现次序区分。内容一旦在**尚未分配身份**时发生变化，不能证明它仍是哪一条，种子合并和并发合并都不会按相似字段自动对上；并发路径视为不同实体或顺序/字段冲突，而不是静默覆盖。
++- 已保存的身份再次遇到无身份、但内容指纹完全一致的导入时复用原身份，避免重复实体。指纹不一致则视为新实体。
++- 同一数组内重复 `eid`、非法 `eid`（含错误前缀）会使该次数组稳定化失败：不改写原对象，不覆盖权威，导出可带上 `identityIssues`。
++- `eid` 以外的未知字段原样保留。现有数据没有名为 `eid` 的业务字段。
++
++## 合并
++
++并发保存（B3 独占锁内）对 `sessions` / `weight` 按身份做三方合并：
++
++- 不同实体的修改都保留。
++- 同一实体的不同字段合并。
++- 同一字段改成不同值是冲突，不写权威。
++- 同一字段改成相同值可以接受。
++- 一方删除、另一方修改同一实体是冲突，不复活删除，也不丢弃修改草稿。
++- 双方删除则删除。
++- 一方新增、另一方修改或删除其他实体时，能合并的部分保留。
++- 双方新增不同实体都保留。
++- 只比较仍然存在的共同实体的相对顺序。双方把共同实体排成不同顺序才是顺序冲突。仅有一方调整顺序时采用该顺序。
++- 修改开始时刻或测量时间不改变身份，可与另一实体的修改合并。
++
++冲突时沿用 B3：不写权威，保留本页草稿，提示不得说已保存，并可导出。
++
++种子更新使用同一身份规则，但字段冲突时保留本地值，不弹并发冲突。这是文件种子与缓存的旧三方语义，不是两个页面的并发语义。
++
++主动导入仍表示调用方提供该日完整的 `sessions` 或 `weight` 列表（空数组表示清空）。无身份项只有在内容指纹与现有项完全一致时才复用身份。导入不是并发三方合并。
++
++## 不在本批
++
++不实现 B6 完整备份恢复、B7 发布代次、B8 全面交互或 B9 CI。不改训练算法、阈值、营养估算和真实 73 天数据。
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/src/monitor/core.js b5-deliverables/source/src/monitor/core.js
+--- /tmp/b4-incoming/src/monitor/core.js	2026-10-09 07:50:56.000000000 +0000
++++ b5-deliverables/source/src/monitor/core.js	2026-10-09 14:07:32.826437073 +0000
+@@ -230,6 +230,7 @@
+   pendingCommit: false,
+   writeOk: true,
+   corruptAuthority: false,
++  identityBlocked: false,
+   authorityOverlayOnCommit: false,
+   seedPlaceholder: false,
+   migrationBlocked: false,
+@@ -285,6 +286,7 @@
+   if (r.reason === "older-seed" || r.reason === "seed-changed") return "此页面的数据版本已过期，未写入；请导出草稿并使用最新文件";
+   if (r.reason === "locks-unavailable" || r.reason === "lock-failed") return "无法取得安全保存锁，改动未保存；请导出 JSON 备份后换用支持 Web Locks 的浏览器";
+   if (r.reason === "busy") return "上一笔保存尚未完成，请稍后再操作";
++  if (r.reason === "identity-blocked") return "课次或体重身份无效，未覆盖已保存数据；请导出 JSON 后处理重复或非法身份";
+   if (r.status === "unknown") return "保存结果无法确认，请先导出 JSON 备份";
+   return "保存失败：改动仅保留在当前页面内存中，请导出 JSON";
+ }
+@@ -303,6 +305,7 @@
+   storage.migrationPending = loaded.migrationPending;
+   storage.writeOk = loaded.writeOk !== false;
+   storage.corruptAuthority = !!loaded.corruptAuthority;
++  storage.identityBlocked = !!loaded.identityBlocked;
+   storage.authorityOverlayOnCommit = !!loaded.authorityOverlayOnCommit;
+   storage.seedPlaceholder = !!loaded.seedPlaceholder;
+   storage.migrationBlocked = !!loaded.migrationBlocked;
+@@ -462,6 +465,12 @@
+     syncStorageUi();
+     return { ok: false, status: "failed", reason: "storage-probe-failed" };
+   }
++  if (storage.identityBlocked) {
++    storage.memMode = true;
++    storage.pendingCommit = true;
++    syncStorageUi();
++    return { ok: false, status: "failed", reason: "identity-blocked" };
++  }
+   if (storage.corruptAuthority) {
+     storage.memMode = true;
+     storage.pendingCommit = true;
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/src/monitor/main.js b5-deliverables/source/src/monitor/main.js
+--- /tmp/b4-incoming/src/monitor/main.js	2026-10-09 05:26:18.000000000 +0000
++++ b5-deliverables/source/src/monitor/main.js	2026-10-09 14:14:29.809186840 +0000
+@@ -2,7 +2,8 @@
+ import "../styles/monitor.css";
+ import { mountParticleField, bindLight, initTheme, fxEnabled } from "../shared/fx.js";
+ import {
+-  DATA_DATE, DATASET_VALID, state, storage, loadDaily, loadRecords, initializeStorage, maybeAutoLock, sortedRecs,
++  DATA_DATE, DATASET_VALID, state, storage, store, loadDaily, loadRecords, initializeStorage, maybeAutoLock, sortedRecs,
++  persistAppState,
+ } from "./core.js";
+ import { importJSON } from "./io.js";
+ import {
+@@ -17,6 +18,11 @@
+ import { getArchiveHref } from "../shared/release-runtime.js";
+ 
+ const ARCHIVE_HREF = getArchiveHref();
++// QA seam for the B5 two-page save check. It does not add a visible control.
++globalThis.__physio = {
++  daily: () => store.dailyMeta,
++  persist: () => persistAppState(),
++};
+ const $ = (s, r = document) => r.querySelector(s);
+ 
+ const themeLabel = () => (document.documentElement.dataset.theme === "light" ? "切换到深色" : "切换到浅色");
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/src/shared/app-storage.js b5-deliverables/source/src/shared/app-storage.js
+--- /tmp/b4-incoming/src/shared/app-storage.js	2026-10-09 05:21:20.000000000 +0000
++++ b5-deliverables/source/src/shared/app-storage.js	2026-10-09 14:07:14.903073644 +0000
+@@ -19,6 +19,7 @@
+   validateSnapshotForCommit,
+   validateBaselineValue,
+ } from "./storage-sanitize.js";
++import { stabilizeDailyMeta } from "./entity-id.js";
+ 
+ export const APP_STATE_KEY = STORAGE_KEYS.appState;
+ // The prior key is an import source only. Older HTML cannot address the new authority.
+@@ -247,14 +248,30 @@
+   let dailyMeta = sanitizeDailyMeta(snapshot.daily?.data ?? ctx.DAILY_SEED, issues, APP_STATE_KEY + ".daily.data");
+   const oldSeed = sanitizeDailyMeta(snapshot.daily?.seed ?? LEGACY_DAILY_SEED, issues, APP_STATE_KEY + ".daily.seed");
+   if (merged.seedMergeApplied) dailyMeta = mergeDailyStore(ctx.DAILY_SEED, dailyMeta, oldSeed);
++  const identity = stabilizeDailyMeta(dailyMeta);
+   const b = validateBaselineValue(snapshot.baseline ?? null);
+   let quarantine = rowQ;
+   if (issues.length) quarantine = mergeQuarantine(quarantine, { dailyStructureIssues: issues });
+   if (!b.ok) quarantine = mergeQuarantine(quarantine, { baselineInvalid: snapshot.baseline });
+-  if (errors.length || issues.length || !b.ok || JSON.stringify(snapshot.quarantine ?? null) !== JSON.stringify(normalizeQuarantine(snapshot.quarantine))) {
++  if (identity.blocked) {
++    quarantine = mergeQuarantine(quarantine, { identityIssues: identity.issues, originalSnapshots: [{ source: APP_STATE_KEY, raw }] });
++  } else if (identity.added) {
++    dailyMeta = identity.dailyMeta;
++    merged.shouldPersistMerge = true;
++  } else {
++    dailyMeta = identity.dailyMeta;
++  }
++  if (errors.length || issues.length || !b.ok || identity.blocked || JSON.stringify(snapshot.quarantine ?? null) !== JSON.stringify(normalizeQuarantine(snapshot.quarantine))) {
+     quarantine = mergeQuarantine(quarantine, { originalSnapshots: [{ source: APP_STATE_KEY, raw }] });
+   }
+-  return { records: merged.records, dailyMeta, baseline: b.ok ? b.value : null, quarantine, merged };
++  return {
++    records: merged.records,
++    dailyMeta,
++    baseline: b.ok ? b.value : null,
++    quarantine,
++    merged,
++    identityBlocked: identity.blocked,
++  };
+ }
+ 
+ function readLegacyKeysOnly(ls, readErrors) {
+@@ -387,11 +404,12 @@
+ }
+ 
+ function loadFromValidV2(v2Raw, parsed, ctx, readErrors, writeOk) {
+-  const { merged, dailyMeta, baseline: baselineStored, quarantine } = prepareV2State(v2Raw, parsed.snapshot, ctx);
++  const prepared = prepareV2State(v2Raw, parsed.snapshot, ctx);
++  const { merged, dailyMeta, baseline: baselineStored, quarantine } = prepared;
+   let migrationPending = false;
+   let memMode = !writeOk;
+ 
+-  if ((merged.shouldPersistMerge || parsed.snapshot.format === 2) && writeOk && !isOlderSeed(parsed.snapshot, ctx)) {
++  if ((merged.shouldPersistMerge || parsed.snapshot.format === 2) && writeOk && !prepared.identityBlocked && !isOlderSeed(parsed.snapshot, ctx)) {
+     const commit = commitAppStateInternal(ctx.ls, ctx, {
+       records: merged.persistRecords,
+       dailyMeta,
+@@ -423,6 +441,7 @@
+     authorityOverlayOnCommit: false,
+     seedPlaceholder: false,
+     migrationBlocked: false,
++    identityBlocked: !!prepared.identityBlocked,
+     validEmpty: !!merged.validEmpty,
+   };
+ }
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/src/shared/concurrent-storage.js b5-deliverables/source/src/shared/concurrent-storage.js
+--- /tmp/b4-incoming/src/shared/concurrent-storage.js	2026-10-09 05:25:28.000000000 +0000
++++ b5-deliverables/source/src/shared/concurrent-storage.js	2026-10-09 14:06:42.580204293 +0000
+@@ -9,6 +9,8 @@
+     return { ok: false, status: "failed", reason: "lock-failed", detail: error?.message };
+   }
+ }
++import { mergeEntityArrays } from "./entity-merge.js";
++
+ const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+ const object = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+ 
+@@ -23,6 +25,15 @@
+       const out = {};
+       for (const key of new Set([...Object.keys(b), ...Object.keys(l), ...Object.keys(r)])) {
+         if (["__proto__", "constructor", "prototype"].includes(key)) continue;
++        if ((key === "sessions" || key === "weight") && [b[key], l[key], r[key]].some(Array.isArray)) {
++          const date = path.split(".").at(-1) || "";
++          const merged = mergeEntityArrays({
++            base: b[key], local: l[key], remote: r[key], kind: key, date, mode: "conflict", path: `${path}.${key}`,
++          });
++          conflicts.push(...merged.conflicts);
++          out[key] = merged.items;
++          continue;
++        }
+         const v = value(b[key], l[key], r[key], `${path}.${key}`, true);
+         if (v !== undefined) out[key] = v;
+       }
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/src/shared/daily-merge.js b5-deliverables/source/src/shared/daily-merge.js
+--- /tmp/b4-incoming/src/shared/daily-merge.js	2026-10-09 02:08:24.000000000 +0000
++++ b5-deliverables/source/src/shared/daily-merge.js	2026-10-09 14:06:43.084186861 +0000
+@@ -1,8 +1,10 @@
+-/* _daily 三方合并（文件种子 / 本机缓存 / 旧种子快照），供 core 与单元测试共用。 */
++/* _daily 三方合并（文件种子 / 本机缓存 / 旧种子快照）。sessions/weight 按 eid，种子冲突时保留本地。 */
++import { mergeEntityArrays } from "./entity-merge.js";
++
+ const plainObject = (x) => x !== null && typeof x === "object" && !Array.isArray(x);
+ const cloneDaily = (x) => (x === undefined ? undefined : JSON.parse(JSON.stringify(x)));
+ 
+-export function mergeDailyValue(seed, local, base, key = "") {
++export function mergeDailyValue(seed, local, base, key = "", date = "") {
+   if (seed === undefined) return cloneDaily(local);
+   if (local === undefined) return base === undefined ? cloneDaily(seed) : undefined;
+   if (base !== undefined && JSON.stringify(local) === JSON.stringify(base)) return cloneDaily(seed);
+@@ -10,27 +12,21 @@
+     const out = {};
+     for (const k of new Set([...Object.keys(seed), ...Object.keys(local)])) {
+       if (["__proto__", "constructor", "prototype"].includes(k)) continue;
+-      const v = mergeDailyValue(seed[k], local[k], plainObject(base) ? base[k] : undefined, k);
++      const v = mergeDailyValue(seed[k], local[k], plainObject(base) ? base[k] : undefined, k, date);
+       if (v !== undefined) out[k] = v;
+     }
+     return out;
+   }
+   if (Array.isArray(seed) && Array.isArray(local) && ["sessions", "weight"].includes(key)) {
+-    const indexed = (arr) => {
+-      const n = new Map();
+-      return (arr || []).map((x) => {
+-        const k = key === "weight" ? String(x.time || "") : [x.kind || "", x.start || ""].join("|");
+-        const i = n.get(k) || 0; n.set(k, i + 1);
+-        return [k + "|" + i, x];
+-      });
+-    };
+-    const sm = new Map(indexed(seed)), lm = new Map(indexed(local)), bm = new Map(indexed(Array.isArray(base) ? base : []));
+-    const out = [];
+-    for (const k of new Set([...sm.keys(), ...lm.keys()])) {
+-      const v = mergeDailyValue(sm.get(k), lm.get(k), bm.get(k));
+-      if (v !== undefined) out.push(v);
+-    }
+-    return out;
++    return mergeEntityArrays({
++      base: Array.isArray(base) ? base : [],
++      local,
++      remote: seed,
++      kind: key,
++      date,
++      mode: "local-wins",
++      path: key,
++    }).items;
+   }
+   return cloneDaily(local);
+ }
+@@ -38,7 +34,7 @@
+ export function mergeDailyStore(seed, cached, base) {
+   const out = { ...cloneDaily(cached) };
+   for (const [d, s] of Object.entries(seed)) {
+-    out[d] = Object.hasOwn(cached, d) ? mergeDailyValue(s, cached[d], base?.[d]) : cloneDaily(s);
++    out[d] = Object.hasOwn(cached, d) ? mergeDailyValue(s, cached[d], base?.[d], "", d) : cloneDaily(s);
+   }
+   return out;
+ }
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/src/shared/entity-id.js b5-deliverables/source/src/shared/entity-id.js
+--- /tmp/b4-incoming/src/shared/entity-id.js	1970-01-01 00:00:00.000000000 +0000
++++ b5-deliverables/source/src/shared/entity-id.js	2026-10-09 14:10:11.590047293 +0000
+@@ -0,0 +1,137 @@
++/** 课次 / 体重的稳定身份（B5）。身份不是开始时刻、测量时间、名称、数值或数组下标。 */
++
++const PREFIX = { sessions: "s_", weight: "w_" };
++
++export function entityFingerprint(item) {
++  const src = item && typeof item === "object" ? item : {};
++  const body = {};
++  for (const key of Object.keys(src).sort()) {
++    if (key === "eid") continue;
++    body[key] = src[key];
++  }
++  return JSON.stringify(body);
++}
++
++export function hash16(text) {
++  let a = 0x811c9dc5;
++  let b = 0x811c9dc5 ^ 0x9e3779b9;
++  for (let i = 0; i < text.length; i++) {
++    const c = text.charCodeAt(i);
++    a = Math.imul(a ^ c, 0x01000193);
++    b = Math.imul(b ^ (c + i), 0x01000193);
++  }
++  const hex = (n) => (n >>> 0).toString(16).padStart(8, "0");
++  return hex(a) + hex(b);
++}
++
++export function deterministicEid(kind, date, item, ordinal = 0) {
++  const prefix = PREFIX[kind] || "s_";
++  return prefix + hash16([kind, date || "", String(ordinal), entityFingerprint(item)].join("\0"));
++}
++
++export function isValidEid(eid, kind) {
++  const prefix = PREFIX[kind];
++  return typeof eid === "string" && new RegExp(`^${prefix}[0-9a-f]{16}$`).test(eid);
++}
++
++/**
++ * 为尚无身份的历史项分配确定性 eid。已有合法且本数组内唯一的 eid 保持不变。
++ * 重复或非法 eid 不改写调用方原对象；返回 blocked，调用方不得据此覆盖权威。
++ */
++export function stabilizeArray(items, kind, date) {
++  if (!Array.isArray(items)) return { items: [], added: false, issues: [], blocked: false };
++  const issues = [];
++  const seen = new Set();
++  const fpCount = new Map();
++  let added = false;
++  const next = [];
++  items.forEach((item, index) => {
++    if (!item || typeof item !== "object" || Array.isArray(item)) {
++      issues.push({ date, kind, index, reason: "not-object" });
++      return;
++    }
++    const copy = { ...item };
++    if (copy.eid != null && copy.eid !== "") {
++      if (!isValidEid(copy.eid, kind)) {
++        issues.push({ date, kind, index, reason: "illegal-eid", eid: copy.eid });
++        return;
++      }
++      if (seen.has(copy.eid)) {
++        issues.push({ date, kind, index, reason: "duplicate-eid", eid: copy.eid });
++        return;
++      }
++      seen.add(copy.eid);
++      next.push(copy);
++      return;
++    }
++    const fp = entityFingerprint(copy);
++    const ordinal = fpCount.get(fp) || 0;
++    fpCount.set(fp, ordinal + 1);
++    copy.eid = deterministicEid(kind, date, copy, ordinal);
++    if (seen.has(copy.eid)) {
++      issues.push({ date, kind, index, reason: "eid-collision", eid: copy.eid });
++      return;
++    }
++    seen.add(copy.eid);
++    added = true;
++    next.push(copy);
++  });
++  if (issues.length) return { items, added: false, issues, blocked: true };
++  return { items: next, added, issues, blocked: false };
++}
++
++export function stabilizeDailyMeta(dailyMeta) {
++  const source = dailyMeta && typeof dailyMeta === "object" ? dailyMeta : {};
++  const out = structuredClone(source);
++  const issues = [];
++  let added = false;
++  for (const [date, day] of Object.entries(out)) {
++    if (!day || typeof day !== "object" || Array.isArray(day)) continue;
++    for (const kind of ["sessions", "weight"]) {
++      if (!Array.isArray(day[kind])) continue;
++      const stabilized = stabilizeArray(day[kind], kind, date);
++      if (stabilized.blocked) issues.push(...stabilized.issues);
++      else {
++        day[kind] = stabilized.items;
++        added = added || stabilized.added;
++      }
++    }
++  }
++  if (issues.length) return { dailyMeta: source, added: false, issues, blocked: true };
++  return { dailyMeta: out, added, issues, blocked: false };
++}
++
++/** 导入的无身份项：仅在完整内容指纹一致时复用本地身份，否则新分配。不按相似字段猜测。 */
++export function adoptImportedEntities(localItems, incomingItems, kind, date) {
++  if (!Array.isArray(incomingItems)) return incomingItems;
++  if (incomingItems.length === 0) return [];
++  const local = stabilizeArray(localItems || [], kind, date);
++  const pool = local.blocked ? [] : local.items.map((item) => ({ item, used: false }));
++  const usedEids = new Set(pool.map((slot) => slot.item.eid));
++  const fpCount = new Map();
++  return incomingItems.map((item) => {
++    if (!item || typeof item !== "object" || Array.isArray(item)) return item;
++    const copy = { ...item };
++    if (isValidEid(copy.eid, kind) && !usedEids.has(copy.eid)) {
++      usedEids.add(copy.eid);
++      return copy;
++    }
++    if (isValidEid(copy.eid, kind) && usedEids.has(copy.eid)) return copy;
++    const fp = entityFingerprint(copy);
++    const slot = pool.find((candidate) => !candidate.used && entityFingerprint(candidate.item) === fp);
++    if (slot) {
++      slot.used = true;
++      copy.eid = slot.item.eid;
++      usedEids.add(copy.eid);
++      return copy;
++    }
++    delete copy.eid;
++    let ordinal = fpCount.get(fp) || 0;
++    let eid = deterministicEid(kind, date, copy, ordinal);
++    while (usedEids.has(eid)) eid = deterministicEid(kind, date, copy, ++ordinal);
++    fpCount.set(fp, ordinal + 1);
++    copy.eid = eid;
++    usedEids.add(eid);
++    return copy;
++  });
++}
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/src/shared/entity-merge.js b5-deliverables/source/src/shared/entity-merge.js
+--- /tmp/b4-incoming/src/shared/entity-merge.js	1970-01-01 00:00:00.000000000 +0000
++++ b5-deliverables/source/src/shared/entity-merge.js	2026-10-09 14:06:28.596685273 +0000
+@@ -0,0 +1,121 @@
++/** 按 eid 的三方合并。顺序是独立状态：只在共同实体的相对顺序冲突时失败。 */
++import { stabilizeArray } from "./entity-id.js";
++
++const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
++const clone = (v) => (v === undefined ? undefined : structuredClone(v));
++
++function prepared(items, kind, date) {
++  const stabilized = stabilizeArray(items || [], kind, date);
++  return stabilized.blocked ? { ok: false, items: items || [], issues: stabilized.issues } : { ok: true, items: stabilized.items, issues: [] };
++}
++
++function indexByEid(items) {
++  return new Map((items || []).filter((item) => item?.eid).map((item) => [item.eid, item]));
++}
++
++function mergeFields(base, local, remote, path, conflicts, localWins) {
++  const out = { eid: local?.eid || remote?.eid || base?.eid };
++  const keys = new Set([
++    ...Object.keys(base || {}),
++    ...Object.keys(local || {}),
++    ...Object.keys(remote || {}),
++  ]);
++  for (const key of keys) {
++    if (key === "eid") continue;
++    const b = base?.[key];
++    const l = local?.[key];
++    const r = remote?.[key];
++    if (equal(l, b)) out[key] = clone(r);
++    else if (equal(r, b) || equal(l, r)) out[key] = clone(l);
++    else if (localWins) out[key] = clone(l);
++    else conflicts.push(`${path}.${key}`);
++  }
++  return out;
++}
++
++function relative(order, ids) {
++  return order.filter((id) => ids.has(id));
++}
++
++/**
++ * @param {"conflict"|"local-wins"} mode
++ * remote 在并发里是另一页；在种子合并里是新种子。
++ */
++export function mergeEntityArrays({ base, local, remote, kind, date, mode = "conflict", path = kind }) {
++  const conflicts = [];
++  const b = prepared(base, kind, date);
++  const l = prepared(local, kind, date);
++  const r = prepared(remote, kind, date);
++  if (!b.ok || !l.ok || !r.ok) {
++    conflicts.push(path);
++    return { ok: false, conflicts, items: l.items };
++  }
++  const bm = indexByEid(b.items);
++  const lm = indexByEid(l.items);
++  const rm = indexByEid(r.items);
++  const ids = new Set([...bm.keys(), ...lm.keys(), ...rm.keys()]);
++  const merged = new Map();
++  for (const id of ids) {
++    const bv = bm.get(id);
++    const lv = lm.get(id);
++    const rv = rm.get(id);
++    const localDeleted = Boolean(bv) && !lv;
++    const remoteDeleted = Boolean(bv) && !rv;
++    if (localDeleted && remoteDeleted) continue;
++    if (localDeleted && rv && !equal(rv, bv)) {
++      if (mode === "local-wins") continue;
++      conflicts.push(`${path}.${id}`);
++      continue;
++    }
++    if (remoteDeleted && lv && !equal(lv, bv)) {
++      if (mode === "local-wins") merged.set(id, clone(lv));
++      else conflicts.push(`${path}.${id}`);
++      continue;
++    }
++    if (localDeleted || remoteDeleted) continue;
++    if (!bv && lv && !rv) {
++      merged.set(id, clone(lv));
++      continue;
++    }
++    if (!bv && rv && !lv) {
++      merged.set(id, clone(rv));
++      continue;
++    }
++    if (!bv && lv && rv) {
++      if (!equal(lv, rv) && mode !== "local-wins") conflicts.push(`${path}.${id}`);
++      merged.set(id, mode === "local-wins" || equal(lv, rv) ? clone(lv) : clone(lv));
++      continue;
++    }
++    merged.set(id, mergeFields(bv, lv, rv, `${path}.${id}`, conflicts, mode === "local-wins"));
++  }
++  const surviving = new Set([...bm.keys()].filter((id) => merged.has(id)));
++  const localOrder = l.items.map((item) => item.eid);
++  const remoteOrder = r.items.map((item) => item.eid);
++  const baseOrder = b.items.map((item) => item.eid);
++  const lrel = relative(localOrder, surviving);
++  const rrel = relative(remoteOrder, surviving);
++  const brel = relative(baseOrder, surviving);
++  let chosen;
++  if (JSON.stringify(lrel) === JSON.stringify(brel)) chosen = remoteOrder;
++  else if (JSON.stringify(rrel) === JSON.stringify(brel) || JSON.stringify(lrel) === JSON.stringify(rrel)) chosen = localOrder;
++  else if (mode === "local-wins") chosen = localOrder;
++  else {
++    conflicts.push(`${path}.order`);
++    chosen = localOrder;
++  }
++  const items = [];
++  const seen = new Set();
++  for (const id of chosen) {
++    if (merged.has(id) && !seen.has(id)) {
++      items.push(merged.get(id));
++      seen.add(id);
++    }
++  }
++  for (const id of [...localOrder, ...remoteOrder]) {
++    if (merged.has(id) && !seen.has(id)) {
++      items.push(merged.get(id));
++      seen.add(id);
++    }
++  }
++  return { ok: conflicts.length === 0, conflicts, items };
++}
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/src/shared/payload-validation.js b5-deliverables/source/src/shared/payload-validation.js
+--- /tmp/b4-incoming/src/shared/payload-validation.js	2026-10-09 07:50:56.000000000 +0000
++++ b5-deliverables/source/src/shared/payload-validation.js	2026-10-09 14:07:15.167064313 +0000
+@@ -1,4 +1,5 @@
+ import { isDate } from "./schema.js";
++import { adoptImportedEntities } from "./entity-id.js";
+ 
+ export const plainObject = (x) => x !== null && typeof x === "object" && !Array.isArray(x);
+ const pair = (x) => Array.isArray(x) && x.length === 2 && x.every(Number.isFinite) && x[0] <= x[1];
+@@ -59,14 +60,18 @@
+     && (b.exclude == null || (Array.isArray(b.exclude) && b.exclude.every(isDate)));
+ }
+ 
+-/** 主动导入与缓存升级不同：提供的值覆盖本机，未提供的字段保留，数组整体替换。 */
++/** 主动导入：未提供的对象字段保留。sessions/weight 按调用方给出的完整列表替换，但无 eid 时只在内容指纹完全一致时复用身份。 */
+ export function mergeImportedDaily(local, incoming) {
+-  const merge = (a, b) => {
++  const merge = (a, b, key = "", date = "") => {
++    if ((key === "sessions" || key === "weight") && Array.isArray(b)) {
++      return adoptImportedEntities(Array.isArray(a) ? a : [], b, key, date);
++    }
+     if (!plainObject(b)) return structuredClone(b);
+     const out = plainObject(a) ? structuredClone(a) : {};
++    const day = key && /^\d{4}-\d{2}-\d{2}$/.test(key) ? key : date;
+     for (const [k, v] of Object.entries(b)) {
+       if (["__proto__", "prototype", "constructor"].includes(k)) continue;
+-      out[k] = merge(out[k], v);
++      out[k] = merge(out[k], v, k, day);
+     }
+     return out;
+   };
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/tests/concurrent-storage.test.js b5-deliverables/source/tests/concurrent-storage.test.js
+--- /tmp/b4-incoming/tests/concurrent-storage.test.js	2026-10-09 05:22:56.000000000 +0000
++++ b5-deliverables/source/tests/concurrent-storage.test.js	2026-10-09 14:07:15.159064596 +0000
+@@ -1,5 +1,6 @@
+ import { describe, it, expect } from "vitest";
+ import { reconcileConcurrentState, withStorageLock, STORAGE_LOCK } from "../src/shared/concurrent-storage.js";
++import { stabilizeDailyMeta } from "../src/shared/entity-id.js";
+ import { buildLogicalSnapshot, commitAppState, loadAppState, APP_STATE_KEY, isOlderSeed } from "../src/shared/app-storage.js";
+ import { createMemoryStorageAdapter } from "../src/shared/local-storage-adapter.js";
+ const base = () => ({ records: [{d:"2026-10-01",note:"a"},{d:"2026-10-02",note:"b"}], dailyMeta: {"2026-10-01":{note:"x",sleep:{score:80},sessions:[{kind:"run",km:1}]}}, baseline:null });
+@@ -10,7 +11,7 @@
+   it("same-day edits conflict",()=>{const b=base(),l=base(),r=base();l.records[0].note="L";r.records[0].el=99;expect(reconcileConcurrentState(b,l,r).conflicts).toEqual(["records.2026-10-01"])});
+   it.each([true,false])("delete vs edit both directions %s",reverse=>{const b=base(),l=base(),r=base();l.records.shift();r.records[0].note="R";expect(reconcileConcurrentState(b,reverse?r:l,reverse?l:r).ok).toBe(false)});
+   it("identical writes are idempotent",()=>{const b=base(),l=base();l.records[0].note="same";expect(reconcileConcurrentState(b,l,l).ok).toBe(true)});
+-  it("daily fields merge; arrays conflict",()=>{const b=base(),l=base(),r=base(),d="2026-10-01";l.dailyMeta[d].note="L";r.dailyMeta[d].sleep.score=99;expect(reconcileConcurrentState(b,l,r).dailyMeta[d]).toMatchObject({note:"L",sleep:{score:99}});l.dailyMeta[d].sessions[0].km=2;r.dailyMeta[d].sessions.push({kind:"run",km:3});expect(reconcileConcurrentState(b,l,r).conflicts).toContain("daily.2026-10-01.sessions")});
++  it("daily fields merge; identified sessions merge independent edits",()=>{const b=base(),l=base(),r=base(),d="2026-10-01";l.dailyMeta[d].note="L";r.dailyMeta[d].sleep.score=99;expect(reconcileConcurrentState(b,l,r).dailyMeta[d]).toMatchObject({note:"L",sleep:{score:99}});const stamped=stabilizeDailyMeta(b.dailyMeta).dailyMeta;b.dailyMeta=structuredClone(stamped);l.dailyMeta=structuredClone(stamped);r.dailyMeta=structuredClone(stamped);l.dailyMeta[d].sessions[0].km=2;r.dailyMeta[d].sessions.push({kind:"run",km:3});const merged=reconcileConcurrentState(b,l,r);expect(merged.ok).toBe(true);expect(merged.dailyMeta[d].sessions[0].km).toBe(2);expect(merged.dailyMeta[d].sessions).toHaveLength(2)});
+   it("baseline conflicts",()=>{const b=base(),l=base(),r=base();l.baseline={mean:1};r.baseline={mean:2};expect(reconcileConcurrentState(b,l,r).conflicts).toEqual(["baseline"])});
+   it("distinct new dates merge; same date conflicts",()=>{const b=base(),l=base(),r=base();l.records.push({d:"2026-10-03",note:"L"});r.records.push({d:"2026-10-04",note:"R"});expect(reconcileConcurrentState(b,l,r).records).toHaveLength(4);r.records.at(-1).d="2026-10-03";expect(reconcileConcurrentState(b,l,r).ok).toBe(false)});
+ });
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/tests/entity-identity.test.js b5-deliverables/source/tests/entity-identity.test.js
+--- /tmp/b4-incoming/tests/entity-identity.test.js	1970-01-01 00:00:00.000000000 +0000
++++ b5-deliverables/source/tests/entity-identity.test.js	2026-10-09 14:08:32.499996601 +0000
+@@ -0,0 +1,195 @@
++import { describe, it, expect } from "vitest";
++import { reconcileConcurrentState } from "../src/shared/concurrent-storage.js";
++import {
++  stabilizeDailyMeta, deterministicEid, isValidEid, adoptImportedEntities, entityFingerprint,
++} from "../src/shared/entity-id.js";
++import { mergeImportedDaily } from "../src/shared/payload-validation.js";
++import { mergeDailyStore } from "../src/shared/daily-merge.js";
++
++const day = "2099-01-01";
++function sessions(rows) {
++  return { [day]: { sessions: rows, note: "keep-me", extra: { untouched: true } } };
++}
++function stamp(meta) {
++  return stabilizeDailyMeta(meta).dailyMeta;
++}
++
++describe("B5 entity identity and merge", () => {
++  it("same start sessions stay distinct and only the edited one changes", () => {
++    const base = stamp(sessions([
++      { kind: "run", start: "18:00", km: 1, name: "A" },
++      { kind: "run", start: "18:00", km: 2, name: "B" },
++      { kind: "run", start: "18:00", km: 3, name: "C" },
++    ]));
++    const local = structuredClone(base);
++    local[day].sessions[1].km = 9;
++    const remote = structuredClone(base);
++    const merged = reconcileConcurrentState(
++      { records: [], dailyMeta: base, baseline: null },
++      { records: [], dailyMeta: local, baseline: null },
++      { records: [], dailyMeta: remote, baseline: null },
++    );
++    expect(merged.ok).toBe(true);
++    expect(merged.dailyMeta[day].sessions.map((s) => s.km)).toEqual([1, 9, 3]);
++    expect(new Set(merged.dailyMeta[day].sessions.map((s) => s.eid)).size).toBe(3);
++    expect(merged.dailyMeta[day].extra).toEqual({ untouched: true });
++  });
++
++  it("same-time weights edit one row only", () => {
++    const base = stamp({ [day]: { weight: [
++      { time: "09:00", kg: 60, period: "morning" },
++      { time: "09:00", kg: 60.2, period: "evening" },
++    ] } });
++    const local = structuredClone(base);
++    local[day].weight[1].kg = 70;
++    const merged = reconcileConcurrentState(
++      { records: [], dailyMeta: base, baseline: null },
++      { records: [], dailyMeta: local, baseline: null },
++      { records: [], dailyMeta: structuredClone(base), baseline: null },
++    );
++    expect(merged.ok).toBe(true);
++    expect(merged.dailyMeta[day].weight.map((w) => w.kg)).toEqual([60, 70]);
++  });
++
++  it("reorder then edit keeps identity and order", () => {
++    const base = stamp(sessions([
++      { kind: "run", start: "18:00", km: 1 },
++      { kind: "run", start: "18:00", km: 2 },
++    ]));
++    const [a, b] = base[day].sessions;
++    const local = structuredClone(base);
++    local[day].sessions = [structuredClone(b), { ...a, km: 8 }];
++    const merged = reconcileConcurrentState(
++      { records: [], dailyMeta: base, baseline: null },
++      { records: [], dailyMeta: local, baseline: null },
++      { records: [], dailyMeta: structuredClone(base), baseline: null },
++    );
++    expect(merged.ok).toBe(true);
++    expect(merged.dailyMeta[day].sessions.map((s) => s.eid)).toEqual([b.eid, a.eid]);
++    expect(merged.dailyMeta[day].sessions.map((s) => s.km)).toEqual([2, 8]);
++  });
++
++  it("two sides edit different entities", () => {
++    const base = stamp(sessions([{ kind: "run", start: "18:00", km: 1 }, { kind: "run", start: "18:00", km: 2 }]));
++    const local = structuredClone(base);
++    const remote = structuredClone(base);
++    local[day].sessions[0].km = 11;
++    remote[day].sessions[1].name = "remote";
++    const merged = reconcileConcurrentState(
++      { records: [], dailyMeta: base, baseline: null },
++      { records: [], dailyMeta: local, baseline: null },
++      { records: [], dailyMeta: remote, baseline: null },
++    );
++    expect(merged.ok).toBe(true);
++    expect(merged.dailyMeta[day].sessions[0].km).toBe(11);
++    expect(merged.dailyMeta[day].sessions[1].name).toBe("remote");
++  });
++
++  it("delete versus edit conflicts and does not resurrect", () => {
++    const base = stamp(sessions([{ kind: "run", start: "18:00", km: 1, name: "A" }]));
++    const local = structuredClone(base);
++    local[day].sessions = [];
++    const remote = structuredClone(base);
++    remote[day].sessions[0].km = 4;
++    const merged = reconcileConcurrentState(
++      { records: [], dailyMeta: base, baseline: null },
++      { records: [], dailyMeta: local, baseline: null },
++      { records: [], dailyMeta: remote, baseline: null },
++    );
++    expect(merged.ok).toBe(false);
++    expect(merged.conflicts.some((c) => c.includes(base[day].sessions[0].eid))).toBe(true);
++  });
++
++  it("same field conflict versus identical edit", () => {
++    const base = stamp(sessions([{ kind: "run", start: "18:00", km: 1 }]));
++    const left = structuredClone(base);
++    const right = structuredClone(base);
++    left[day].sessions[0].km = 5;
++    right[day].sessions[0].km = 6;
++    expect(reconcileConcurrentState(
++      { records: [], dailyMeta: base, baseline: null },
++      { records: [], dailyMeta: left, baseline: null },
++      { records: [], dailyMeta: right, baseline: null },
++    ).ok).toBe(false);
++    right[day].sessions[0].km = 5;
++    const same = reconcileConcurrentState(
++      { records: [], dailyMeta: base, baseline: null },
++      { records: [], dailyMeta: left, baseline: null },
++      { records: [], dailyMeta: right, baseline: null },
++    );
++    expect(same.ok).toBe(true);
++    expect(same.dailyMeta[day].sessions[0].km).toBe(5);
++  });
++
++  it("changing start merges with an edit to another entity", () => {
++    const base = stamp(sessions([
++      { kind: "run", start: "18:00", km: 1 },
++      { kind: "run", start: "19:00", km: 2 },
++    ]));
++    const local = structuredClone(base);
++    const remote = structuredClone(base);
++    local[day].sessions[0].start = "18:30";
++    remote[day].sessions[1].km = 9;
++    const merged = reconcileConcurrentState(
++      { records: [], dailyMeta: base, baseline: null },
++      { records: [], dailyMeta: local, baseline: null },
++      { records: [], dailyMeta: remote, baseline: null },
++    );
++    expect(merged.ok).toBe(true);
++    expect(merged.dailyMeta[day].sessions[0]).toMatchObject({ eid: base[day].sessions[0].eid, start: "18:30", km: 1 });
++    expect(merged.dailyMeta[day].sessions[1].km).toBe(9);
++  });
++
++  it("repeat import of the same historical content reuses eid", () => {
++    const local = stamp(sessions([{ kind: "run", start: "18:00", km: 1, custom: "keep" }]));
++    const eid = local[day].sessions[0].eid;
++    const once = mergeImportedDaily(local, { [day]: { sessions: [{ kind: "run", start: "18:00", km: 1, custom: "keep" }] } });
++    const twice = mergeImportedDaily(once, { [day]: { sessions: [{ kind: "run", start: "18:00", km: 1, custom: "keep" }] } });
++    expect(once[day].sessions).toHaveLength(1);
++    expect(twice[day].sessions[0].eid).toBe(eid);
++    expect(twice[day].sessions[0].custom).toBe("keep");
++  });
++
++  it("duplicate and illegal ids block stabilization without rewriting the source", () => {
++    const dup = { [day]: { sessions: [{ eid: "s_0123456789abcdef", km: 1 }, { eid: "s_0123456789abcdef", km: 2 }] } };
++    const blocked = stabilizeDailyMeta(dup);
++    expect(blocked.blocked).toBe(true);
++    expect(dup[day].sessions).toHaveLength(2);
++    expect(isValidEid("w_0123456789abcdef", "sessions")).toBe(false);
++    expect(deterministicEid("sessions", day, { km: 1 }, 0)).toMatch(/^s_[0-9a-f]{16}$/);
++  });
++
++  it("unknown extension fields survive seed merge", () => {
++    const item = { kind: "run", start: "18:00", km: 1, vendor: { raw: "x" } };
++    const seeded = stamp(sessions([item]));
++    const out = mergeDailyStore(seeded, structuredClone(seeded), seeded);
++    expect(out[day].sessions[0].vendor).toEqual({ raw: "x" });
++    expect(entityFingerprint(out[day].sessions[0])).toContain("vendor");
++  });
++
++  it("different order edits conflict", () => {
++    const base = stamp(sessions([{ kind: "run", km: 1 }, { kind: "run", km: 2 }, { kind: "run", km: 3 }]));
++    const local = structuredClone(base);
++    const remote = structuredClone(base);
++    const [a, b, c] = base[day].sessions;
++    local[day].sessions = [c, a, b].map((s) => structuredClone(s));
++    remote[day].sessions = [b, c, a].map((s) => structuredClone(s));
++    const merged = reconcileConcurrentState(
++      { records: [], dailyMeta: base, baseline: null },
++      { records: [], dailyMeta: local, baseline: null },
++      { records: [], dailyMeta: remote, baseline: null },
++    );
++    expect(merged.ok).toBe(false);
++    expect(merged.conflicts.some((item) => item.endsWith(".order"))).toBe(true);
++  });
++
++  it("historical ids are stable across repeated loads", () => {
++    const raw = sessions([{ kind: "run", start: "18:00", km: 1 }, { kind: "run", start: "18:00", km: 1 }]);
++    const a = stamp(raw)[day].sessions.map((s) => s.eid);
++    const b = stamp(raw)[day].sessions.map((s) => s.eid);
++    expect(a).toEqual(b);
++    expect(a[0]).not.toBe(a[1]);
++    const imported = adoptImportedEntities([], raw[day].sessions, "sessions", day);
++    expect(imported.map((s) => s.eid)).toEqual(a);
++  });
++});
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/tests/import-daily.test.js b5-deliverables/source/tests/import-daily.test.js
+--- /tmp/b4-incoming/tests/import-daily.test.js	2026-10-09 02:08:24.000000000 +0000
++++ b5-deliverables/source/tests/import-daily.test.js	2026-10-09 14:07:14.903073644 +0000
+@@ -6,7 +6,8 @@
+     const incoming={'2026-10-04':{nutrition:{protein_range:[90,140]},sessions:[{kind:'run',km:10}]} };
+     const out=mergeImportedDaily(local,incoming);
+     expect(out['2026-10-04'].nutrition).toEqual({protein_range:[90,140],kcal_range:[2500,3600]});
+-    expect(out['2026-10-04'].sessions).toEqual(incoming['2026-10-04'].sessions);
++    expect(out['2026-10-04'].sessions.map(({kind,km})=>({kind,km}))).toEqual([{kind:'run',km:10}]);
++    expect(out['2026-10-04'].sessions[0].eid).toMatch(/^s_[0-9a-f]{16}$/);
+     expect(out['2026-10-03']).toEqual(local['2026-10-03']);
+     expect(local['2026-10-04'].nutrition.protein_range).toEqual([90,135]);
+   });
+diff -ruN --exclude node_modules --exclude release --exclude download --exclude 个人训练系统_v7.zip --exclude download.html /tmp/b4-incoming/tests/storage-b1r4.test.js b5-deliverables/source/tests/storage-b1r4.test.js
+--- /tmp/b4-incoming/tests/storage-b1r4.test.js	2026-10-09 02:17:10.000000000 +0000
++++ b5-deliverables/source/tests/storage-b1r4.test.js	2026-10-09 14:09:40.949611058 +0000
+@@ -6,6 +6,7 @@
+ import { normalizeRec } from "../src/shared/records-io.js";
+ import { createMemoryStorageAdapter } from "../src/shared/local-storage-adapter.js";
+ import { mergeImportedDaily } from "../src/shared/payload-validation.js";
++import { stabilizeDailyMeta } from "../src/shared/entity-id.js";
+ import {
+   loadAppState, commitAppState, buildLogicalSnapshot, overlayAuthorityOnCommit,
+   APP_STATE_KEY, LEGACY_STORAGE_KEYS as K, evaluateCommitGate,
+@@ -31,11 +32,19 @@
+     const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: JSON.stringify(s) });
+     const patch = mergeImportedDaily({ [d]: { nutrition: { note: "FIRST" } } }, { [d]: { sleep: { score: 88 } } });
+     const out = overlayAuthorityOnCommit(ls, ctx, intent(patch));
+-    expect(out.dailyMeta[d]).toEqual({ sessions: [{ kind: "run", km: 7.77 }], note: "LOCAL", nutrition: { note: "FIRST" }, sleep: { score: 88 } });
++    expect(out.dailyMeta[d].note).toBe("LOCAL");
++    expect(out.dailyMeta[d].nutrition).toEqual({ note: "FIRST" });
++    expect(out.dailyMeta[d].sleep).toEqual({ score: 88 });
++    expect(out.dailyMeta[d].sessions.map(({ kind, km }) => ({ kind, km }))).toEqual([{ kind: "run", km: 7.77 }]);
++    expect(out.dailyMeta[d].sessions[0].eid).toMatch(/^s_[0-9a-f]{16}$/);
+   });
+   it("new seed is applied before explicit changes and is not skipped by a recovered read", () => {
+-    const s = snapshot();s.daily.data[d].sessions[0].vol = 777;
+-    const newer = { ...ctx, SEED: [...ds.data, { d: "2026-10-07", el: 91 }], DAILY_SEED: structuredClone(ds._daily), DATA_STAMP: "NEW", DATA_DATE: "2026-10-07" };
++    const s = snapshot();
++    const identified = stabilizeDailyMeta(s.daily.data).dailyMeta;
++    s.daily.data = structuredClone(identified);
++    s.daily.seed = structuredClone(identified);
++    s.daily.data[d].sessions[0].vol = 777;
++    const newer = { ...ctx, SEED: [...ds.data, { d: "2026-10-07", el: 91 }], DAILY_SEED: structuredClone(identified), DATA_STAMP: "NEW", DATA_DATE: "2026-10-07" };
+     newer.DAILY_SEED[d].sessions[1].vol = 6000;
+     newer.DAILY_SEED[d].nutrition.protein_range = [121, 176];
+     const ls = createMemoryStorageAdapter({ [APP_STATE_KEY]: JSON.stringify(s) });
+Binary files /tmp/b4-incoming/个人训练系统_v7_20261006.zip and b5-deliverables/source/个人训练系统_v7_20261006.zip differ
