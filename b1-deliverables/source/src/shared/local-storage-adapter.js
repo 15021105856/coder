@@ -44,6 +44,9 @@ export function createMemoryStorageAdapter(initial = {}, faults = {}) {
       }
       return out;
     },
+    listKeys() {
+      return [...map.keys()];
+    },
     _map: map,
   };
   return api;
@@ -86,6 +89,14 @@ export function wrapLocalStorage(localStorage, faults = {}) {
         } catch {
           /* 诊断扫描不得因单键失败而中断 */
         }
+      }
+      return out;
+    },
+    listKeys() {
+      const out = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k != null) out.push(k);
       }
       return out;
     },

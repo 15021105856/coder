@@ -1,0 +1,1219 @@
+{
+ "app": "physio-log",
+ "kind": "storage-rescue",
+ "version": 2,
+ "exported": "2026-10-09T00:47:42.118Z",
+ "dataStamp": "02808fbb",
+ "dataDate": "2026-10-06",
+ "records": [
+  {
+   "d": "2099-06-01",
+   "hw": null,
+   "el": 77,
+   "bed": null,
+   "dur": null,
+   "deep": null,
+   "rem": null,
+   "cont": null,
+   "wake": null,
+   "shr": null,
+   "type": null,
+   "shoe": null,
+   "km": null,
+   "pace": null,
+   "hr": null,
+   "hrmax": null,
+   "pw": null,
+   "load": null,
+   "tsec": null,
+   "rec": null,
+   "ats": null,
+   "gct": null,
+   "cad": null,
+   "vo": null,
+   "bal": null,
+   "vol": null,
+   "hrr0": null,
+   "hrr1": null,
+   "pro": null,
+   "kcal": null,
+   "feel": null,
+   "flag": "ONLY-LOCAL"
+  }
+ ],
+ "_daily": {
+  "2026-09-25": {
+   "weight": [
+    {
+     "time": "09:02",
+     "kg": 62.3,
+     "body_fat_pct": null,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图；9月25日来自既有档案"
+    }
+   ],
+   "sessions": [
+    {
+     "kind": "strength",
+     "name": "居家上肢",
+     "start": "上午",
+     "tsec": 1881,
+     "hr": 99,
+     "hrmax": 145,
+     "load": 4,
+     "active_kcal": null,
+     "total_kcal": null,
+     "vol": 135
+    },
+    {
+     "kind": "strength",
+     "name": "健身房腿日",
+     "start": "下午",
+     "tsec": 3670,
+     "hr": 116,
+     "hrmax": 174,
+     "load": 25,
+     "active_kcal": null,
+     "total_kcal": null,
+     "vol": 5320
+    }
+   ],
+   "nutrition": {
+    "kcal_range": [
+     2750,
+     3650
+    ],
+    "protein_range": [
+     120,
+     175
+    ],
+    "estimated": true
+   }
+  },
+  "2026-09-26": {
+   "weight": [
+    {
+     "time": "09:14",
+     "kg": 61.05,
+     "body_fat_pct": 13.8,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图"
+    }
+   ],
+   "day_totals": {
+    "run_km": 13.81,
+    "scope": "已报告两段跑合计",
+    "training_tsec": 5107
+   },
+   "sessions": [
+    {
+     "kind": "run",
+     "name": "跑步第一段",
+     "start": "下午",
+     "tsec": 884,
+     "hr": 131,
+     "hrmax": null,
+     "load": null,
+     "active_kcal": null,
+     "total_kcal": null,
+     "km": 2.23
+    },
+    {
+     "kind": "run",
+     "name": "跑步主段",
+     "start": "下午",
+     "tsec": 4223,
+     "hr": 145,
+     "hrmax": 165,
+     "load": null,
+     "active_kcal": null,
+     "total_kcal": null,
+     "km": 11.58
+    }
+   ],
+   "nutrition": {
+    "kcal_range": [
+     2300,
+     3200
+    ],
+    "protein_range": [
+     80,
+     115
+    ],
+    "estimated": true
+   },
+   "hrr": {
+    "seconds": 60,
+    "start": null,
+    "end": null,
+    "drop": 40,
+    "source": "用户报告下降 40 bpm",
+    "timing_protocol": "unconfirmed"
+   }
+  },
+  "2026-09-27": {
+   "weight": [
+    {
+     "time": "10:07",
+     "kg": 61.4,
+     "body_fat_pct": 13.5,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图"
+    }
+   ],
+   "day_totals": {
+    "run_km": 11.25,
+    "scope": "已报告两段跑合计",
+    "training_tsec": 4152,
+    "active_kcal": 549,
+    "total_kcal": 641
+   },
+   "sessions": [
+    {
+     "kind": "run",
+     "name": "跑步第一段",
+     "start": "18:00",
+     "tsec": 859,
+     "hr": 129,
+     "hrmax": 152,
+     "load": 8,
+     "active_kcal": 104,
+     "total_kcal": 123,
+     "km": 2.23
+    },
+    {
+     "kind": "run",
+     "name": "主跑",
+     "start": "18:25",
+     "tsec": 3293,
+     "hr": 141,
+     "hrmax": 170,
+     "load": 48,
+     "active_kcal": 445,
+     "total_kcal": 518,
+     "km": 9.02
+    }
+   ],
+   "nutrition": {
+    "kcal_range": [
+     2200,
+     2900
+    ],
+    "protein_range": [
+     90,
+     125
+    ],
+    "estimated": true
+   },
+   "hrr": {
+    "seconds": 60,
+    "start": null,
+    "end": null,
+    "drop": 29,
+    "source": "用户报告下降 29 bpm",
+    "timing_protocol": "unconfirmed"
+   }
+  },
+  "2026-09-28": {
+   "weight": [
+    {
+     "time": "20:39",
+     "kg": 62.35,
+     "body_fat_pct": 13.2,
+     "period": "evening",
+     "protocol_confirmed": false,
+     "source": "用户截图"
+    }
+   ],
+   "sessions": [
+    {
+     "kind": "strength",
+     "name": "胸腹核心",
+     "start": "14:03",
+     "tsec": 4854,
+     "hr": 98,
+     "hrmax": 142,
+     "load": 7,
+     "active_kcal": 253,
+     "total_kcal": 362,
+     "vol": 4300
+    }
+   ],
+   "nutrition": {
+    "kcal_range": [
+     2350,
+     3550
+    ],
+    "protein_range": [
+     110,
+     165
+    ],
+    "estimated": true
+   },
+   "sleep": {
+    "score": 84,
+    "wake_time": "08:31",
+    "deep_min": 105,
+    "light_min": 290,
+    "rem_min": 48,
+    "hw_range": [
+     84,
+     120
+    ],
+    "hr_range": [
+     40,
+     79
+    ],
+    "shr_range": [
+     45,
+     51
+    ],
+    "spo2_pct": 96,
+    "respiratory_rate": 15,
+    "breathing_score": 98
+   }
+  },
+  "2026-09-29": {
+   "weight": [
+    {
+     "time": "10:23",
+     "kg": 61.65,
+     "body_fat_pct": 13.3,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图"
+    }
+   ],
+   "sessions": [
+    {
+     "kind": "strength",
+     "name": "背部力量",
+     "start": "13:56",
+     "tsec": 4204,
+     "hr": 109,
+     "hrmax": 143,
+     "load": 17,
+     "active_kcal": 304,
+     "total_kcal": 399,
+     "vol": 8220
+    }
+   ],
+   "nutrition": {
+    "kcal_range": [
+     2410,
+     3220
+    ],
+    "protein_range": [
+     92,
+     127
+    ],
+    "estimated": true
+   },
+   "sleep": {
+    "score": 85,
+    "wake_time": "08:49",
+    "deep_min": 102,
+    "light_min": 310,
+    "rem_min": 59,
+    "hw_range": [
+     84,
+     120
+    ],
+    "hr_range": [
+     42,
+     89
+    ],
+    "shr_range": [
+     45,
+     51
+    ],
+    "spo2_pct": 96,
+    "respiratory_rate": 16,
+    "breathing_score": 100
+   }
+  },
+  "2026-09-30": {
+   "weight": [
+    {
+     "time": "08:56",
+     "kg": 60.6,
+     "body_fat_pct": 13.5,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图"
+    }
+   ],
+   "day_totals": {
+    "run_km": 12.19,
+    "scope": "已报告两段跑合计",
+    "training_tsec": 4904,
+    "active_kcal": 610,
+    "total_kcal": 719
+   },
+   "sessions": [
+    {
+     "kind": "run",
+     "name": "第一段",
+     "start": "17:42",
+     "tsec": 867,
+     "hr": 133,
+     "hrmax": 149,
+     "load": 10,
+     "active_kcal": 105,
+     "total_kcal": 124,
+     "km": 2.21
+    },
+    {
+     "kind": "run",
+     "name": "主跑",
+     "start": "18:09",
+     "tsec": 4037,
+     "hr": 140,
+     "hrmax": 151,
+     "load": 55,
+     "active_kcal": 505,
+     "total_kcal": 595,
+     "km": 9.98
+    }
+   ],
+   "nutrition": {
+    "kcal_range": [
+     2050,
+     2900
+    ],
+    "protein_range": [
+     90,
+     125
+    ],
+    "estimated": true
+   },
+   "sleep": {
+    "score": 85,
+    "wake_time": "07:54",
+    "deep_min": 129,
+    "light_min": 249,
+    "rem_min": 47,
+    "hw_range": [
+     84,
+     119
+    ],
+    "hr_range": [
+     42,
+     77
+    ],
+    "shr_range": [
+     45,
+     51
+    ],
+    "spo2_pct": 97,
+    "respiratory_rate": 15,
+    "breathing_score": 98
+   }
+  },
+  "2026-10-01": {
+   "weight": [
+    {
+     "time": "09:40",
+     "kg": 60.45,
+     "body_fat_pct": 13.3,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图"
+    }
+   ],
+   "nutrition": {
+    "kcal_range": [
+     2230,
+     3730
+    ],
+    "protein_range": [
+     90,
+     140
+    ],
+    "estimated": true
+   },
+   "sleep": {
+    "score": 91,
+    "wake_time": "09:05",
+    "deep_min": 183,
+    "light_min": 245,
+    "rem_min": 66,
+    "hw_range": [
+     84,
+     119
+    ],
+    "hr_range": [
+     43,
+     77
+    ],
+    "shr_range": [
+     45,
+     51
+    ],
+    "spo2_pct": 97,
+    "respiratory_rate": 15,
+    "breathing_score": 98
+   }
+  },
+  "2026-10-02": {
+   "weight": [
+    {
+     "time": "10:13",
+     "kg": 61.15,
+     "body_fat_pct": 13.4,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图"
+    }
+   ],
+   "sessions": [
+    {
+     "kind": "strength",
+     "start": "13:55",
+     "tsec": 3636,
+     "vol": 2650,
+     "hr": 114,
+     "hrmax": 151,
+     "load": 19,
+     "active_kcal": 290,
+     "total_kcal": 372,
+     "name": "肩部＋核心"
+    },
+    {
+     "kind": "run",
+     "start": "17:41",
+     "km": 2.28,
+     "tsec": 866,
+     "hr": 133,
+     "hrmax": 148,
+     "load": 9,
+     "active_kcal": 109,
+     "total_kcal": 128,
+     "name": "第一段"
+    },
+    {
+     "kind": "run",
+     "start": "18:04",
+     "km": 7.55,
+     "tsec": 2605,
+     "hr": 140,
+     "hrmax": 170,
+     "load": 39,
+     "active_kcal": 360,
+     "total_kcal": 417,
+     "name": "主跑"
+    }
+   ],
+   "day_totals": {
+    "run_km": 9.83,
+    "training_tsec": 7107,
+    "active_kcal": 759,
+    "total_kcal": 917,
+    "scope": "已报告三课合计"
+   },
+   "hrr": {
+    "seconds": 60,
+    "start": 181,
+    "end": 124,
+    "drop": 57,
+    "source": "用户报告腕式光电",
+    "timing_protocol": "unconfirmed"
+   },
+   "nutrition": {
+    "kcal_range": [
+     2650,
+     3600
+    ],
+    "protein_range": [
+     100,
+     145
+    ],
+    "estimated": true
+   },
+   "sleep": {
+    "score": 90,
+    "wake_time": "09:29",
+    "deep_min": 173,
+    "light_min": 252,
+    "rem_min": 63,
+    "hw_range": [
+     83,
+     119
+    ],
+    "hr_range": [
+     40,
+     85
+    ],
+    "shr_range": [
+     45,
+     51
+    ],
+    "spo2_pct": 96,
+    "respiratory_rate": 15,
+    "breathing_score": 98
+   }
+  },
+  "2026-10-03": {
+   "weight": [
+    {
+     "time": "09:38",
+     "kg": 60.25,
+     "body_fat_pct": 13.4,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图"
+    }
+   ],
+   "sleep": {
+    "score": 84,
+    "wake_time": "09:01",
+    "deep_min": 114,
+    "light_min": 290,
+    "rem_min": 45,
+    "hw_range": [
+     83,
+     118
+    ],
+    "hr_range": [
+     43,
+     87
+    ],
+    "shr_range": [
+     45,
+     51
+    ],
+    "spo2_pct": 96,
+    "respiratory_rate": 15,
+    "breathing_score": 98
+   },
+   "sessions": [
+    {
+     "kind": "strength",
+     "name": "手臂＋深蹲",
+     "start": "14:03",
+     "tsec": 3393,
+     "vol": 3560,
+     "hr": 108,
+     "hrmax": 147,
+     "load": 12,
+     "active_kcal": 230,
+     "total_kcal": 305,
+     "squat_assisted": false,
+     "squat_top_set": {
+      "kg": 60,
+      "reps": 3
+     },
+     "other_assistance": null
+    }
+   ],
+   "nutrition": {
+    "kcal_range": [
+     2500,
+     3500
+    ],
+    "protein_range": [
+     90,
+     135
+    ],
+    "estimated": true,
+    "main_uncertainty": "面量、红油、个人火锅肉量和肥瘦、豆浆糖量"
+   }
+  },
+  "2026-10-04": {
+   "weight": [
+    {
+     "time": "09:18",
+     "kg": 60.65,
+     "body_fat_pct": 13.5,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图"
+    }
+   ],
+   "sleep": {
+    "score": 85,
+    "wake_time": "08:29",
+    "deep_min": 105,
+    "light_min": 289,
+    "rem_min": 65,
+    "hw_range": [
+     83,
+     118
+    ],
+    "hr_range": [
+     41,
+     88
+    ],
+    "shr_range": [
+     45,
+     51
+    ],
+    "spo2_pct": 97,
+    "respiratory_rate": 15,
+    "breathing_score": 98
+   },
+   "sessions": [
+    {
+     "kind": "run",
+     "name": "第一段",
+     "start": "18:07",
+     "km": 2.42,
+     "tsec": 803,
+     "pace": "5:32",
+     "hr": 143,
+     "hrmax": 158,
+     "load": 14,
+     "active_kcal": 116,
+     "total_kcal": 134,
+     "cad": 179,
+     "gct": 230,
+     "vo": 9.3,
+     "bal": 49.9,
+     "pw": 210
+    },
+    {
+     "kind": "run",
+     "name": "主跑",
+     "start": "18:27",
+     "km": 7.5,
+     "tsec": 2538,
+     "pace": "5:38",
+     "hr": 142,
+     "hrmax": 160,
+     "load": 40,
+     "active_kcal": 352,
+     "total_kcal": 408,
+     "cad": 180,
+     "gct": 230,
+     "vo": 9.1,
+     "bal": 50,
+     "pw": 193,
+     "ats": 2.2,
+     "rec": 12
+    }
+   ],
+   "day_totals": {
+    "run_km": 9.92,
+    "training_tsec": 3341,
+    "active_kcal": 468,
+    "total_kcal": 542,
+    "device_load_sum": 54,
+    "scope": "已报告两段跑合计；负荷为设备读数相加"
+   },
+   "nutrition": {
+    "kcal_range": [
+     2500,
+     3600
+    ],
+    "protein_range": [
+     90,
+     130
+    ],
+    "estimated": true,
+    "kcal_estimate": 3050,
+    "protein_estimate": 110,
+    "meal_estimates": [
+     {
+      "meal": "早",
+      "what": "香蕉1根",
+      "lo": 90,
+      "hi": 120
+     },
+     {
+      "meal": "中",
+      "what": "偏肥红烧肉盖饭＋豆浆",
+      "lo": 980,
+      "hi": 1360
+     },
+     {
+      "meal": "下午茶",
+      "what": "库迪高山抹茶清爽椰，小杯全糖；抹茶层喝得少",
+      "lo": 180,
+      "hi": 320
+     },
+     {
+      "meal": "练前",
+      "what": "香蕉1根",
+      "lo": 90,
+      "hi": 120
+     },
+     {
+      "meal": "练后补给",
+      "what": "E-MASS半勺＋300 ml牛奶＋白糖一汤匙",
+      "lo": 300,
+      "hi": 350
+     },
+     {
+      "meal": "晚餐",
+      "what": "普通款KFC炸鸡翅10块",
+      "lo": 900,
+      "hi": 1300
+     }
+    ],
+    "main_uncertainty": "盖饭饭量和肥肉量、鸡翅大小、豆浆糖量、库迪饮品实际配方与摄入量"
+   },
+   "environment": {
+    "temperature_c": 14,
+    "rain": "后半程毛毛雨",
+    "wind": "用户报告冷风"
+   },
+   "measurement": {
+    "hr_source": "腕式光电",
+    "hr_reliability": "低温湿冷条件下用户提出可靠性疑问；无H10同步对照",
+    "h10_available": false
+   },
+   "symptoms": {
+    "event": "跑后短暂头痛及耳朵发烫",
+    "headache_resolved": true,
+    "resolved_report_time": "19:47",
+    "diagnosis": null
+   }
+  },
+  "2026-10-05": {
+   "weight": [
+    {
+     "time": "09:38",
+     "kg": 60.45,
+     "body_fat_pct": 13.3,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图",
+     "bmi": 19,
+     "skeletal_muscle_kg": 28.2,
+     "fat_free_mass_kg": 52.5,
+     "body_water_pct": 55.7,
+     "bone_mineral_kg": 2.74,
+     "protein_pct": 26.5,
+     "visceral_fat": 2,
+     "bmr_kcal": 1499,
+     "body_age": 20,
+     "score": 82
+    }
+   ],
+   "sleep": {
+    "score": 82,
+    "wake_time": "09:18",
+    "deep_min": 144,
+    "light_min": 291,
+    "rem_min": 41,
+    "hw_range": [
+     83,
+     118
+    ],
+    "hr_range": [
+     41,
+     77
+    ],
+    "shr_range": [
+     45,
+     51
+    ],
+    "spo2_pct": 96,
+    "respiratory_rate": 15,
+    "breathing_score": 98
+   },
+   "sessions": [],
+   "training_status": "complete_rest",
+   "nutrition": {
+    "reported": true,
+    "estimated": false,
+    "kcal_estimate": null,
+    "protein_estimate": null,
+    "meals": [
+     {
+      "meal": "早",
+      "what": "香蕉1根"
+     },
+     {
+      "meal": "中",
+      "what": "9英寸披萨1.5个，用户报告吃撑"
+     },
+     {
+      "meal": "下午茶",
+      "what": "库迪咖啡清爽抹茶生椰，小杯全糖"
+     },
+     {
+      "meal": "晚",
+      "what": "烧烤，主要为肉类与碳水，蔬菜较少，六七分饱"
+     }
+    ],
+    "main_uncertainty": "披萨口味及饼底厚度、烧烤实际份量未明确，未作数值估算"
+   }
+  },
+  "2026-10-06": {
+   "weight": [
+    {
+     "time": "09:09",
+     "kg": 60.95,
+     "body_fat_pct": 13.4,
+     "period": "morning",
+     "protocol_confirmed": false,
+     "source": "用户截图",
+     "bmi": 19.2,
+     "skeletal_muscle_kg": 28.3,
+     "fat_free_mass_kg": 52.8,
+     "body_water_pct": 55.7,
+     "bone_mineral_kg": 2.74,
+     "protein_pct": 26.4,
+     "visceral_fat": 2,
+     "bmr_kcal": 1502,
+     "body_age": 20,
+     "score": 82,
+     "body_water_kg": 33.95,
+     "protein_kg": 16.09,
+     "fat_kg": 8.17
+    }
+   ],
+   "sleep": {
+    "score": 84,
+    "wake_time": "08:12",
+    "deep_min": 104,
+    "light_min": 259,
+    "rem_min": 58,
+    "hw_range": [
+     83,
+     118
+    ],
+    "hr_range": [
+     45,
+     72
+    ],
+    "shr_range": [
+     45,
+     51
+    ],
+    "spo2_pct": 98,
+    "respiratory_rate": 15,
+    "breathing_score": 98
+   },
+   "sessions": [
+    {
+     "kind": "run",
+     "name": "第一段",
+     "start": "17:04",
+     "km": 2.28,
+     "tsec": 833,
+     "pace": "6:05",
+     "hr": 140,
+     "hrmax": 165,
+     "load": 14,
+     "active_kcal": 110,
+     "total_kcal": 128,
+     "cad": 181,
+     "gct": 223,
+     "vo": 8.9,
+     "bal": 50.1,
+     "pw": 190,
+     "rec": 5,
+     "stride_cm": 90,
+     "steps": 2520,
+     "elevation_gain_m": 26.9,
+     "descent_m": 9.5
+    },
+    {
+     "kind": "run",
+     "name": "主跑",
+     "start": "17:28",
+     "km": 12.44,
+     "tsec": 3828,
+     "pace": "5:08",
+     "hr": 153,
+     "hrmax": 178,
+     "load": 125,
+     "active_kcal": 606,
+     "total_kcal": 691,
+     "cad": 182,
+     "gct": 227,
+     "vo": 8.8,
+     "bal": 50.2,
+     "pw": 273,
+     "rec": 20,
+     "ats": 3.3,
+     "stride_cm": 107,
+     "steps": 11675,
+     "elevation_gain_m": 75.8,
+     "descent_m": 102.4
+    }
+   ],
+   "day_totals": {
+    "run_km": 14.72,
+    "training_tsec": 4661,
+    "active_kcal": 716,
+    "total_kcal": 819,
+    "device_load_sum": 139,
+    "scope": "已报告两段跑合计；主跑12.44km暂按压缩包清晰图，差异另存；负荷仅为设备读数相加"
+   },
+   "nutrition": {
+    "kcal_range": [
+     1800,
+     2700
+    ],
+    "protein_range": [
+     70,
+     105
+    ],
+    "estimated": true,
+    "kcal_estimate": null,
+    "protein_estimate": null,
+    "meal_estimates": [
+     {
+      "meal": "早",
+      "what": "鸡胸肉35 g",
+      "lo": null,
+      "hi": null
+     },
+     {
+      "meal": "中",
+      "what": "图片辨认为豆花／豆腐汤、煎蛋、含花生的油辣椒蘸水；米饭共2碗（含额外添饭1碗）",
+      "lo": null,
+      "hi": null
+     },
+     {
+      "meal": "下午茶",
+      "what": "库迪燕麦拿铁：小杯、全糖、冰、轻咖",
+      "lo": null,
+      "hi": null
+     },
+     {
+      "meal": "练后补给",
+      "what": "300 ml牛奶＋E-MASS半勺＋白砂糖一汤匙",
+      "lo": 300,
+      "hi": 350
+     },
+     {
+      "meal": "晚餐",
+      "what": "大碗羊肉粉1碗",
+      "lo": null,
+      "hi": null
+     }
+    ],
+    "main_uncertainty": "饭量、豆花和蘸水实际食用量、羊肉粉的粉肉油量、燕麦拿铁配方；午餐菜品为图片辨认，未逐项确认"
+   },
+   "measurement": {
+    "hr_source": "腕式光电",
+    "h10_available": false,
+    "hr_reliability": "无H10同步对照",
+    "distance_discrepancy": {
+     "clear_zip_km": 12.44,
+     "compressed_image_read_km": 12.46,
+     "adopted_km": 12.44,
+     "status": "待核对"
+    }
+   },
+   "context": {
+    "training_reason": "明天就回贵阳，这几天没安排力量训练，所以今天稍微跑的长一点",
+    "planned_return_date": "2026-10-07",
+    "return_confirmed": false
+   }
+  }
+ },
+ "baseline": {
+  "start": "2026-08-08",
+  "end": "2026-08-23",
+  "exclude": [
+   "2026-08-16",
+   "2026-08-17"
+  ],
+  "n": 14,
+  "mean": 4.4417,
+  "sd": 0.0935,
+  "locked": true,
+  "builtin": true,
+  "lo": 4.3482,
+  "hi": 4.5352,
+  "olo": 4.30145,
+  "ohi": 4.58195
+ },
+ "quarantine": {
+  "recordErrors": [
+   {
+    "index": 1,
+    "reason": "invalid-row"
+   }
+  ],
+  "badRows": [
+   {
+    "index": 1,
+    "raw": null
+   }
+  ]
+ },
+ "readErrors": [],
+ "storage": {
+  "writeOk": true,
+  "corruptAuthority": false,
+  "unreadableKeys": []
+ },
+ "_meta": {
+  "title": "个人训练数据集",
+  "role": "唯一真源 — 每日数值以本文件为准，与任何叙述性文档冲突时以本文件为准",
+  "established": "2026-08-13",
+  "last_updated": "2026-10-07",
+  "schema_version": "32字段 (2026-08-15 由23字段扩展)",
+  "note": "本文件于 2026-08-30 从《个人训练档案 v5.0》附录C 独立为单独文件。字段设计与录入纪律保持不变。",
+  "data_through": "2026-10-06"
+ },
+ "_fields": [
+  "d",
+  "hw",
+  "el",
+  "bed",
+  "dur",
+  "deep",
+  "rem",
+  "cont",
+  "wake",
+  "shr",
+  "type",
+  "shoe",
+  "km",
+  "pace",
+  "hr",
+  "hrmax",
+  "pw",
+  "load",
+  "tsec",
+  "rec",
+  "ats",
+  "gct",
+  "cad",
+  "vo",
+  "bal",
+  "vol",
+  "hrr0",
+  "hrr1",
+  "pro",
+  "kcal",
+  "feel",
+  "flag"
+ ],
+ "_field_definitions": {
+  "d": "日期 YYYY-MM-DD",
+  "hw": "华为夜间HRV (ms，整夜均值)",
+  "el": "Elite RMSSD (ms，晨起清醒静息)",
+  "bed": "入睡时刻 HH:MM",
+  "dur": "总睡眠 (分钟)",
+  "deep": "深睡占比 %",
+  "rem": "REM占比 %",
+  "cont": "深睡连续性 (分)",
+  "wake": "觉醒次数",
+  "shr": "睡眠平均心率 (bpm)",
+  "type": "训练类型",
+  "shoe": "鞋款",
+  "km": "距离 (km)",
+  "pace": "配速 m:ss",
+  "hr": "均心率 (bpm)",
+  "hrmax": "峰值心率 (bpm)",
+  "pw": "平均功率 (W)",
+  "load": "训练负荷",
+  "tsec": "训练时长 (秒)",
+  "rec": "手表给出的恢复时间 (小时)",
+  "ats": "有氧训练压力",
+  "gct": "触地时间 (ms)",
+  "cad": "步频 (spm)",
+  "vo": "垂直振幅 (cm)",
+  "bal": "左右平衡 (左侧%)",
+  "vol": "训练容量 (kg)",
+  "hrr0": "手动HRR起始心率",
+  "hrr1": "手动HRR一分钟末心率",
+  "pro": "蛋白 (g)",
+  "kcal": "热量",
+  "feel": "主观体感 1-5",
+  "flag": "异常事件标记"
+ },
+ "_entry_discipline": [
+  "hw 与 el 是两套不可混用的口径，不得互相填充，也不得求差值当指标",
+  "hrr0/hrr1 只记手动1分钟掐表值，手表自动给出的2分钟HRR一律不入库",
+  "频域指标 (LF/HF、各频段峰值) 一律不入库，该组数据长期不可靠",
+  "带 flag 的记录照常参与基线计算，是否采信由使用时判断，不在录入阶段预先剔除"
+ ],
+ "_format_rules": [
+  "空值一律 null，不用 0 或空字符串 —— 0 在本数据集中是有意义的数值 (如觉醒0次)",
+  "pace 采用 m:ss 格式 (如 6:32)，不用含双引号的写法，后者会破坏 JSON 可解析性",
+  "海拔不设字段：贵阳期恒为~1050m，属环境常量，跨城市时在 flag 注明",
+  "字段名与《训练监测系统》HTML 程序内部字段一一对应，不得随意改名"
+ ],
+ "_calibration_notes": [
+  "★杠铃重量口径 (2026-08-28 修正)：标准奥林匹克杠铃杆重 20kg。此前记录长期漏记 10kg，已订正三处里程碑数值 —— 深蹲 8/21 由 50kg×5 改为 60kg×5、硬拉 8/24 由 60kg×3 改为 70kg×3、卧推 8/26 由 40kg×3 改为 50kg×3。日常训练行的 vol 聚合数值未逐条回溯修正：这些数字此前用于同口径内部比较，比较双方使用同一错误口径时相对结论不受影响。2026-08-28 起新记录一律采用正确口径。",
+  "★体重口径 (2026-08-26 确立)：以晨起空腹、排尿后、光脚硬地、未进食未饮水未洗澡的读数为准。每日仅测一次，绑定晨起流程 (起床→排尿→称重→测Elite)。BIA 体脂率日间跳动 1-2 个百分点属噪声，只看周级趋势，单日不解读；体重是该秤最可靠项 (直接称重，不经阻抗模型)。",
+  "★app 与手表计时差异 (2026-08-28 澄清)：三次实测差值为 13分14秒、12分33秒、3分49秒，并不一致，此前判定的'系统性偏移'不成立，改判为随机差异 (推测为每次开表时机不同)。tsec 统一取华为手表口径。"
+ ],
+ "_baseline": {
+  "locked_on": "2026-08-23",
+  "window": "2026-08-08 至 2026-08-23（闭区间，锁定后不再随新数据延展）",
+  "excluded": [
+   "2026-08-16",
+   "2026-08-17"
+  ],
+  "excluded_reason": {
+   "2026-08-16": "热水澡致交感激活的污染样本 (RMSSD 57.09)",
+   "2026-08-17": "睡眠剥夺后迷走饱和态 (RMSSD 100.07)"
+  },
+  "n": 14,
+  "lnRMSSD_mean": 4.4417,
+  "lnRMSSD_sd": 0.0935,
+  "normal_band_ms": [
+   77.3,
+   93.2
+  ],
+  "outlier_lines_ms": [
+   73.8,
+   97.7
+  ],
+  "rules": [
+   "锁定后不再逐日滚动重算 —— 若随新数据每日滚动，常态带下沿会跟着真实下降一起下移，导致趋势性下降永远无法触发",
+   "重设触发条件：训练阶段切换、伤病恢复、长假归来，或积累满4周更长的稳定期样本后主动重算一次",
+   "当前14个样本仍不足 Plews 建议的4周基线，阈值属过渡版本，误报率可能偏高"
+  ],
+  "window_start": "2026-08-08",
+  "window_end": "2026-08-23",
+  "warning": "窗口是闭区间，末端固定在 2026-08-23。计算基线时不得把 8/23 之后的新样本纳入 —— 那等于逐日滚动重算，会使常态带跟着真实变化一起漂移，趋势性下降将永远无法触发。校验脚本必须同时用 window_start 和 window_end 过滤。"
+ },
+ "_daily_schema": {
+  "purpose": "可选的按日期补充记录，数值与data同属唯一数据源；保留32列兼容接口",
+  "weight": "测量列表，保留时刻与协议确认状态，晨晚不混算",
+  "sessions": "逐课原始记录；day_totals为显式全天合计，不能替代主课字段",
+  "nutrition": "估算范围及依据，kcal/pro仍为代表估值",
+  "sleep": "设备分期及当日个人参考区间",
+  "missing": "未录入的历史补充字段不表示没有测量或训练"
+ },
+ "data": [
+  {
+   "d": "2099-06-01",
+   "hw": null,
+   "el": 77,
+   "bed": null,
+   "dur": null,
+   "deep": null,
+   "rem": null,
+   "cont": null,
+   "wake": null,
+   "shr": null,
+   "type": null,
+   "shoe": null,
+   "km": null,
+   "pace": null,
+   "hr": null,
+   "hrmax": null,
+   "pw": null,
+   "load": null,
+   "tsec": null,
+   "rec": null,
+   "ats": null,
+   "gct": null,
+   "cad": null,
+   "vo": null,
+   "bal": null,
+   "vol": null,
+   "hrr0": null,
+   "hrr1": null,
+   "pro": null,
+   "kcal": null,
+   "feel": null,
+   "flag": "ONLY-LOCAL"
+  }
+ ]
+}

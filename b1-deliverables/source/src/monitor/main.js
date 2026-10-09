@@ -54,6 +54,7 @@ function init() {
     migrationPending: storage.migrationPending,
     pendingCommit: storage.pendingCommit,
     quarantine: storage.quarantine,
+    storageBanner: storage.storageBanner,
   });
   if (storage.staleVer) {
     const vb = $("#verBanner");

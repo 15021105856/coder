@@ -6,7 +6,7 @@ import { dayMs, pad2, DAY_MS, lastDataDate } from "../shared/time.js";
 import { esc, fmtTsec, fmtDur, normPace, fmtPace } from "../shared/format.js";
 import { runTotalKg, strengthTotalDetail } from "../shared/daily.js";
 import { normalizeRec, upsertIntoList, byDate as recByDate } from "../shared/records-io.js";
-import { loadAppState, commitAppState, exportRescueBundle, reconcileMemoryWithAuthority } from "../shared/app-storage.js";
+import { loadAppState, commitAppState, exportRescueBundle, overlayAuthorityOnCommit } from "../shared/app-storage.js";
 import { createMemoryStorageAdapter, wrapLocalStorage } from "../shared/local-storage-adapter.js";
 
 export { FIELDS, NUM_FIELDS, dayMs, pad2, esc, fmtTsec, fmtDur, normPace, fmtPace };
@@ -213,6 +213,7 @@ export const storage = {
   pendingCommit: false,
   writeOk: true,
   corruptAuthority: false,
+  authorityOverlayOnCommit: false,
 };
 export const state = { recs: [], sel: null, view: "today" };
 
@@ -248,6 +249,7 @@ export function bootstrapStorage() {
   storage.migrationPending = loaded.migrationPending;
   storage.writeOk = loaded.writeOk !== false;
   storage.corruptAuthority = !!loaded.corruptAuthority;
+  storage.authorityOverlayOnCommit = !!loaded.authorityOverlayOnCommit;
   storage.memStore = loaded.memMode ? loaded.records : null;
   storage.bootstrapped = true;
 }
@@ -257,16 +259,18 @@ export function persistAppState() {
   const ls = getStorageAdapter();
   const writeOk = ls.probeWrite?.() ?? ls.probe?.() ?? true;
   storage.writeOk = writeOk;
-  const reconciled = reconcileMemoryWithAuthority(ls, storageCtx(), {
+  let bundle = overlayAuthorityOnCommit(ls, storageCtx(), {
     records: state.recs,
     dailyMeta: store.dailyMeta,
     baseline: memBaseline,
     quarantine: storage.quarantine,
+    authorityOverlayOnCommit: storage.authorityOverlayOnCommit,
   });
-  state.recs = reconciled.records;
-  store.dailyMeta = reconciled.dailyMeta;
-  memBaseline = reconciled.baseline;
-  storage.quarantine = reconciled.quarantine;
+  state.recs = bundle.records;
+  store.dailyMeta = bundle.dailyMeta;
+  memBaseline = bundle.baseline;
+  storage.quarantine = bundle.quarantine;
+  storage.authorityOverlayOnCommit = bundle.authorityOverlayOnCommit;
   if (!writeOk) {
     storage.memMode = true;
     storage.memStore = state.recs;

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "delete-row-B1R2",
+    "status": "completed",
+    "result": {
+      "toast": "已删除 2099-06-01",
+      "uniqueStillStored": false,
+      "uniqueAfterReload": false,
+      "errors": []
+    },
+    "pass": true
+  },
+  {
+    "id": "empty-valid-v2-B1R2",
+    "status": "completed",
+    "result": {
+      "records": 0,
+      "errors": []
+    },
+    "pass": true
+  },
+  {
+    "id": "seed-update-drops-local-daily",
+    "status": "completed",
+    "result": {
+      "recordPreserved": true,
+      "localDailyInExport": {
+        "sessions": [
+          {
+            "kind": "run",
+            "start": "18:00",
+            "km": 7.77
+          }
+        ],
+        "note": "LOCAL-DAILY-ONLY"
+      },
+      "localDailyInStorage": {
+        "sessions": [
+          {
+            "kind": "run",
+            "start": "18:00",
+            "km": 7.77
+          }
+        ],
+        "note": "LOCAL-DAILY-ONLY"
+      },
+      "newSeed": true,
+      "errors": []
+    },
+    "pass": true
+  },
+  {
+    "id": "legacy-daily-read-denied-migration",
+    "status": "completed",
+    "result": {
+      "createdAuthorityDespiteReadFailure": false,
+      "legacyRawPreserved": true,
+      "afterRecoveryDaily": {
+        "sessions": [
+          {
+            "kind": "run",
+            "start": "18:00",
+            "km": 7.77
+          }
+        ]
+      },
+      "recoveryBanner": "",
+      "errors": []
+    },
+    "pass": true
+  },
+  {
+    "id": "authority-read-denied-retry-drops-daily-baseline",
+    "status": "completed",
+    "result": {
+      "initialAuthorityPreserved": true,
+      "recordRescued": true,
+      "dailyAfterRetry": {
+        "sessions": [
+          {
+            "kind": "run",
+            "start": "18:00",
+            "km": 7.77
+          }
+        ]
+      },
+      "baselineAfterRetry": {
+        "start": "2026-08-08",
+        "end": "2026-08-23",
+        "n": 14,
+        "mean": 4.55,
+        "sd": 0.1,
+        "locked": true
+      },
+      "toast": "导入完成：新增 1 天，覆盖 0 天",
+      "errors": []
+    },
+    "pass": true
+  },
+  {
+    "id": "invalid-v2-records-shape",
+    "status": "completed",
+    "result": {
+      "rawPreserved": true,
+      "originalInRescue": true,
+      "corruptFlag": true,
+      "records": 73,
+      "errors": []
+    },
+    "pass": true
+  },
+  {
+    "id": "v2-null-row",
+    "status": "completed",
+    "result": {
+      "recoveryMentionsQuarantine": true,
+      "exportHasBadRows": true,
+      "errors": []
+    },
+    "pass": true
+  }
+]

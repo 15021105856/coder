@@ -32,7 +32,7 @@ export function showMemBanner() {
   const b = $("#storBadge"); b.textContent = "内存模式"; b.classList.add("warn");
 }
 
-export function showStorageRecoveryBanner({ readErrors, migrationPending, pendingCommit, quarantine }) {
+export function showStorageRecoveryBanner({ readErrors, migrationPending, pendingCommit, quarantine, storageBanner }) {
   const el = $("#storRecoverBanner");
   if (!el) return;
   const parts = [];
@@ -46,7 +46,13 @@ export function showStorageRecoveryBanner({ readErrors, migrationPending, pendin
   if (quarantine?.legacyRecordsRaw || quarantine?.parseError) {
     parts.push("本机缓存含无法完全解析的记录，已保留原文并救援可读行；刷新后仍会提示直至成功写入新快照。");
   }
+  if (storageBanner === "migration-blocked") {
+    parts.push("部分 legacy 键无法读取，未完成迁移写入，避免提交不完整的权威快照。");
+  }
   if (migrationPending) parts.push("存储迁移尚未完成写入，旧格式数据仍保留在本机。");
+  if (quarantine?.recordErrors?.length || quarantine?.badRows?.length) {
+    parts.push("部分记录行无法解析，已救援可读行；详见导出 JSON 中的 quarantine。");
+  }
   if (pendingCommit) parts.push("有未确认写入本机的编辑，请勿以为已持久保存。");
   if (!parts.length) {
     el.classList.remove("on");
