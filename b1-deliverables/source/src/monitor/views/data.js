@@ -1,6 +1,6 @@
 import {
   SEED, state, sortedRecs, saveRecords, clearBaselineLock, maybeAutoLock, saveResultMessage,
-  normalizeRec, esc, fmtTsec, fmtPace, hrrNorm,
+  normalizeRec, esc, fmtTsec, fmtPace, hrrNorm, markRecordDeleted,
 } from "../core.js";
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -64,6 +64,7 @@ export function renderData() {
     const d = b.dataset.d;
     if (!confirm("删除 " + d + " 的记录？")) return;
     state.recs = state.recs.filter((r) => r.d !== d);
+    markRecordDeleted(d);
     const r = saveRecords(state.recs);
     if (state.sel === d) state.sel = null;
     renderAll();

@@ -1,4 +1,4 @@
-# 个人训练系统 v7 · B1 / B1-R1 / B1-R2 本地存储契约与迁移
+# 个人训练系统 v7 · B1 / B1-R1 / B1-R2 / B1-R3 本地存储契约与迁移
 
 ## 权威读源
 
@@ -76,3 +76,14 @@
 ## seed 合并规则（records，未改算法）
 
 - 与 B0-R1 相同：同日期 seed 覆盖缓存；文件 DATA 旧于缓存 `dataDate` 时保留缓存并 `staleVer`；否则按 stamp 合并并 **可** 持久化合并结果到 v2（不再写 legacy 双键）。
+
+## B1-R3：意图、门禁与内容校验
+
+- **内存来源**：`seedPlaceholder`（authority 不可读回退） vs 完整加载 vs **用户意图**（`userRecordDates` / `userDailyDates` / `deletedRecordDates` / `baselineIntent`）。
+- **overlayAuthorityOnCommit**：恢复性读取 v2 成功后，以磁盘为基底，**仅**合并显式用户意图；迟发现结构损坏 → `corruptAuthority`，禁止覆盖。
+- **evaluateCommitGate**：每次提交前评估；无 v2 时 **assessLegacyCommitReadiness**（records / data-version / daily / baseline 不可读或 parse 失败 → 阻断）。
+- **mergeLegacySourcesForCommit**：首次写入 v2 前并入可读 legacy，避免 seed-only 内存遗漏本地行。
+- **legacy 原文**：parse 失败但已读到字符串 → `legacyDailyRaw` / `legacyBaselineRaw` 保留（非 unreadable）。
+- **提交前**：`sanitizeDailyMeta`、`validateBaselineValue`、`validateSnapshotForCommit`；拒绝自判无效 baseline（如数组）。
+- **适配器**：`localStorage` 访问 / `listKeys` 异常安全降级；`getStorageAdapter` 捕获 SecurityError。
+- **UI**：`syncStorageChrome` 在保存成功/失败后刷新内存横幅与 recovery 文案。

@@ -138,6 +138,11 @@ describe("B1-R2 regression", () => {
       baseline: null,
       quarantine: null,
       authorityOverlayOnCommit: true,
+      seedPlaceholder: true,
+      deletedRecordDates: [],
+      userRecordDates: ["2099-06-02"],
+      userDailyDates: [],
+      baselineIntent: "inherit",
     });
     expect(bundle.dailyMeta["2099-06-01"]?.sessions?.[0]?.km).toBe(9);
     expect(bundle.baseline?.n).toBe(2);

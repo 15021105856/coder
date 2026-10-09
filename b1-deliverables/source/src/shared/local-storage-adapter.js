@@ -52,6 +52,17 @@ export function createMemoryStorageAdapter(initial = {}, faults = {}) {
   return api;
 }
 
+export function safeListKeys(ls) {
+  try {
+    if (typeof ls.listKeys === "function") return ls.listKeys();
+    const snap = ls.snapshot?.();
+    if (snap && typeof snap === "object") return Object.keys(snap);
+    return [];
+  } catch {
+    return null;
+  }
+}
+
 export function wrapLocalStorage(localStorage, faults = {}) {
   return {
     getItem(key) {
@@ -93,12 +104,16 @@ export function wrapLocalStorage(localStorage, faults = {}) {
       return out;
     },
     listKeys() {
-      const out = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k != null) out.push(k);
+      try {
+        const out = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k != null) out.push(k);
+        }
+        return out;
+      } catch {
+        return [];
       }
-      return out;
     },
   };
 }

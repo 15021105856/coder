@@ -6,7 +6,7 @@ import {
 } from "./core.js";
 import { importJSON } from "./io.js";
 import {
-  TABS, bindUi, toast, showMemBanner, showStorageRecoveryBanner, moveSlider, switchView, buildChrome,
+  TABS, bindUi, toast, showMemBanner, syncStorageChrome, moveSlider, switchView, buildChrome,
 } from "./ui.js";
 import { renderToday } from "./views/today.js";
 import { renderTrend, bindTrend } from "./views/trend.js";
@@ -42,20 +42,10 @@ function init() {
     return;
   }
   storage.onMem = showMemBanner;
+  storage.onStorageUiSync = syncStorageChrome;
   state.recs = loadRecords();
   loadDaily();
-  if (storage.memMode || storage.pendingCommit || !storage.writeOk) showMemBanner();
-  if (!storage.writeOk) {
-    const b = $("#storBadge");
-    if (b) { b.textContent = "只读/内存"; b.classList.add("warn"); }
-  }
-  showStorageRecoveryBanner({
-    readErrors: storage.readErrors,
-    migrationPending: storage.migrationPending,
-    pendingCommit: storage.pendingCommit,
-    quarantine: storage.quarantine,
-    storageBanner: storage.storageBanner,
-  });
+  syncStorageChrome();
   if (storage.staleVer) {
     const vb = $("#verBanner");
     vb.textContent = "此文件（DATA " + DATA_DATE + "）旧于本机缓存（DATA " + storage.staleVer + "）：已保留缓存数据、未合并内嵌数据。请改用最新生成的文件。";

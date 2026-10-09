@@ -1,6 +1,6 @@
 import { icon } from "../shared/icons.js";
 import { toggleTheme, fxEnabled, setFxEnabled } from "../shared/fx.js";
-import { state } from "./core.js";
+import { state, storage } from "./core.js";
 import { exportJSON, exportCSV } from "./io.js";
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -30,6 +30,29 @@ export function toast(msg) {
 export function showMemBanner() {
   $("#memBanner").classList.add("on");
   const b = $("#storBadge"); b.textContent = "内存模式"; b.classList.add("warn");
+}
+
+export function syncStorageChrome() {
+  const memOn = storage.memMode || storage.pendingCommit || !storage.writeOk;
+  const mb = $("#memBanner");
+  if (mb) mb.classList.toggle("on", memOn);
+  const badge = $("#storBadge");
+  if (badge) {
+    if (memOn) {
+      badge.textContent = storage.writeOk === false ? "只读/内存" : "内存模式";
+      badge.classList.add("warn");
+    } else {
+      badge.textContent = "";
+      badge.classList.remove("warn");
+    }
+  }
+  showStorageRecoveryBanner({
+    readErrors: storage.readErrors,
+    migrationPending: storage.migrationPending,
+    pendingCommit: storage.pendingCommit,
+    quarantine: storage.quarantine,
+    storageBanner: storage.storageBanner,
+  });
 }
 
 export function showStorageRecoveryBanner({ readErrors, migrationPending, pendingCommit, quarantine, storageBanner }) {

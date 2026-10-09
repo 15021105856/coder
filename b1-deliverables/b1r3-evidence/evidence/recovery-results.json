@@ -1,0 +1,220 @@
+[
+  {
+    "id": "authority-recovery-same-date-local-edits-readable",
+    "status": "completed",
+    "result": {
+      "recordDate": "2026-07-26",
+      "dailyDate": "2026-09-25",
+      "expectedEl": 99,
+      "actualEl": 99,
+      "recordNote": "DISK-LOCAL-EDIT",
+      "expectedDaily": {
+        "weight": [
+          {
+            "time": "09:02",
+            "kg": 62.3,
+            "body_fat_pct": null,
+            "period": "morning",
+            "protocol_confirmed": false,
+            "source": "用户截图；9月25日来自既有档案"
+          }
+        ],
+        "sessions": [
+          {
+            "kind": "run",
+            "start": "20:00",
+            "km": 7.77,
+            "note": "DISK-SAME-DATE"
+          }
+        ],
+        "nutrition": {
+          "kcal_range": [
+            2750,
+            3650
+          ],
+          "protein_range": [
+            120,
+            175
+          ],
+          "estimated": true
+        },
+        "note": "DISK-SAME-DATE"
+      },
+      "actualDaily": {
+        "weight": [
+          {
+            "time": "09:02",
+            "kg": 62.3,
+            "body_fat_pct": null,
+            "period": "morning",
+            "protocol_confirmed": false,
+            "source": "用户截图；9月25日来自既有档案"
+          }
+        ],
+        "sessions": [
+          {
+            "kind": "run",
+            "start": "20:00",
+            "km": 7.77,
+            "note": "DISK-SAME-DATE"
+          }
+        ],
+        "nutrition": {
+          "kcal_range": [
+            2750,
+            3650
+          ],
+          "protein_range": [
+            120,
+            175
+          ],
+          "estimated": true
+        },
+        "note": "DISK-SAME-DATE"
+      },
+      "exportPreservesRecord": true,
+      "exportPreservesDaily": true,
+      "pendingRecordSaved": true,
+      "toast": "导入完成：新增 1 天，覆盖 0 天",
+      "errors": [],
+      "afterReloadEl": 99
+    }
+  },
+  {
+    "id": "authority-recovery-same-date-local-edits-unreadable",
+    "status": "completed",
+    "result": {
+      "recordDate": "2026-07-26",
+      "dailyDate": "2026-09-25",
+      "expectedEl": 99,
+      "actualEl": 99,
+      "recordNote": "DISK-LOCAL-EDIT",
+      "expectedDaily": {
+        "weight": [
+          {
+            "time": "09:02",
+            "kg": 62.3,
+            "body_fat_pct": null,
+            "period": "morning",
+            "protocol_confirmed": false,
+            "source": "用户截图；9月25日来自既有档案"
+          }
+        ],
+        "sessions": [
+          {
+            "kind": "run",
+            "start": "20:00",
+            "km": 7.77,
+            "note": "DISK-SAME-DATE"
+          }
+        ],
+        "nutrition": {
+          "kcal_range": [
+            2750,
+            3650
+          ],
+          "protein_range": [
+            120,
+            175
+          ],
+          "estimated": true
+        },
+        "note": "DISK-SAME-DATE"
+      },
+      "actualDaily": {
+        "weight": [
+          {
+            "time": "09:02",
+            "kg": 62.3,
+            "body_fat_pct": null,
+            "period": "morning",
+            "protocol_confirmed": false,
+            "source": "用户截图；9月25日来自既有档案"
+          }
+        ],
+        "sessions": [
+          {
+            "kind": "run",
+            "start": "20:00",
+            "km": 7.77,
+            "note": "DISK-SAME-DATE"
+          }
+        ],
+        "nutrition": {
+          "kcal_range": [
+            2750,
+            3650
+          ],
+          "protein_range": [
+            120,
+            175
+          ],
+          "estimated": true
+        },
+        "note": "DISK-SAME-DATE"
+      },
+      "exportPreservesRecord": true,
+      "exportPreservesDaily": true,
+      "pendingRecordSaved": true,
+      "toast": "导入完成：新增 1 天，覆盖 0 天",
+      "errors": [],
+      "afterReloadEl": 99
+    }
+  },
+  {
+    "id": "legacy-blocked-daily-then-user-save",
+    "status": "completed",
+    "result": {
+      "initialV2Absent": true,
+      "v2CreatedAfterSave": false,
+      "localDaily": null,
+      "baseline": null,
+      "oldRawPreserved": true,
+      "toast": "保存失败：改动仅保留在当前页面内存中，请导出 JSON",
+      "pendingInExport": true,
+      "errors": [],
+      "importBlocked": true,
+      "dailyAfterReload": null,
+      "baselineAfterReload": null
+    }
+  },
+  {
+    "id": "legacy-blocked-baseline-then-user-save",
+    "status": "completed",
+    "result": {
+      "initialV2Absent": true,
+      "v2CreatedAfterSave": false,
+      "localDaily": null,
+      "baseline": null,
+      "oldRawPreserved": true,
+      "toast": "保存失败：改动仅保留在当前页面内存中，请导出 JSON",
+      "pendingInExport": true,
+      "errors": [],
+      "importBlocked": true,
+      "dailyAfterReload": null,
+      "baselineAfterReload": null
+    }
+  },
+  {
+    "id": "legacy-records-unreadable",
+    "status": "completed",
+    "result": {
+      "v2CreatedAtLoad": false,
+      "uniqueAfterReload": true,
+      "legacyRawPreserved": true,
+      "toast": "",
+      "errors": []
+    }
+  },
+  {
+    "id": "unreadable-then-structurally-corrupt-authority",
+    "status": "completed",
+    "result": {
+      "initialRawPreserved": true,
+      "rawPreservedAfterRetry": true,
+      "originalInExport": true,
+      "toast": "保存失败：改动仅保留在当前页面内存中，请导出 JSON",
+      "errors": []
+    }
+  }
+]

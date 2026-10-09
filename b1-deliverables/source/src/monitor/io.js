@@ -1,7 +1,7 @@
 import {
   DATA_STAMP, DATA_DATE, DATASET_META, FIELDS, store, state,
   loadBaselineLock, hydrateBaseline, windowStats, storage,
-  sortedRecs, hrrNorm, applyImportState, saveResultMessage, buildRescueExportPayload,
+  sortedRecs, hrrNorm, applyImportState, saveResultMessage, buildRescueExportPayload, markUserRecordDates, markUserDailyDates,
 } from "./core.js";
 import { validateImportPayload, upsertIntoList, IMPORT_MAX_BYTES } from "../shared/records-io.js";
 import { mergeImportedDaily } from "../shared/payload-validation.js";
@@ -66,7 +66,15 @@ export function importJSON(file, toast, renderAll) {
             const w = windowStats(recs, b.start, b.end, b.exclude);
             b.n = w ? w.n : 0;
       }
-      const commit = applyImportState({ recs, dailyMeta: nextDaily, baseline: b || undefined });
+      markUserRecordDates(v.list.map((r) => r?.d).filter(Boolean));
+      if (v.daily) markUserDailyDates(Object.keys(v.daily));
+      const commit = applyImportState({
+        recs,
+        dailyMeta: nextDaily,
+        baseline: b || undefined,
+        touchedRecordDates: v.list.map((r) => r?.d).filter(Boolean),
+        touchedDailyDates: v.daily ? Object.keys(v.daily) : [],
+      });
       state.sel = null;
       renderAll();
       const extra = [skip ? `跳过 ${skip} 条无效日期` : "", v.issues.length ? "详见控制台" : ""].filter(Boolean).join("，");

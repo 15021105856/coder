@@ -6,7 +6,10 @@ import { dayMs, pad2, DAY_MS, lastDataDate } from "../shared/time.js";
 import { esc, fmtTsec, fmtDur, normPace, fmtPace } from "../shared/format.js";
 import { runTotalKg, strengthTotalDetail } from "../shared/daily.js";
 import { normalizeRec, upsertIntoList, byDate as recByDate } from "../shared/records-io.js";
-import { loadAppState, commitAppState, exportRescueBundle, overlayAuthorityOnCommit } from "../shared/app-storage.js";
+import {
+  loadAppState, commitAppState, exportRescueBundle, overlayAuthorityOnCommit, evaluateCommitGate,
+  mergeLegacySourcesForCommit,
+} from "../shared/app-storage.js";
 import { createMemoryStorageAdapter, wrapLocalStorage } from "../shared/local-storage-adapter.js";
 
 export { FIELDS, NUM_FIELDS, dayMs, pad2, esc, fmtTsec, fmtDur, normPace, fmtPace };
@@ -121,12 +124,14 @@ export function loadBaselineLock() {
 export function saveBaselineLock(b) {
   bootstrapStorage();
   memBaseline = b?.auto === true ? null : b;
+  storage.baselineIntent = "locked";
   return persistAppState();
 }
 
 export function clearBaselineLock() {
   bootstrapStorage();
   memBaseline = null;
+  storage.baselineIntent = "cleared";
   return persistAppState();
 }
 
@@ -214,13 +219,42 @@ export const storage = {
   writeOk: true,
   corruptAuthority: false,
   authorityOverlayOnCommit: false,
+  seedPlaceholder: false,
+  migrationBlocked: false,
+  deletedRecordDates: new Set(),
+  userRecordDates: new Set(),
+  userDailyDates: new Set(),
+  baselineIntent: "inherit",
+  onStorageUiSync: null,
 };
 export const state = { recs: [], sel: null, view: "today" };
 
 export function getStorageAdapter() {
   if (lsAdapterOverride) return lsAdapterOverride;
-  if (typeof localStorage !== "undefined") return wrapLocalStorage(localStorage);
+  try {
+    if (typeof localStorage !== "undefined" && localStorage) return wrapLocalStorage(localStorage);
+  } catch {
+    /* SecurityError 等：降级内存适配器 */
+  }
   return createMemoryStorageAdapter();
+}
+
+export function markUserRecordDates(dates) {
+  for (const d of dates || []) if (d) storage.userRecordDates.add(d);
+}
+
+export function markUserDailyDates(dates) {
+  for (const d of dates || []) if (d) storage.userDailyDates.add(d);
+}
+
+export function markRecordDeleted(d) {
+  if (!d) return;
+  storage.deletedRecordDates.add(d);
+  storage.userRecordDates.add(d);
+}
+
+function syncStorageUi() {
+  storage.onStorageUiSync?.();
 }
 
 /** 单测 / 集成测试注入 mock localStorage */
@@ -250,6 +284,12 @@ export function bootstrapStorage() {
   storage.writeOk = loaded.writeOk !== false;
   storage.corruptAuthority = !!loaded.corruptAuthority;
   storage.authorityOverlayOnCommit = !!loaded.authorityOverlayOnCommit;
+  storage.seedPlaceholder = !!loaded.seedPlaceholder;
+  storage.migrationBlocked = !!loaded.migrationBlocked;
+  storage.deletedRecordDates = new Set();
+  storage.userRecordDates = new Set();
+  storage.userDailyDates = new Set();
+  storage.baselineIntent = "inherit";
   storage.memStore = loaded.memMode ? loaded.records : null;
   storage.bootstrapped = true;
 }
@@ -265,12 +305,49 @@ export function persistAppState() {
     baseline: memBaseline,
     quarantine: storage.quarantine,
     authorityOverlayOnCommit: storage.authorityOverlayOnCommit,
+    seedPlaceholder: storage.seedPlaceholder,
+    deletedRecordDates: [...storage.deletedRecordDates],
+    userRecordDates: [...storage.userRecordDates],
+    userDailyDates: [...storage.userDailyDates],
+    baselineIntent: storage.baselineIntent,
   });
   state.recs = bundle.records;
   store.dailyMeta = bundle.dailyMeta;
   memBaseline = bundle.baseline;
   storage.quarantine = bundle.quarantine;
   storage.authorityOverlayOnCommit = bundle.authorityOverlayOnCommit;
+  storage.seedPlaceholder = !!bundle.seedPlaceholder;
+  if (bundle.corruptAuthority) storage.corruptAuthority = true;
+  if (bundle.overlayReadFailed) {
+    storage.memMode = true;
+    storage.pendingCommit = true;
+    syncStorageUi();
+    return { ok: false, status: "failed", reason: "authority-read-failed" };
+  }
+  const gate = evaluateCommitGate(ls, storageCtx(), {
+    corruptAuthority: storage.corruptAuthority,
+  });
+  if (!gate.ok) {
+    storage.memMode = true;
+    storage.pendingCommit = true;
+    storage.storageBanner = gate.reason === "migration-blocked" ? "migration-blocked" : storage.storageBanner;
+    syncStorageUi();
+    return { ok: false, status: "failed", reason: gate.reason || "commit-blocked" };
+  }
+  bundle = mergeLegacySourcesForCommit(ls, storageCtx(), {
+    records: state.recs,
+    dailyMeta: store.dailyMeta,
+    baseline: memBaseline,
+    quarantine: storage.quarantine,
+    deletedRecordDates: [...storage.deletedRecordDates],
+    userRecordDates: [...storage.userRecordDates],
+    userDailyDates: [...storage.userDailyDates],
+    baselineIntent: storage.baselineIntent,
+  });
+  state.recs = bundle.records;
+  store.dailyMeta = bundle.dailyMeta;
+  memBaseline = bundle.baseline;
+  storage.quarantine = bundle.quarantine;
   if (!writeOk) {
     storage.memMode = true;
     storage.memStore = state.recs;
@@ -293,12 +370,18 @@ export function persistAppState() {
   if (r.status === "ok") {
     storage.memMode = false;
     storage.pendingCommit = false;
+    storage.migrationBlocked = false;
+    storage.deletedRecordDates.clear();
+    storage.userRecordDates.clear();
+    storage.userDailyDates.clear();
+    storage.baselineIntent = "inherit";
+    syncStorageUi();
     return { ok: true, status: "ok" };
   }
   storage.memMode = true;
   storage.memStore = state.recs;
   storage.pendingCommit = true;
-  storage.onMem?.();
+  syncStorageUi();
   if (r.status === "unknown") return { ok: false, status: "unknown", reason: r.reason };
   return { ok: false, status: "failed", reason: r.reason };
 }
@@ -315,6 +398,7 @@ export function saveRecords(recs) {
 
 export function upsertRecords(list, toast) {
   const { recs, add, upd, skip } = upsertIntoList(state.recs, list);
+  markUserRecordDates(list.map((r) => r?.d).filter(Boolean));
   state.recs = recs;
   const r = persistAppState();
   maybeAutoLock(r.ok ? toast : null);
@@ -337,11 +421,16 @@ export function buildRescueExportPayload() {
 }
 
 /** 导入 / 批量写入：单次完整提交 */
-export function applyImportState({ recs, dailyMeta, baseline }) {
+export function applyImportState({ recs, dailyMeta, baseline, touchedRecordDates, touchedDailyDates }) {
   bootstrapStorage();
+  markUserRecordDates(touchedRecordDates);
+  if (touchedDailyDates) markUserDailyDates(touchedDailyDates);
   state.recs = recs;
   if (dailyMeta != null) store.dailyMeta = dailyMeta;
-  if (baseline !== undefined) memBaseline = baseline?.auto === true ? null : baseline;
+  if (baseline !== undefined) {
+    memBaseline = baseline?.auto === true ? null : baseline;
+    storage.baselineIntent = baseline == null ? "cleared" : "locked";
+  }
   return persistAppState();
 }
 
