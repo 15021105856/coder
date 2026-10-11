@@ -32,8 +32,10 @@ export function Recall() {
   const redlines = ctx.confirmedRedlineIds.map((id) => getItem(id)).filter((row): row is StudyItem => Boolean(row))
   const readiness = assessExamReadiness(item.checkPoints, recall.checkedPointIds)
   const elapsed = Math.max(0, Math.round((app.now - recall.startedAt) / 1000))
+  const stepLabels = ['无提示', '已确认B骨架', '源文小标题', ctx.keywords.length ? '已审核关键词' : '关键词（跳过）', '对照原文', '撤提示复述']
+  const activeStep = recallStepIndex(recall.phase)
   return (
-    <div className="stack">
+    <div className="stack recall-page">
       <header className="page-head">
         <div>
           <p className="kicker">{item.source === 'A' ? (item.coreA ? 'A册完整题' : 'A册附录完整题') : item.fullTextForLookup ? 'B册骨架题 · 全文供查阅' : item.kind === 'redline' ? '答题红线' : 'B册骨架题'}</p>
@@ -43,7 +45,9 @@ export function Recall() {
         {app.state.settings.showTimer ? <strong className="timer">{formatClock(elapsed)}</strong> : null}
       </header>
       <ol className="steps">
-        {['无提示', '已确认B骨架', '源文小标题', ctx.keywords.length ? '已审核关键词' : '关键词（跳过）', '对照原文', '撤提示复述'].map((label) => <li key={label}>{label}</li>)}
+        {stepLabels.map((label, index) => (
+          <li key={label} className={index === activeStep ? 'on' : index < activeStep ? 'done' : ''}>{label}</li>
+        ))}
       </ol>
       {recall.phase === 'draft' ? (
         <section className="card">
@@ -212,6 +216,26 @@ function HintPane({ title, children, onMore, onReady, onFull }: { title: string;
       </div>
     </section>
   )
+}
+
+function recallStepIndex(phase: string): number {
+  switch (phase) {
+    case 'draft':
+      return 0
+    case 'b_skeleton':
+      return 1
+    case 'headings':
+      return 2
+    case 'keywords':
+      return 3
+    case 'compare':
+      return 4
+    case 'restate':
+    case 'done':
+      return 5
+    default:
+      return 0
+  }
 }
 
 function groups(item: StudyItem) {

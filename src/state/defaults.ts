@@ -6,7 +6,9 @@ import type { Persisted, Settings } from '../types'
 export function defaultSettings(): Settings {
   return {
     theme: 'light',
-    fontSize: 17,
+    fontSize: 18,
+    readingScale: 'standard',
+    focusReading: false,
     gaps: { ...DEFAULT_GAPS },
     day: { ...DEFAULT_DAY },
     showTimer: true,

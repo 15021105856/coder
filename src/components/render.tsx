@@ -48,28 +48,35 @@ export function RedlineCard({ item }: { item: StudyItem }) {
   const good = item.sections.find((s) => s.title === '要写')?.sourceText || ''
   const evidence = item.sections.find((s) => s.title === '依据')?.sourceText || ''
   return (
-    <div className="redline">
-      <div>
-        <span>别写</span>
-        <RichText text={bad} />
-      </div>
-      <div>
-        <span>要写</span>
-        <RichText text={good} />
-      </div>
-      <div>
-        <span>依据</span>
-        <RichText text={evidence} />
+    <div className="redline-block">
+      <p className="redline-kicker">⚠ 答题红线</p>
+      <div className="redline">
+        <div className="redline-bad">
+          <span>别写</span>
+          <RichText text={bad} />
+        </div>
+        <div className="redline-good">
+          <span>要写</span>
+          <RichText text={good} />
+        </div>
+        <div className="redline-evidence">
+          <span>依据</span>
+          <RichText text={evidence} />
+        </div>
       </div>
     </div>
   )
 }
 
 const LAYER_LABEL: Record<Section['layer'], string> = {
-  definition: '名解',
-  short_answer: '简答',
-  expansion: '扩展',
+  definition: '名解 · 必默',
+  short_answer: '简答 · 核心',
+  expansion: '扩展 · 余量',
   normal: '原文',
+}
+
+function isSportsSectionTitle(title: string | undefined): boolean {
+  return /体育转写|体育例证|体育应用/.test(title || '')
 }
 
 export function SectionList({ sections, query = '' }: { sections: Section[]; query?: string }) {
@@ -79,10 +86,15 @@ export function SectionList({ sections, query = '' }: { sections: Section[]; que
       {sections.map((section) => {
         const showTitle = section.title && section.title !== last
         if (section.title) last = section.title
+        const sports = isSportsSectionTitle(section.title)
         return (
-          <article key={section.id} className={`layer layer-${section.layer}`}>
+          <article
+            key={section.id}
+            className={`layer layer-${section.layer}${sports ? ' sports-section' : ''}`}
+          >
             {showTitle ? <h4>{section.title}</h4> : null}
             <div className="layer-label">
+              {sports ? <span className="sports-tag">🏃 体育转写</span> : null}
               {section.emphasis ? '原文强调' : LAYER_LABEL[section.layer]}
               {section.emphasis ? <small>不是名解层</small> : null}
             </div>

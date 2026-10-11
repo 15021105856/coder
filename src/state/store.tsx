@@ -5,6 +5,7 @@ import { commitAttempt, requestHint, revealFull, startRecall, submitDraft, goCom
 import { BACKUP_KEY, DATA_KEY, safeGet, safeSet } from '../engine/storage'
 import { commitImport, inspectImport, type ImportPlan } from '../engine/transfer'
 import { defaultPersisted, defaultSettings } from './defaults'
+import { applyUiSettingsToDocument, normalizeUiSettings } from './uiSettings'
 import { DEFAULT_DAY } from '../engine/dayplan'
 import { DEFAULT_GAPS } from '../engine/schedule'
 import type { ExamState, Persisted, RecallState, RelationStatus, ViewId } from '../types'
@@ -63,9 +64,11 @@ function loadInitial(): { state: Persisted; warning: string | null; hold: boolea
     if (parsed.schemaVersion > content.meta.schemaVersion) {
       return { state: defaultPersisted(), warning: '本地记录的结构版本比程序新。程序没有覆盖它。', hold: true }
     }
+    const ui = normalizeUiSettings(parsed.settings)
     const settings = {
       ...defaultSettings(),
       ...parsed.settings,
+      ...ui,
       gaps: { ...DEFAULT_GAPS, ...parsed.settings?.gaps },
       day: { ...DEFAULT_DAY, ...parsed.settings?.day },
     }
@@ -109,9 +112,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [now, setNow] = useState(() => Date.now())
 
   useEffect(() => {
-    document.documentElement.dataset.theme = state.settings.theme
-    document.documentElement.style.fontSize = `${state.settings.fontSize}px`
-  }, [state.settings.theme, state.settings.fontSize])
+    applyUiSettingsToDocument(state.settings)
+  }, [state.settings.theme, state.settings.readingScale, state.settings.focusReading])
 
   useEffect(() => {
     if (hold) return
@@ -242,7 +244,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
             setWarning(wrote.warning || '回滚写入失败。')
             return
           }
-          setState({ ...defaultPersisted(), ...parsed, settings: { ...defaultSettings(), ...parsed.settings } })
+          const ui = normalizeUiSettings(parsed.settings)
+          setState({
+            ...defaultPersisted(),
+            ...parsed,
+            settings: { ...defaultSettings(), ...parsed.settings, ...ui },
+          })
           setWarning('已恢复到导入前备份。')
         } catch {
           setWarning('备份内容无法读取，当前记录未改。')

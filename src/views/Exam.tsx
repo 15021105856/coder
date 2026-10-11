@@ -23,7 +23,7 @@ export function Exam() {
     update({ answers: { ...exam.answers, [item.id]: { ...sealed, revealed: true } } })
   }
   return (
-    <div className="stack">
+    <div className="stack exam-page">
       <header className="page-head">
         <div>
           <p className="kicker">{exam.title} · {exam.index + 1}/{exam.itemIds.length}</p>

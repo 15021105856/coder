@@ -7,6 +7,7 @@ import { Mistakes } from './views/Mistakes'
 import { Recall } from './views/Recall'
 import { Settings } from './views/Settings'
 import { Today } from './views/Today'
+import { ReadingToolbar } from './components/ReadingToolbar'
 import type { ViewId } from './types'
 
 const NAV: { id: ViewId; label: string }[] = [
@@ -39,8 +40,9 @@ export function App() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [app])
+  const focusReading = app.state.settings.focusReading
   return (
-    <div className="shell">
+    <div className={`shell${focusReading ? ' focus-reading' : ''}`}>
       <aside className="side">
         <p className="brand">346 管理学<br />主动提取</p>
         <nav>
@@ -67,6 +69,7 @@ export function App() {
         {app.state.view === 'archive' ? <Archive /> : null}
         {app.state.view === 'settings' ? <Settings /> : null}
       </main>
+      <ReadingToolbar />
     </div>
   )
 }
