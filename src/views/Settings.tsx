@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { content, getItem } from '../content'
 import { useApp } from '../state/store'
-import type { RelationStatus } from '../types'
+import { UI_VERSION } from '../state/uiSettings'
+import type { ReadingScale, RelationStatus } from '../types'
 
 export function Settings() {
   const app = useApp()
@@ -20,6 +21,7 @@ export function Settings() {
         <h2>版本</h2>
         <p>schemaVersion {content.meta.schemaVersion}</p>
         <p>contentVersion {content.meta.contentVersion}</p>
+        <p>uiVersion {UI_VERSION}</p>
         <p className="mono">A {content.meta.sourceHashes.A}</p>
         <p className="mono">B {content.meta.sourceHashes.B}</p>
         <p className="muted">构建于 {content.meta.builtAt}。hash 变化表示源 Markdown 变了，旧记录按 itemId 迁移，对不上的进待查。</p>
@@ -56,14 +58,28 @@ export function Settings() {
         </ul>
       </section>
       <section className="card">
-        <h2>显示</h2>
+        <h2>阅读显示</h2>
         <div className="actions">
-          <button className="btn" type="button" onClick={() => app.updateSettings({ theme: settings.theme === 'dark' ? 'light' : 'dark' })}>{settings.theme === 'dark' ? '切到浅色' : '切到深色'}</button>
-          {[15, 17, 19, 21].map((size) => (
-            <button key={size} className={settings.fontSize === size ? 'btn primary' : 'btn'} type="button" onClick={() => app.updateSettings({ fontSize: size })}>{size}px</button>
+          <button className="btn" type="button" onClick={() => app.updateSettings({ theme: settings.theme === 'dark' ? 'light' : 'dark' })}>{settings.theme === 'dark' ? '浅色' : '深色'}</button>
+          {(['compact', 'standard', 'recite'] as ReadingScale[]).map((scale) => (
+            <button
+              key={scale}
+              className={settings.readingScale === scale ? 'btn primary' : 'btn'}
+              type="button"
+              onClick={() => app.updateSettings({ readingScale: scale })}
+            >
+              {scale === 'compact' ? '紧凑' : scale === 'standard' ? '标准' : '诵读'}
+            </button>
           ))}
+          <button
+            className={settings.focusReading ? 'btn primary' : 'btn'}
+            type="button"
+            onClick={() => app.updateSettings({ focusReading: !settings.focusReading })}
+          >
+            沉浸诵读 {settings.focusReading ? '开' : '关'}
+          </button>
         </div>
-        <p className="muted">快捷键：Alt+1 到 Alt+7 切换页面，Alt+D 切换深浅色。输入框里不拦截。</p>
+        <p className="muted">主题仍用 data-theme，不跟随系统深浅色。快捷键：Alt+1–7 切页，Alt+D 换主题。右下角浮动栏可快速切换字号与诵读模式。</p>
       </section>
       <section className="card">
         <h2>一日时长</h2>

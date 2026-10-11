@@ -191,9 +191,14 @@ export interface DaySettings {
   writingMinutes: number
 }
 
+export type ReadingScale = 'compact' | 'standard' | 'recite'
+
 export interface Settings {
   theme: 'light' | 'dark'
+  /** @deprecated UI 使用 readingScale；保留字段以兼容旧 JSON */
   fontSize: number
+  readingScale: ReadingScale
+  focusReading: boolean
   gaps: GapSettings
   day: DaySettings
   showTimer: boolean
