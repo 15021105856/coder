@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { content, getItem } from '../content'
+import { assessExamReadiness } from '../engine/evidence'
 import { EvidenceBadge, RedlineCard, SectionList, Signals } from '../components/render'
 import { HINT_LABEL } from '../engine/labels'
 import { useApp } from '../state/store'
@@ -29,6 +30,7 @@ export function Recall() {
   const ctx = app.hintFor(item.id)
   const related = ctx.confirmedSkeletonIds.map((id) => getItem(id)).filter((row): row is StudyItem => Boolean(row))
   const redlines = ctx.confirmedRedlineIds.map((id) => getItem(id)).filter((row): row is StudyItem => Boolean(row))
+  const readiness = assessExamReadiness(item.checkPoints, recall.checkedPointIds)
   const elapsed = Math.max(0, Math.round((app.now - recall.startedAt) / 1000))
   return (
     <div className="stack">
@@ -126,6 +128,12 @@ export function Recall() {
             <label className="field">术语写错（一行一条，写你写成的词）
               <textarea rows={3} value={recall.termErrorDraft} onChange={(event) => app.patchRecall({ termErrorDraft: event.target.value })} />
             </label>
+            <aside className={`warnbox ${readiness.examReady ? '' : ''}`}>
+              <strong>答案完整性（考场参考，≠ 记忆证据）</strong>
+              <p>{readiness.message}</p>
+              {readiness.sportsExampleMissing ? <p className="muted">体育例证：未勾选 · sportsExampleMissing</p> : null}
+              {readiness.examReady ? <p className="muted">examReady：是</p> : <p className="muted">examReady：否</p>}
+            </aside>
             {redlines.length ? (
               <fieldset>
                 <legend>已确认的相关红线</legend>
@@ -179,6 +187,7 @@ export function Recall() {
           <h2>本轮记录</h2>
           <EvidenceBadge state={recall.result.evidenceState} />
           <p>最高提示：{HINT_LABEL[recall.result.highestHintUsed]}。撤提示复述：{recall.result.postRevealNoHintPassed ? '通过' : '未通过或未记'}。信心 {recall.result.selfConfidence}。这三项分开保存。</p>
+          {recall.result.sportsExampleMissing ? <p className="muted">本轮体育例证未核对（sportsExampleMissing），与上方 evidence 等级无关。</p> : null}
           <p className="muted">主观信心不能把本轮改成独立提取。</p>
           <div className="actions">
             <button className="btn primary" type="button" onClick={app.recallNext}>{app.state.recallQueue.length > 1 ? '下一题' : '回到今日'}</button>

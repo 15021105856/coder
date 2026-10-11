@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { content, getItem } from '../content'
+import { advanceExamQuestion, createExamState, questionRemainSeconds, sealQuestionDuration } from '../engine/exam'
 import { SectionList } from '../components/render'
 import { mulberry32 } from '../engine/dayplan'
 import { rankItems } from '../engine/priority'
@@ -13,18 +14,26 @@ export function Exam() {
   const item = getItem(exam.itemIds[exam.index])
   if (!item) return <p>题目缺失。</p>
   const answer = exam.answers[item.id] || { text: '', revealed: false }
-  const remain = exam.limitSeconds ? exam.limitSeconds - Math.floor((app.now - exam.startedAt) / 1000) : null
+  const remain = questionRemainSeconds(exam, app.now)
   const update = (partial: Partial<ExamState>) => app.patchExam({ ...exam, ...partial })
+  const goNext = () => app.patchExam(advanceExamQuestion(exam, Date.now()))
+  const reveal = () => {
+    const sealed = sealQuestionDuration(answer, exam, Date.now())
+    update({ answers: { ...exam.answers, [item.id]: { ...sealed, revealed: true } } })
+  }
   return (
     <div className="stack">
       <header className="page-head">
         <div>
           <p className="kicker">{exam.title} · {exam.index + 1}/{exam.itemIds.length}</p>
-          <h1>{answer.revealed ? item.title : '闭卷题'}</h1>
+          <h1>{item.title}</h1>
         </div>
         {remain !== null ? <strong className={remain < 0 ? 'timer late' : 'timer'}>{remain >= 0 ? format(remain) : `超时 ${format(-remain)}`}</strong> : null}
       </header>
-      {!answer.revealed ? <p>章节顺序已打乱。下一题标题先不显示。</p> : null}
+      {!answer.revealed ? <p className="muted">只隐藏答案与下一题。当前题干始终可见。</p> : null}
+      {answer.durationSeconds !== undefined && answer.revealed ? (
+        <p className="muted">本题用时 {answer.durationSeconds} 秒（对照原文时封存）。</p>
+      ) : null}
       <textarea
         rows={12}
         value={answer.text}
@@ -33,9 +42,9 @@ export function Exam() {
       />
       <div className="actions">
         {!answer.revealed ? (
-          <button className="btn primary" type="button" onClick={() => update({ answers: { ...exam.answers, [item.id]: { ...answer, revealed: true } } })}>对照原文</button>
+          <button className="btn primary" type="button" onClick={reveal}>对照原文</button>
         ) : (
-          <button className="btn" type="button" onClick={() => update({ index: Math.min(exam.itemIds.length - 1, exam.index + 1) })} disabled={exam.index >= exam.itemIds.length - 1}>下一题</button>
+          <button className="btn" type="button" onClick={goNext} disabled={exam.index >= exam.itemIds.length - 1}>下一题</button>
         )}
         <button className="btn ghost" type="button" onClick={() => downloadExam(exam)}>导出本次作答</button>
         <button className="btn ghost" type="button" onClick={() => app.patchExam(null)}>结束</button>
@@ -64,18 +73,20 @@ function ExamSetup() {
       shuffled[j] = tmp
     }
     const picked = shuffled.slice(0, 8)
-    const exam: ExamState = {
-      id: `exam-${Date.now()}`,
+    const now = Date.now()
+    const exam = createExamState({
+      id: `exam-${now}`,
       title,
       itemIds: picked.map((item) => item.id),
       index: 0,
-      startedAt: Date.now(),
+      startedAt: now,
+      questionStartedAt: now,
       limitSeconds: limit ? limit * 60 : null,
       answers: Object.fromEntries(picked.map((item) => [item.id, { text: '', revealed: false }])),
-    }
+    })
     app.startExam(exam)
   }
-  const due = rankItems(pool, app.state.attempts, app.now).filter((row) => row.tier === 1).map((row) => row.item)
+  const due = rankItems(pool, app.state.attempts, app.now, content.relations, app.state.relationOverrides).filter((row) => row.tier === 1).map((row) => row.item)
   const wrong = pool.filter((item) => {
     const latest = app.state.attempts.filter((a) => a.itemId === item.id).sort((a, b) => b.finishedAt - a.finishedAt)[0]
     return latest && (latest.evidenceState === 'cue_dependent' || latest.evidenceState === 'relearned')
@@ -103,7 +114,7 @@ function downloadExam(exam: ExamState) {
   for (const id of exam.itemIds) {
     const item = getItem(id)
     const answer = exam.answers[id]
-    lines.push(`# ${item?.title || id}`, answer?.text || '', '')
+    lines.push(`# ${item?.title || id}`, answer?.text || '', answer?.durationSeconds !== undefined ? `用时 ${answer.durationSeconds}s` : '', '')
   }
   const blob = new Blob([lines.join('\n')], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)

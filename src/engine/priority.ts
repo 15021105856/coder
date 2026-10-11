@@ -32,6 +32,32 @@ export function coveredByConfirmedSkeleton(
   })
 }
 
+/** 已确认挂到 A 题、仅作提示层的 B 骨架（不含第九/十章 B-only 全文专题）。 */
+export function isPromptOnlyConfirmedBItem(
+  item: StudyItem,
+  relations: Relation[],
+  overrides: Record<string, RelationStatus>,
+): boolean {
+  if (item.source !== 'B' || item.coreA) return false
+  if (item.kind !== 'skeleton' && item.kind !== 'appendix' && item.kind !== 'comparison') return false
+  if (item.fullTextForLookup) return false
+  return coveredByConfirmedSkeleton(item, relations, overrides)
+}
+
+export function scheduleBOnlyItems(
+  items: StudyItem[],
+  relations: Relation[],
+  overrides: Record<string, RelationStatus>,
+): StudyItem[] {
+  return items.filter(
+    (item) =>
+      item.source === 'B' &&
+      (item.kind === 'skeleton' || item.kind === 'appendix' || item.kind === 'comparison') &&
+      !item.coreA &&
+      !isPromptOnlyConfirmedBItem(item, relations, overrides),
+  )
+}
+
 function latestOf(attempts: Attempt[], itemId: string): Attempt | undefined {
   let latest: Attempt | undefined
   for (const attempt of attempts) {

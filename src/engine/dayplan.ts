@@ -1,5 +1,5 @@
-import type { Attempt, DayPlan, DaySettings, PlanBlock, StudyItem } from '../types'
-import { isHighSignal, rankItems } from './priority'
+import type { Attempt, DayPlan, DaySettings, PlanBlock, Relation, RelationStatus, StudyItem } from '../types'
+import { isHighSignal, rankItems, scheduleBOnlyItems } from './priority'
 
 export const DEFAULT_DAY: DaySettings = {
   totalMinutes: 600,
@@ -39,7 +39,15 @@ function take(ids: string[], n: number): string[] {
   return ids.slice(0, n)
 }
 
-export function buildDayPlan(items: StudyItem[], attempts: Attempt[], settings: DaySettings, now: number, seed: number): DayPlan {
+export function buildDayPlan(
+  items: StudyItem[],
+  attempts: Attempt[],
+  settings: DaySettings,
+  now: number,
+  seed: number,
+  relations: Relation[] = [],
+  relationOverrides: Record<string, RelationStatus> = {},
+): DayPlan {
   const rnd = mulberry32(seed)
   const notes: string[] = []
   const eveningMinutes = settings.protectEvening
@@ -52,12 +60,15 @@ export function buildDayPlan(items: StudyItem[], attempts: Attempt[], settings: 
 
   const core = items.filter((item) => item.coreA)
   const appendix = settings.includeAppendix2 ? items.filter((item) => item.appendixFullAnswer) : []
-  const bOnly = items.filter((item) => item.source === 'B' && (item.kind === 'skeleton' || item.kind === 'appendix' || item.kind === 'comparison') && !item.coreA)
+  const bOnly = scheduleBOnlyItems(items, relations, relationOverrides)
   const highB = bOnly.filter((item) => isHighSignal(item) && !item.fullTextForLookup)
   const highLookup = bOnly.filter((item) => isHighSignal(item) && item.fullTextForLookup)
   const ordinaryB = bOnly.filter((item) => !isHighSignal(item))
   const redlines = items.filter((item) => item.kind === 'redline')
-  const rankedHigh = [...rankItems(highB, attempts, now), ...rankItems(highLookup, attempts, now)].map((r) => r.item.id)
+  const rankedHigh = [
+    ...rankItems(highB, attempts, now, relations, relationOverrides),
+    ...rankItems(highLookup, attempts, now, relations, relationOverrides),
+  ].map((r) => r.item.id)
 
   const blocks: PlanBlock[] = []
   const phase1Minutes = Math.min(30, budget)

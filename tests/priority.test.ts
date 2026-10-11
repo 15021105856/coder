@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { buildDayPlan, resolveEvening } from '../src/engine/dayplan'
-import { DEFAULT_DAY } from '../src/engine/dayplan'
+import { buildDayPlan, DEFAULT_DAY, resolveEvening } from '../src/engine/dayplan'
 import { rankItems } from '../src/engine/priority'
-import type { Attempt, StudyItem } from '../src/types'
+import type { Attempt, Relation, StudyItem } from '../src/types'
 
 function item(partial: Partial<StudyItem> & Pick<StudyItem, 'id' | 'title'>): StudyItem {
   return {
@@ -117,5 +116,26 @@ describe('day plan', () => {
     const ids = resolveEvening(items, attempts, now, 3)
     expect(ids).toContain('a1')
     expect(ids.filter((id) => id.startsWith('a')).length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('excludes confirmed prompt-only B skeletons from phase III scheduling', () => {
+    const aCore = item({ id: 'a-core', title: 'A题', source: 'A', kind: 'full_answer', coreA: true, chapterIndex: 5 })
+    const bPrompt = item({ id: 'b-prompt', title: '目标管理骨架', chapterIndex: 5 })
+    const bStandalone = item({ id: 'b-alone', title: '独立B', chapterIndex: 2 })
+    const relations: Relation[] = [
+      {
+        id: 'rel-1',
+        aItemId: 'a-core',
+        bItemId: 'b-prompt',
+        reason: 'test',
+        status: 'confirmed-by-source',
+        role: 'skeleton',
+        evidenceQuote: 'test',
+      },
+    ]
+    const plan = buildDayPlan([aCore, bPrompt, bStandalone], [], { ...DEFAULT_DAY, totalMinutes: 600 }, 1, 99, relations, {})
+    const phase3 = plan.blocks.filter((b) => b.phase === 'III').flatMap((b) => b.itemIds)
+    expect(phase3).not.toContain('b-prompt')
+    expect(phase3).toContain('b-alone')
   })
 })

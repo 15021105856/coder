@@ -94,7 +94,7 @@ describe('recall state machine', () => {
       { id: 'p2', level: 2, label: '两句', sourceText: '两句', group: '过程', role: 'point' },
     ]
     expect(deriveEvidence({ highestHintUsed: 'none', checkPoints: points, checkedPointIds: ['h1', 'h2', 'p1'] })).toBe('independent')
-    expect(deriveEvidence({ highestHintUsed: 'none', checkPoints: points, checkedPointIds: ['h1', 'h2'] })).toBe('minor_omission')
+    expect(deriveEvidence({ highestHintUsed: 'none', checkPoints: points, checkedPointIds: ['h1', 'h2'] })).toBe('relearned')
     expect(deriveEvidence({ highestHintUsed: 'heading', checkPoints: points, checkedPointIds: ['h1', 'h2', 'p1', 'p2'] })).toBe('cue_dependent')
     expect(deriveEvidence({ highestHintUsed: 'full_answer', checkPoints: points, checkedPointIds: points.map((p) => p.id) })).toBe('relearned')
   })

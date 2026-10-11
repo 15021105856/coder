@@ -186,7 +186,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setState((prev) => ({ ...prev, customKeywords: [...prev.customKeywords, { itemId, text: text.trim() }] }))
         return null
       },
-      makeDayPlan: () => setState((prev) => ({ ...prev, dayPlan: buildDayPlan(content.items, prev.attempts, prev.settings.day, Date.now(), Number(new Date().toISOString().slice(0, 10).replace(/-/g, ''))) })),
+      makeDayPlan: () => setState((prev) => ({
+        ...prev,
+        dayPlan: buildDayPlan(
+          content.items,
+          prev.attempts,
+          prev.settings.day,
+          Date.now(),
+          Number(new Date().toISOString().slice(0, 10).replace(/-/g, '')),
+          content.relations,
+          prev.relationOverrides,
+        ),
+      })),
       startEvening: () => setState((prev) => {
         const ids = resolveEvening(content.items, prev.attempts, Date.now(), 11)
         if (!ids.length) return prev

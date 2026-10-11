@@ -228,6 +228,7 @@ export interface RecallState {
 export interface ExamAnswer {
   text: string
   revealed: boolean
+  durationSeconds?: number
 }
 
 export interface ExamState {
@@ -236,6 +237,8 @@ export interface ExamState {
   itemIds: string[]
   index: number
   startedAt: number
+  /** 当前题开始时间；限时按题重置 */
+  questionStartedAt?: number
   limitSeconds: number | null
   answers: Record<string, ExamAnswer>
 }
