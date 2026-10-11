@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { content, getItem } from '../content'
-import { advanceExamQuestion, createExamState, questionRemainSeconds, sealQuestionDuration } from '../engine/exam'
+import { advanceExamQuestion, createExamState, examQuestionStartedAt, finalizeQuestionDuration, questionRemainSeconds } from '../engine/exam'
 import { SectionList } from '../components/render'
 import { mulberry32 } from '../engine/dayplan'
 import { rankItems } from '../engine/priority'
@@ -18,7 +18,8 @@ export function Exam() {
   const update = (partial: Partial<ExamState>) => app.patchExam({ ...exam, ...partial })
   const goNext = () => app.patchExam(advanceExamQuestion(exam, Date.now()))
   const reveal = () => {
-    const sealed = sealQuestionDuration(answer, exam, Date.now())
+    const now = Date.now()
+    const sealed = finalizeQuestionDuration(answer, examQuestionStartedAt(exam), now)
     update({ answers: { ...exam.answers, [item.id]: { ...sealed, revealed: true } } })
   }
   return (

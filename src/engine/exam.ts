@@ -10,15 +10,29 @@ export function questionRemainSeconds(exam: ExamState, now: number): number | nu
   return exam.limitSeconds - elapsed
 }
 
-export function sealQuestionDuration(answer: ExamAnswer, exam: ExamState, now: number): ExamAnswer {
-  const elapsed = Math.max(0, Math.floor((now - examQuestionStartedAt(exam)) / 1000))
-  return { ...answer, durationSeconds: elapsed }
+/** 单题作答用时只封存一次；看答案停留时间不计入。 */
+export function finalizeQuestionDuration(
+  answer: ExamAnswer,
+  questionStartedAt: number | undefined,
+  now: number,
+): ExamAnswer {
+  if (answer.durationSeconds != null) {
+    return answer
+  }
+  if (questionStartedAt == null) {
+    return answer
+  }
+  return {
+    ...answer,
+    durationSeconds: Math.max(0, Math.floor((now - questionStartedAt) / 1000)),
+  }
 }
 
 export function advanceExamQuestion(exam: ExamState, now: number): ExamState {
   const itemId = exam.itemIds[exam.index]
   const current = exam.answers[itemId] || { text: '', revealed: false }
-  const answers = { ...exam.answers, [itemId]: sealQuestionDuration(current, exam, now) }
+  const started = examQuestionStartedAt(exam)
+  const answers = { ...exam.answers, [itemId]: finalizeQuestionDuration(current, started, now) }
   const nextIndex = Math.min(exam.itemIds.length - 1, exam.index + 1)
   return { ...exam, answers, index: nextIndex, questionStartedAt: now }
 }
