@@ -1,0 +1,3942 @@
+{
+  "note": "候选短语都是源文里真实出现的引号原词。status 保持 candidate 时，训练会跳过关键词层。确认后把 status 改为 confirmed，并把 humanTouched 设为 true。",
+  "items": [
+    {
+      "itemId": "a-full-ca475a73df0f",
+      "hints": [
+        {
+          "id": "kw-a9cebb41af33",
+          "text": "依靠人的管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「依靠人的管理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f6c59b3e24d4",
+          "text": "为了人的管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「为了人的管理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-608c92528218",
+          "text": "做正确的事",
+          "status": "candidate",
+          "evidence": "源文原样包含「做正确的事」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e68567960e66",
+          "text": "用正确的方法做正确的事",
+          "status": "candidate",
+          "evidence": "源文原样包含「用正确的方法做正确的事」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ca94868292cc",
+          "text": "体教融合",
+          "status": "candidate",
+          "evidence": "源文原样包含「体教融合」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ed0d6f67d9c1",
+          "text": "放权与监管",
+          "status": "candidate",
+          "evidence": "源文原样包含「放权与监管」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-45205ead1f10",
+          "text": "公益性与市场化",
+          "status": "candidate",
+          "evidence": "源文原样包含「公益性与市场化」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-bd45794d55f8",
+      "hints": [
+        {
+          "id": "kw-1670c015146c",
+          "text": "闪现灵感",
+          "status": "candidate",
+          "evidence": "源文原样包含「闪现灵感」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-54aaf4f9a009",
+          "text": "个人的直觉与力量",
+          "status": "candidate",
+          "evidence": "源文原样包含「个人的直觉与力量」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-d0d8954a2db2",
+          "text": "女排精神",
+          "status": "candidate",
+          "evidence": "源文原样包含「女排精神」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-14da5bbf24e0",
+      "hints": [
+        {
+          "id": "kw-06942a124635",
+          "text": "十五五",
+          "status": "candidate",
+          "evidence": "源文原样包含「十五五」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-ad85f8b1dc26",
+      "hints": [
+        {
+          "id": "kw-325c56ae9503",
+          "text": "科学管理之父",
+          "status": "candidate",
+          "evidence": "源文原样包含「科学管理之父」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f51fbd787d4a",
+          "text": "经济人",
+          "status": "candidate",
+          "evidence": "源文原样包含「经济人」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9e8c3844e958",
+          "text": "技术诊断",
+          "status": "candidate",
+          "evidence": "源文原样包含「技术诊断」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-b0dcf2b09b70",
+      "hints": [
+        {
+          "id": "kw-181db0108c69",
+          "text": "决策—实施—再决策—再实施",
+          "status": "candidate",
+          "evidence": "源文原样包含「决策—实施—再决策—再实施」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-0f4c11f3e8e8",
+      "hints": [
+        {
+          "id": "kw-40929fb4de78",
+          "text": "十五五",
+          "status": "candidate",
+          "evidence": "源文原样包含「十五五」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-db2e3410a82f",
+      "hints": [
+        {
+          "id": "kw-f03d78a06620",
+          "text": "满意原则",
+          "status": "candidate",
+          "evidence": "源文原样包含「满意原则」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0c8fe41d77fe",
+          "text": "最优原则",
+          "status": "candidate",
+          "evidence": "源文原样包含「最优原则」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-cd9b18945c63",
+          "text": "如何区分常规与非常规决策",
+          "status": "candidate",
+          "evidence": "源文原样包含「如何区分常规与非常规决策」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-4c8bc70ceddb",
+          "text": "令人满意的",
+          "status": "candidate",
+          "evidence": "源文原样包含「令人满意的」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-cbf892dc49c6",
+          "text": "最优化",
+          "status": "candidate",
+          "evidence": "源文原样包含「最优化」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-dfd219a907d7",
+          "text": "满意的",
+          "status": "candidate",
+          "evidence": "源文原样包含「满意的」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-518a40f3675c",
+          "text": "经济人",
+          "status": "candidate",
+          "evidence": "源文原样包含「经济人」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-79823a8290e9",
+          "text": "管理人",
+          "status": "candidate",
+          "evidence": "源文原样包含「管理人」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-c4245558819a",
+      "hints": [
+        {
+          "id": "kw-d88df0b19ada",
+          "text": "终末激发",
+          "status": "candidate",
+          "evidence": "源文原样包含「终末激发」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2a1cfa9c0234",
+          "text": "十五五",
+          "status": "candidate",
+          "evidence": "源文原样包含「十五五」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-355955ac3ab3",
+      "hints": [
+        {
+          "id": "kw-ebba8f4b5021",
+          "text": "经常参加体育锻炼人数比例",
+          "status": "candidate",
+          "evidence": "源文原样包含「经常参加体育锻炼人数比例」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-e7aa9239d06d",
+      "hints": [
+        {
+          "id": "kw-d83a8361523f",
+          "text": "一定要清晰",
+          "status": "candidate",
+          "evidence": "源文原样包含「一定要清晰」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ac5f4a836519",
+          "text": "集中决策，分散经营",
+          "status": "candidate",
+          "evidence": "源文原样包含「集中决策，分散经营」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-7d33d03f8137",
+          "text": "斯隆模型",
+          "status": "candidate",
+          "evidence": "源文原样包含「斯隆模型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e17bce1c0bac",
+          "text": "市场链",
+          "status": "candidate",
+          "evidence": "源文原样包含「市场链」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-8d1a5e11636c",
+      "hints": [
+        {
+          "id": "kw-1404da2a9f70",
+          "text": "实体化、去行政化",
+          "status": "candidate",
+          "evidence": "源文原样包含「实体化、去行政化」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-e1cf5b889ef9",
+      "hints": [
+        {
+          "id": "kw-ab94d4d70dd5",
+          "text": "老队员圈子",
+          "status": "candidate",
+          "evidence": "源文原样包含「老队员圈子」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-b0cba58d80cd",
+      "hints": [
+        {
+          "id": "kw-d396e46338ce",
+          "text": "人员选聘",
+          "status": "candidate",
+          "evidence": "源文原样包含「人员选聘」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-71e143db2374",
+          "text": "才、职相称",
+          "status": "candidate",
+          "evidence": "源文原样包含「才、职相称」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c652bbba4afe",
+          "text": "自己人",
+          "status": "candidate",
+          "evidence": "源文原样包含「自己人」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-7600e0672cc2",
+      "hints": [
+        {
+          "id": "kw-8b263a6b3c6e",
+          "text": "文化构件",
+          "status": "candidate",
+          "evidence": "源文原样包含「文化构件」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2f9fd2c4e7bb",
+          "text": "融合性",
+          "status": "candidate",
+          "evidence": "源文原样包含「融合性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-63664a70869b",
+          "text": "融合继承性",
+          "status": "candidate",
+          "evidence": "源文原样包含「融合继承性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5662cc681b7a",
+          "text": "融合继承",
+          "status": "candidate",
+          "evidence": "源文原样包含「融合继承」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-8d6773a76d4e",
+          "text": "教练—队长—队员",
+          "status": "candidate",
+          "evidence": "源文原样包含「教练—队长—队员」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-953c655c0692",
+          "text": "女排精神",
+          "status": "candidate",
+          "evidence": "源文原样包含「女排精神」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-a156f0f5748a",
+      "hints": [
+        {
+          "id": "kw-7707def7081e",
+          "text": "简述体育组织文化的主要功能",
+          "status": "candidate",
+          "evidence": "源文原样包含「简述体育组织文化的主要功能」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2b369626946f",
+          "text": "调适",
+          "status": "candidate",
+          "evidence": "源文原样包含「调适」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-10af94a0dd44",
+          "text": "调试",
+          "status": "candidate",
+          "evidence": "源文原样包含「调试」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-6a312c231a0d",
+          "text": "反功能",
+          "status": "candidate",
+          "evidence": "源文原样包含「反功能」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-97cdebe3d648",
+          "text": "负功能",
+          "status": "candidate",
+          "evidence": "源文原样包含「负功能」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-24bd4e8cbe30",
+          "text": "升国旗、奏国歌",
+          "status": "candidate",
+          "evidence": "源文原样包含「升国旗、奏国歌」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-967f10e882e8",
+          "text": "团结协作、顽强拼搏",
+          "status": "candidate",
+          "evidence": "源文原样包含「团结协作、顽强拼搏」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-55b62847026c",
+      "hints": [
+        {
+          "id": "kw-d85d1847be6f",
+          "text": "城市荣誉＋青训为本",
+          "status": "candidate",
+          "evidence": "源文原样包含「城市荣誉＋青训为本」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-df1be7f79b5c",
+          "text": "最佳拼搏奖",
+          "status": "candidate",
+          "evidence": "源文原样包含「最佳拼搏奖」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-5259b7147d5d",
+      "hints": [
+        {
+          "id": "kw-7489a15ddf9c",
+          "text": "冲突中如何高效沟通",
+          "status": "candidate",
+          "evidence": "源文原样包含「冲突中如何高效沟通」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-d91c6e66f566",
+          "text": "弃其弊而用其利",
+          "status": "candidate",
+          "evidence": "源文原样包含「弃其弊而用其利」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0d3137c4f3c2",
+          "text": "合作性",
+          "status": "candidate",
+          "evidence": "源文原样包含「合作性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-b24a4fd7051c",
+          "text": "坚持己见",
+          "status": "candidate",
+          "evidence": "源文原样包含「坚持己见」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f1c57a76af92",
+          "text": "我赢你输",
+          "status": "candidate",
+          "evidence": "源文原样包含「我赢你输」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-88b7e1d42e9d",
+          "text": "竞争上岗",
+          "status": "candidate",
+          "evidence": "源文原样包含「竞争上岗」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-089d4af66985",
+      "hints": [
+        {
+          "id": "kw-0393db98a1d4",
+          "text": "面对面沟通更好的原因",
+          "status": "candidate",
+          "evidence": "源文原样包含「面对面沟通更好的原因」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-4ac07c773853",
+          "text": "教练→队长→队员",
+          "status": "candidate",
+          "evidence": "源文原样包含「教练→队长→队员」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-d817ad3034a9",
+      "hints": [
+        {
+          "id": "kw-a2629de6ac83",
+          "text": "这题是简答",
+          "status": "candidate",
+          "evidence": "源文原样包含「这题是简答」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-51d072865757",
+          "text": "确定标准",
+          "status": "candidate",
+          "evidence": "源文原样包含「确定标准」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-aa72843b1897",
+          "text": "确定目标",
+          "status": "candidate",
+          "evidence": "源文原样包含「确定目标」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-3cf1aa8a24b4",
+          "text": "头痛医头，脚痛医脚",
+          "status": "candidate",
+          "evidence": "源文原样包含「头痛医头，脚痛医脚」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0e88cf1e7dc2",
+          "text": "换教练",
+          "status": "candidate",
+          "evidence": "源文原样包含「换教练」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-e7c4ffc3bee0",
+      "hints": [
+        {
+          "id": "kw-94c3605e61cc",
+          "text": "公司层",
+          "status": "candidate",
+          "evidence": "源文原样包含「公司层」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-371628703377",
+          "text": "官僚控制",
+          "status": "candidate",
+          "evidence": "源文原样包含「官僚控制」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-df21a5b4ab4c",
+          "text": "科层控制",
+          "status": "candidate",
+          "evidence": "源文原样包含「科层控制」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-09948e98d178",
+          "text": "转会",
+          "status": "candidate",
+          "evidence": "源文原样包含「转会」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0963b0349c88",
+          "text": "专家",
+          "status": "candidate",
+          "evidence": "源文原样包含「专家」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-809ec998e2a2",
+      "hints": [
+        {
+          "id": "kw-c83ae12895a5",
+          "text": "三全一多",
+          "status": "candidate",
+          "evidence": "源文原样包含「三全一多」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-6cc2d18d6a3f",
+          "text": "制定—执行—体测检查—调整",
+          "status": "candidate",
+          "evidence": "源文原样包含「制定—执行—体测检查—调整」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-1746eddac08c",
+      "hints": [
+        {
+          "id": "kw-a3600ba5af5f",
+          "text": "风险分担",
+          "status": "candidate",
+          "evidence": "源文原样包含「风险分担」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a11a3a8bd35c",
+          "text": "风险承担",
+          "status": "candidate",
+          "evidence": "源文原样包含「风险承担」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-13ea3a361c52",
+          "text": "损失减低管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「损失减低管理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ea2347eb8007",
+          "text": "损失降低",
+          "status": "candidate",
+          "evidence": "源文原样包含「损失降低」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-243fcbb88f10",
+      "hints": [
+        {
+          "id": "kw-61f2026634a9",
+          "text": "红橙黄蓝",
+          "status": "candidate",
+          "evidence": "源文原样包含「红橙黄蓝」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-1a229d9652fa",
+      "hints": [
+        {
+          "id": "kw-de77e5140f07",
+          "text": "创新是维持基础上的发展",
+          "status": "candidate",
+          "evidence": "源文原样包含「创新是维持基础上的发展」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-3415fd3ba659",
+          "text": "犹如一潭死水",
+          "status": "candidate",
+          "evidence": "源文原样包含「犹如一潭死水」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "a-full-9cc70371c6ad",
+      "hints": [
+        {
+          "id": "kw-ce6349f8bd5d",
+          "text": "组织创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「组织创新」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-7b739a567e56",
+          "text": "组织变革与创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「组织变革与创新」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f48fa580da09",
+          "text": "资本的逻辑",
+          "status": "candidate",
+          "evidence": "源文原样包含「资本的逻辑」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-cd42ae65ea34",
+          "text": "知识逻辑",
+          "status": "candidate",
+          "evidence": "源文原样包含「知识逻辑」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-fad6e0ab11ce",
+          "text": "总局—项目中心—协会",
+          "status": "candidate",
+          "evidence": "源文原样包含「总局—项目中心—协会」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c204c660228e",
+          "text": "联盟＋俱乐部",
+          "status": "candidate",
+          "evidence": "源文原样包含「联盟＋俱乐部」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2ddbb1c43cc5",
+          "text": "为国争光",
+          "status": "candidate",
+          "evidence": "源文原样包含「为国争光」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-a982612df130",
+      "hints": [
+        {
+          "id": "kw-d6f58389cb26",
+          "text": "科学管理之父",
+          "status": "candidate",
+          "evidence": "源文原样包含「科学管理之父」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-b0f107cd1986",
+      "hints": [
+        {
+          "id": "kw-3e987d697a3b",
+          "text": "五职能第一项＝计划",
+          "status": "candidate",
+          "evidence": "源文原样包含「五职能第一项＝计划」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-fb5688aa529c",
+          "text": "决策",
+          "status": "candidate",
+          "evidence": "源文原样包含「决策」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-62f28ae543cb",
+      "hints": [
+        {
+          "id": "kw-f202ad65f7bd",
+          "text": "管理的四大原理里写“动态原理",
+          "status": "candidate",
+          "evidence": "源文原样包含「管理的四大原理里写“动态原理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-eca4e63e58bc",
+          "text": "责任原理",
+          "status": "candidate",
+          "evidence": "源文原样包含「责任原理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-18d513b9f175",
+          "text": "人本、系统、效益、适度四项",
+          "status": "candidate",
+          "evidence": "源文原样包含「人本、系统、效益、适度四项」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-98f6ad3821dd",
+          "text": "动态原理",
+          "status": "candidate",
+          "evidence": "源文原样包含「动态原理」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-81cc0a07116a",
+      "hints": [
+        {
+          "id": "kw-640dc649b878",
+          "text": "系统特征写“目的性",
+          "status": "candidate",
+          "evidence": "源文原样包含「系统特征写“目的性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-69953f40f4ed",
+          "text": "环境适应性",
+          "status": "candidate",
+          "evidence": "源文原样包含「环境适应性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-4fc6ff265e3b",
+          "text": "目的性",
+          "status": "candidate",
+          "evidence": "源文原样包含「目的性」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-906acedb8fc4",
+      "hints": [
+        {
+          "id": "kw-ddc722bf5607",
+          "text": "“职能设计",
+          "status": "candidate",
+          "evidence": "源文原样包含「“职能设计」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-3006f38acb13",
+          "text": "职能设计",
+          "status": "candidate",
+          "evidence": "源文原样包含「职能设计」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-c98ea77a96b3",
+      "hints": [
+        {
+          "id": "kw-75fa8b9a6958",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a6f122537d85",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-b589eeeaf2b6",
+      "hints": [
+        {
+          "id": "kw-164f8e756dd1",
+          "text": "共同目标、协作意愿、信息沟通",
+          "status": "candidate",
+          "evidence": "源文原样包含「共同目标、协作意愿、信息沟通」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-c2969a45c62c",
+      "hints": [
+        {
+          "id": "kw-4e94f41082a3",
+          "text": "泰勒设“七个",
+          "status": "candidate",
+          "evidence": "源文原样包含「泰勒设“七个」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-bbcbaca88dfd",
+          "text": "九个",
+          "status": "candidate",
+          "evidence": "源文原样包含「九个」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-b8547cbcaf43",
+          "text": "八个，四个在计划部门、四个在现场",
+          "status": "candidate",
+          "evidence": "源文原样包含「八个，四个在计划部门、四个在现场」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-4742b1dc7f8f",
+          "text": "七个",
+          "status": "candidate",
+          "evidence": "源文原样包含「七个」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-4f9e460dd6f8",
+      "hints": [
+        {
+          "id": "kw-f4767c63d5c5",
+          "text": "铁锹实验最佳装量写别的数",
+          "status": "candidate",
+          "evidence": "源文原样包含「铁锹实验最佳装量写别的数」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-895f925c55f8",
+      "hints": [
+        {
+          "id": "kw-9ec7550086bb",
+          "text": "强制性、模仿性、规范性",
+          "status": "candidate",
+          "evidence": "源文原样包含「强制性、模仿性、规范性」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-2b9650dfec5e",
+      "hints": [
+        {
+          "id": "kw-e6daef01fe5a",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-51c5aad56695",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-554b0cdb5c6b",
+      "hints": [
+        {
+          "id": "kw-b19684856e84",
+          "text": "五大核心要素",
+          "status": "candidate",
+          "evidence": "源文原样包含「五大核心要素」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-ab02997dc23a",
+      "hints": [
+        {
+          "id": "kw-83fb18ce371b",
+          "text": "制度",
+          "status": "candidate",
+          "evidence": "源文原样包含「制度」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2e2c9b06fcbb",
+          "text": "决策准则",
+          "status": "candidate",
+          "evidence": "源文原样包含「决策准则」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-4b383ad66e54",
+      "hints": [
+        {
+          "id": "kw-089ca03866ea",
+          "text": "决策过程写“五步",
+          "status": "candidate",
+          "evidence": "源文原样包含「决策过程写“五步」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-b84b285ede5f",
+          "text": "七步",
+          "status": "candidate",
+          "evidence": "源文原样包含「七步」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-de492cb86dee",
+          "text": "五步",
+          "status": "candidate",
+          "evidence": "源文原样包含「五步」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-4572c0416e03",
+      "hints": [
+        {
+          "id": "kw-1d770d86788b",
+          "text": "不确定性准则写“折中准则",
+          "status": "candidate",
+          "evidence": "源文原样包含「不确定性准则写“折中准则」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a54cef5d53cb",
+          "text": "后悔值最小准则",
+          "status": "candidate",
+          "evidence": "源文原样包含「后悔值最小准则」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9e6fa0f96f74",
+          "text": "折中准则",
+          "status": "candidate",
+          "evidence": "源文原样包含「折中准则」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-1bd6b02a90e0",
+      "hints": [
+        {
+          "id": "kw-2f244b23c00c",
+          "text": "效率效果准则写“时效性",
+          "status": "candidate",
+          "evidence": "源文原样包含「效率效果准则写“时效性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ab44c41233c2",
+          "text": "重要性、准确性、灵活性",
+          "status": "candidate",
+          "evidence": "源文原样包含「重要性、准确性、灵活性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-31b31fded669",
+          "text": "时效性",
+          "status": "candidate",
+          "evidence": "源文原样包含「时效性」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-9a866f66e7e2",
+      "hints": [
+        {
+          "id": "kw-589ed0d71132",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-d85013baf908",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-a4fc9312d3b0",
+      "hints": [
+        {
+          "id": "kw-4582478c21d7",
+          "text": "名义小组法、电子会议法",
+          "status": "candidate",
+          "evidence": "源文原样包含「名义小组法、电子会议法」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-fcecd56d113a",
+      "hints": [
+        {
+          "id": "kw-5b04bab86b5f",
+          "text": "蒂蒙斯",
+          "status": "candidate",
+          "evidence": "源文原样包含「蒂蒙斯」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-7ee57d033160",
+      "hints": [
+        {
+          "id": "kw-fe132e7f0e9c",
+          "text": "环境写“两大层次",
+          "status": "candidate",
+          "evidence": "源文原样包含「环境写“两大层次」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-b5e6830e29ee",
+          "text": "两大层次",
+          "status": "candidate",
+          "evidence": "源文原样包含「两大层次」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-f3d5ddbf69bf",
+      "hints": [
+        {
+          "id": "kw-e01744888da6",
+          "text": "微观环境漏项",
+          "status": "candidate",
+          "evidence": "源文原样包含「微观环境漏项」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-861d56374ae1",
+      "hints": [
+        {
+          "id": "kw-e4af37281ebe",
+          "text": "名义小组法、电子会议法",
+          "status": "candidate",
+          "evidence": "源文原样包含「名义小组法、电子会议法」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-975c89dee4b6",
+      "hints": [
+        {
+          "id": "kw-5778e9771a8d",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e76195b87f8f",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-b27fa1a2bcb4",
+      "hints": [
+        {
+          "id": "kw-0377967a5f94",
+          "text": "关键路线",
+          "status": "candidate",
+          "evidence": "源文原样包含「关键路线」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-77c69ce960c5",
+          "text": "关键路径",
+          "status": "candidate",
+          "evidence": "源文原样包含「关键路径」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-860ecfbf0332",
+      "hints": [
+        {
+          "id": "kw-b6a5fe41d1f0",
+          "text": "计划年限“3 年以上",
+          "status": "candidate",
+          "evidence": "源文原样包含「计划年限“3 年以上」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-054585129163",
+          "text": "5 年以上",
+          "status": "candidate",
+          "evidence": "源文原样包含「5 年以上」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-18ea8108ce03",
+          "text": "3 年以上",
+          "status": "candidate",
+          "evidence": "源文原样包含「3 年以上」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c4466fa88a5f",
+          "text": "3年",
+          "status": "candidate",
+          "evidence": "源文原样包含「3年」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-cf834493d204",
+      "hints": [
+        {
+          "id": "kw-ec74a1593dea",
+          "text": "目标管理只写三个特点",
+          "status": "candidate",
+          "evidence": "源文原样包含「目标管理只写三个特点」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-77bcf745048f",
+          "text": "建立系统的目标体系",
+          "status": "candidate",
+          "evidence": "源文原样包含「建立系统的目标体系」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-53eafc8fcd90",
+      "hints": [
+        {
+          "id": "kw-8bfe6041523b",
+          "text": "拟定并选择方案→编制预算",
+          "status": "candidate",
+          "evidence": "源文原样包含「拟定并选择方案→编制预算」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-9e809db77fc7",
+      "hints": [
+        {
+          "id": "kw-f8cddb728bde",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-6c012b445611",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-f6e70ba3c94b",
+      "hints": [
+        {
+          "id": "kw-4dcdaf0224c4",
+          "text": "组织设计原则写6条（把“统一指挥",
+          "status": "candidate",
+          "evidence": "源文原样包含「组织设计原则写6条（把“统一指挥」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-dc15c0a386ee",
+          "text": "统一指挥",
+          "status": "candidate",
+          "evidence": "源文原样包含「统一指挥」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-42d099cdb267",
+          "text": "目标一致原则",
+          "status": "candidate",
+          "evidence": "源文原样包含「目标一致原则」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-8edc6a5e2f15",
+      "hints": [
+        {
+          "id": "kw-68d7e4db001d",
+          "text": "“职能设计",
+          "status": "candidate",
+          "evidence": "源文原样包含「“职能设计」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-8cb388be95bb",
+          "text": "职务设计",
+          "status": "candidate",
+          "evidence": "源文原样包含「职务设计」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-6b5af1442af3",
+          "text": "职能设计",
+          "status": "candidate",
+          "evidence": "源文原样包含「职能设计」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-3d6e7698eb0b",
+      "hints": [
+        {
+          "id": "kw-448ee89afc1d",
+          "text": "事业部制提出年份或人物写错",
+          "status": "candidate",
+          "evidence": "源文原样包含「事业部制提出年份或人物写错」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-680c6e766855",
+          "text": "斯隆模型",
+          "status": "candidate",
+          "evidence": "源文原样包含「斯隆模型」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-b8f94a404812",
+      "hints": [
+        {
+          "id": "kw-cb15c96c6fdd",
+          "text": "职能制别名漏掉",
+          "status": "candidate",
+          "evidence": "源文原样包含「职能制别名漏掉」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-b45665ee6476",
+          "text": "参谋组织／幕僚组织／U 形结构",
+          "status": "candidate",
+          "evidence": "源文原样包含「参谋组织／幕僚组织／U 形结构」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-42cf17da57eb",
+      "hints": [
+        {
+          "id": "kw-78881dd3cead",
+          "text": "幅度与层级“正比",
+          "status": "candidate",
+          "evidence": "源文原样包含「幅度与层级“正比」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a4aef399bfe8",
+          "text": "规模一定时呈反比",
+          "status": "candidate",
+          "evidence": "源文原样包含「规模一定时呈反比」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2d445178a248",
+          "text": "正比",
+          "status": "candidate",
+          "evidence": "源文原样包含「正比」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-2bd0576320fc",
+      "hints": [
+        {
+          "id": "kw-df8afab7741d",
+          "text": "4096 人例证数字",
+          "status": "candidate",
+          "evidence": "源文原样包含「4096 人例证数字」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-caff1818c019",
+      "hints": [
+        {
+          "id": "kw-413cae23977f",
+          "text": "霍桑实验人数",
+          "status": "candidate",
+          "evidence": "源文原样包含「霍桑实验人数」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2b3fd45c06c5",
+          "text": "继电器绕线班组14 名工人",
+          "status": "candidate",
+          "evidence": "源文原样包含「继电器绕线班组14 名工人」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-bcddf66db0fc",
+      "hints": [
+        {
+          "id": "kw-586525220a64",
+          "text": "巴纳德三要素顺序乱",
+          "status": "candidate",
+          "evidence": "源文原样包含「巴纳德三要素顺序乱」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-0671959770fd",
+      "hints": [
+        {
+          "id": "kw-aefd8959493c",
+          "text": "集权分权当作“二选一",
+          "status": "candidate",
+          "evidence": "源文原样包含「集权分权当作“二选一」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0231e2595c19",
+          "text": "二选一",
+          "status": "candidate",
+          "evidence": "源文原样包含「二选一」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-cef7489eea01",
+      "hints": [
+        {
+          "id": "kw-5c30eca1102e",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-fce6944bfe5e",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-8f20fb616f1c",
+      "hints": [
+        {
+          "id": "kw-da439c7bea20",
+          "text": "德能勤绩",
+          "status": "candidate",
+          "evidence": "源文原样包含「德能勤绩」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-b5847d5020a1",
+      "hints": [
+        {
+          "id": "kw-279b9d7f8965",
+          "text": "民主评议法",
+          "status": "candidate",
+          "evidence": "源文原样包含「民主评议法」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-458d5f8ef31a",
+      "hints": [
+        {
+          "id": "kw-eaa690c0f34c",
+          "text": "录用方式“综合补偿式",
+          "status": "candidate",
+          "evidence": "源文原样包含「录用方式“综合补偿式」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9ba3d4a333ab",
+          "text": "补偿式",
+          "status": "candidate",
+          "evidence": "源文原样包含「补偿式」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f840526d77a8",
+          "text": "综合补偿式",
+          "status": "candidate",
+          "evidence": "源文原样包含「综合补偿式」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-ea5bf25b1137",
+      "hints": [
+        {
+          "id": "kw-838656736254",
+          "text": "“民主评议法",
+          "status": "candidate",
+          "evidence": "源文原样包含「“民主评议法」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e06efcf937ca",
+          "text": "民主测评法",
+          "status": "candidate",
+          "evidence": "源文原样包含「民主测评法」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-7112fabbc4d3",
+          "text": "民主评议法",
+          "status": "candidate",
+          "evidence": "源文原样包含「民主评议法」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-d07b3105c2f3",
+      "hints": [
+        {
+          "id": "kw-2a928bc48959",
+          "text": "德能勤绩按口诀顺序写",
+          "status": "candidate",
+          "evidence": "源文原样包含「德能勤绩按口诀顺序写」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-abf158a729ba",
+      "hints": [
+        {
+          "id": "kw-77f036f43006",
+          "text": "如何选择",
+          "status": "candidate",
+          "evidence": "源文原样包含「如何选择」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-430deef7483c",
+      "hints": [
+        {
+          "id": "kw-613be0c49325",
+          "text": "外部招聘程序写三阶段",
+          "status": "candidate",
+          "evidence": "源文原样包含「外部招聘程序写三阶段」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-0d7eb0797278",
+      "hints": [
+        {
+          "id": "kw-cb88062b795d",
+          "text": "德才兼备、人事动态平衡",
+          "status": "candidate",
+          "evidence": "源文原样包含「德才兼备、人事动态平衡」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-f1b9910b1621",
+      "hints": [
+        {
+          "id": "kw-293af21e5550",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e629c9036fac",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-dfb41cbd57a3",
+      "hints": [
+        {
+          "id": "kw-20acef80acbe",
+          "text": "融合继承性",
+          "status": "candidate",
+          "evidence": "源文原样包含「融合继承性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-4f05a19d794e",
+          "text": "融合性",
+          "status": "candidate",
+          "evidence": "源文原样包含「融合性」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-502709aaf28f",
+      "hints": [
+        {
+          "id": "kw-720fd73246c4",
+          "text": "负功能",
+          "status": "candidate",
+          "evidence": "源文原样包含「负功能」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c8a495da127c",
+          "text": "反功能",
+          "status": "candidate",
+          "evidence": "源文原样包含「反功能」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-eaa50768cd2f",
+      "hints": [
+        {
+          "id": "kw-8a14b7cc28a1",
+          "text": "调试功能",
+          "status": "candidate",
+          "evidence": "源文原样包含「调试功能」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-6e1cb3ad7d83",
+          "text": "调适功能",
+          "status": "candidate",
+          "evidence": "源文原样包含「调适功能」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-54c4425ef2f7",
+      "hints": [
+        {
+          "id": "kw-590827bfc724",
+          "text": "棒球型／要塞型",
+          "status": "candidate",
+          "evidence": "源文原样包含「棒球型／要塞型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-67dd2b2bd5dc",
+          "text": "棒球队型／堡垒型",
+          "status": "candidate",
+          "evidence": "源文原样包含「棒球队型／堡垒型」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-4ee8e3aa96a8",
+      "hints": [
+        {
+          "id": "kw-a6d0d2966a77",
+          "text": "策略合理性／灵活性",
+          "status": "candidate",
+          "evidence": "源文原样包含「策略合理性／灵活性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-1c52fd555463",
+          "text": "策略合理型／灵活适应型",
+          "status": "candidate",
+          "evidence": "源文原样包含「策略合理型／灵活适应型」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-353c3da8ce97",
+      "hints": [
+        {
+          "id": "kw-461da7c11e7a",
+          "text": "功能写六项（把激励和约束拆开）",
+          "status": "candidate",
+          "evidence": "源文原样包含「功能写六项（把激励和约束拆开）」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a475fb2f0a4a",
+          "text": "五个标题，激励和约束合为一条",
+          "status": "candidate",
+          "evidence": "源文原样包含「五个标题，激励和约束合为一条」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-6f247abb2464",
+      "hints": [
+        {
+          "id": "kw-4198ea981221",
+          "text": "塑造写“三阶段",
+          "status": "candidate",
+          "evidence": "源文原样包含「塑造写“三阶段」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-71fe27522288",
+          "text": "三阶段",
+          "status": "candidate",
+          "evidence": "源文原样包含「三阶段」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-927b56badf74",
+      "hints": [
+        {
+          "id": "kw-ed0c6b3d2f0f",
+          "text": "核心层写“制度层",
+          "status": "candidate",
+          "evidence": "源文原样包含「核心层写“制度层」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-7589124f1e40",
+          "text": "制度层",
+          "status": "candidate",
+          "evidence": "源文原样包含「制度层」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-c85c88dc5811",
+      "hints": [
+        {
+          "id": "kw-5bf8437f3d0a",
+          "text": "特征只写四项还说“共四项",
+          "status": "candidate",
+          "evidence": "源文原样包含「特征只写四项还说“共四项」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-7208a63c030a",
+          "text": "共四项",
+          "status": "candidate",
+          "evidence": "源文原样包含「共四项」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-544b60cad8cc",
+      "hints": [
+        {
+          "id": "kw-659f312a8942",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2cb40886f050",
+          "text": "体育组织文化",
+          "status": "candidate",
+          "evidence": "源文原样包含「体育组织文化」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-5fada09ecaf7",
+      "hints": [
+        {
+          "id": "kw-5744b1553cd2",
+          "text": "简述领导和管理的异同",
+          "status": "candidate",
+          "evidence": "源文原样包含「简述领导和管理的异同」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c44905c496dd",
+          "text": "管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「管理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-28312a1b56cf",
+          "text": "领导",
+          "status": "candidate",
+          "evidence": "源文原样包含「领导」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-098344b9873c",
+          "text": "控制得井井有条",
+          "status": "candidate",
+          "evidence": "源文原样包含「控制得井井有条」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e234b3c16eae",
+          "text": "指明方向、鼓舞人心",
+          "status": "candidate",
+          "evidence": "源文原样包含「指明方向、鼓舞人心」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-7df12cae2ff1",
+      "hints": [
+        {
+          "id": "kw-24b8e5e610ae",
+          "text": "灵魂",
+          "status": "candidate",
+          "evidence": "源文原样包含「灵魂」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-af71ab3e9760",
+          "text": "思想",
+          "status": "candidate",
+          "evidence": "源文原样包含「思想」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-bad4fee488d2",
+          "text": "上级≠领导者",
+          "status": "candidate",
+          "evidence": "源文原样包含「上级≠领导者」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-339030d611af",
+      "hints": [
+        {
+          "id": "kw-3977e910758d",
+          "text": "简述领导者权力体系的来源及构成",
+          "status": "candidate",
+          "evidence": "源文原样包含「简述领导者权力体系的来源及构成」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-479ee95dbf0e",
+          "text": "合法化的任命",
+          "status": "candidate",
+          "evidence": "源文原样包含「合法化的任命」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9fec74f77c86",
+          "text": "还要具有一定的个人权力",
+          "status": "candidate",
+          "evidence": "源文原样包含「还要具有一定的个人权力」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-58127489168f",
+      "hints": [
+        {
+          "id": "kw-34c0c560e541",
+          "text": "伟大人物",
+          "status": "candidate",
+          "evidence": "源文原样包含「伟大人物」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e39ee722315e",
+          "text": "卢因",
+          "status": "candidate",
+          "evidence": "源文原样包含「卢因」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-fb9a8f8f25c2",
+          "text": "以老板为中心",
+          "status": "candidate",
+          "evidence": "源文原样包含「以老板为中心」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-087b49808d83",
+          "text": "以下属为中心",
+          "status": "candidate",
+          "evidence": "源文原样包含「以下属为中心」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e076ec831ea7",
+          "text": "密歇根州立大学",
+          "status": "candidate",
+          "evidence": "源文原样包含「密歇根州立大学」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a8156d861c97",
+          "text": "穆顿",
+          "status": "candidate",
+          "evidence": "源文原样包含「穆顿」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-4ffc68bedc98",
+          "text": "高定规—低关怀",
+          "status": "candidate",
+          "evidence": "源文原样包含「高定规—低关怀」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-22bc1a0d1e0f",
+          "text": "高定规—高关怀",
+          "status": "candidate",
+          "evidence": "源文原样包含「高定规—高关怀」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-96ee537b8d2e",
+      "hints": [
+        {
+          "id": "kw-7330ce0926a3",
+          "text": "风格× 情境",
+          "status": "candidate",
+          "evidence": "源文原样包含「风格× 情境」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-7ffca9687704",
+          "text": "最难共事者",
+          "status": "candidate",
+          "evidence": "源文原样包含「最难共事者」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0e7f149093eb",
+          "text": "非常有利",
+          "status": "candidate",
+          "evidence": "源文原样包含「非常有利」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-7104d92f236e",
+          "text": "非常不利",
+          "status": "candidate",
+          "evidence": "源文原样包含「非常不利」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-032694330ca9",
+          "text": "镇场子",
+          "status": "candidate",
+          "evidence": "源文原样包含「镇场子」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-73a7736218fa",
+      "hints": [
+        {
+          "id": "kw-a60601776e30",
+          "text": "指示型",
+          "status": "candidate",
+          "evidence": "源文原样包含「指示型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5710132a2519",
+          "text": "指导型",
+          "status": "candidate",
+          "evidence": "源文原样包含「指导型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2ddce1230622",
+          "text": "破纪录",
+          "status": "candidate",
+          "evidence": "源文原样包含「破纪录」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-0dd3be889a8c",
+      "hints": [
+        {
+          "id": "kw-c1f5b863b2a3",
+          "text": "文化洋葱",
+          "status": "candidate",
+          "evidence": "源文原样包含「文化洋葱」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a266f43bb328",
+          "text": "水土不服",
+          "status": "candidate",
+          "evidence": "源文原样包含「水土不服」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-8455b23fe69f",
+      "hints": [
+        {
+          "id": "kw-791002d6018a",
+          "text": "“卢因",
+          "status": "candidate",
+          "evidence": "源文原样包含「“卢因」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-628ce301bf15",
+          "text": "勒温（教材原词）",
+          "status": "candidate",
+          "evidence": "源文原样包含「勒温（教材原词）」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-6bdb86fecfbd",
+          "text": "卢因",
+          "status": "candidate",
+          "evidence": "源文原样包含「卢因」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-cece2bf36b14",
+      "hints": [
+        {
+          "id": "kw-df8b4961e705",
+          "text": "“专制型、民主型、放任型",
+          "status": "candidate",
+          "evidence": "源文原样包含「“专制型、民主型、放任型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2460d8996ca3",
+          "text": "独裁型",
+          "status": "candidate",
+          "evidence": "源文原样包含「独裁型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f191815339a3",
+          "text": "专制型、民主型、放任型",
+          "status": "candidate",
+          "evidence": "源文原样包含「专制型、民主型、放任型」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-b050a25fa5e6",
+      "hints": [
+        {
+          "id": "kw-13950ef0dbe9",
+          "text": "“密歇根大学",
+          "status": "candidate",
+          "evidence": "源文原样包含「“密歇根大学」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-39e01abdbf52",
+          "text": "密歇根州立大学",
+          "status": "candidate",
+          "evidence": "源文原样包含「密歇根州立大学」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-739ad19a425d",
+          "text": "密歇根大学",
+          "status": "candidate",
+          "evidence": "源文原样包含「密歇根大学」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-0766f3022562",
+      "hints": [
+        {
+          "id": "kw-9108e50ca46b",
+          "text": "“布莱克—穆顿",
+          "status": "candidate",
+          "evidence": "源文原样包含「“布莱克—穆顿」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e4e35ea116ac",
+          "text": "布莱克和莫顿",
+          "status": "candidate",
+          "evidence": "源文原样包含「布莱克和莫顿」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e374e0b153f7",
+          "text": "布莱克—穆顿",
+          "status": "candidate",
+          "evidence": "源文原样包含「布莱克—穆顿」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-cc1acf56f64f",
+      "hints": [
+        {
+          "id": "kw-6afd3d50b058",
+          "text": "管理方格写“9.9型",
+          "status": "candidate",
+          "evidence": "源文原样包含「管理方格写“9.9型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-d6a4bdc19827",
+          "text": "9.9型",
+          "status": "candidate",
+          "evidence": "源文原样包含「9.9型」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-a6140948a358",
+      "hints": [
+        {
+          "id": "kw-79ce0d8d649a",
+          "text": "第九章答“交易型—变革型领导",
+          "status": "candidate",
+          "evidence": "源文原样包含「第九章答“交易型—变革型领导」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-3844ab13396c",
+          "text": "交易型—变革型领导",
+          "status": "candidate",
+          "evidence": "源文原样包含「交易型—变革型领导」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-f3adf70b7484",
+      "hints": [
+        {
+          "id": "kw-ff9718b7d9ba",
+          "text": "费德勒理论只写“情境三维度",
+          "status": "candidate",
+          "evidence": "源文原样包含「费德勒理论只写“情境三维度」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-bb625c4fad49",
+          "text": "情境三维度",
+          "status": "candidate",
+          "evidence": "源文原样包含「情境三维度」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-fb0a9de5d4d2",
+      "hints": [
+        {
+          "id": "kw-120825e15f53",
+          "text": "LPC 量表分界随口写",
+          "status": "candidate",
+          "evidence": "源文原样包含「LPC 量表分界随口写」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-403c4c1d1812",
+      "hints": [
+        {
+          "id": "kw-4e5871757dc4",
+          "text": "豪斯四种行为写死“指导型",
+          "status": "candidate",
+          "evidence": "源文原样包含「豪斯四种行为写死“指导型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f9539dd1e1cc",
+          "text": "指示型",
+          "status": "candidate",
+          "evidence": "源文原样包含「指示型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9d0cfb0d4e4a",
+          "text": "正文p.214 作“指示型",
+          "status": "candidate",
+          "evidence": "源文原样包含「正文p.214 作“指示型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-1337379dfb0d",
+          "text": "指导型",
+          "status": "candidate",
+          "evidence": "源文原样包含「指导型」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0593adfc7f8c",
+          "text": "指示型（指导型）",
+          "status": "candidate",
+          "evidence": "源文原样包含「指示型（指导型）」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-164e80c8200c",
+      "hints": [
+        {
+          "id": "kw-0e62d36f6770",
+          "text": "“蒂莫西·贾吉",
+          "status": "candidate",
+          "evidence": "源文原样包含「“蒂莫西·贾吉」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-173ec8c530d5",
+          "text": "蒂莫西·贾吉",
+          "status": "candidate",
+          "evidence": "源文原样包含「蒂莫西·贾吉」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-fee00d034d55",
+      "hints": [
+        {
+          "id": "kw-e0c5972c1ecd",
+          "text": "俄亥俄“双高最有效",
+          "status": "candidate",
+          "evidence": "源文原样包含「俄亥俄“双高最有效」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-8169612ae76f",
+          "text": "双高最有效",
+          "status": "candidate",
+          "evidence": "源文原样包含「双高最有效」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-7044c24148a0",
+      "hints": [
+        {
+          "id": "kw-38b4eb726785",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5c58ecbe19d9",
+          "text": "每道简答至少配一个体育／赛事例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育／赛事例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-ca1c7511556f",
+      "hints": [
+        {
+          "id": "kw-80ec120b9a0e",
+          "text": "激励有哪些特征？试作简单说明",
+          "status": "candidate",
+          "evidence": "源文原样包含「激励有哪些特征？试作简单说明」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-67768adf0010",
+          "text": "经济人",
+          "status": "candidate",
+          "evidence": "源文原样包含「经济人」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-78dcb815b47e",
+          "text": "自我实现人",
+          "status": "candidate",
+          "evidence": "源文原样包含「自我实现人」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-99af76ca9b82",
+          "text": "队员是什么人",
+          "status": "candidate",
+          "evidence": "源文原样包含「队员是什么人」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5b58530d6ea9",
+          "text": "全运会进前八",
+          "status": "candidate",
+          "evidence": "源文原样包含「全运会进前八」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c52ab6228871",
+          "text": "好好练",
+          "status": "candidate",
+          "evidence": "源文原样包含「好好练」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-8095dbbebde9",
+      "hints": [
+        {
+          "id": "kw-8ce7b4bbd65f",
+          "text": "突破自我、创造历史",
+          "status": "candidate",
+          "evidence": "源文原样包含「突破自我、创造历史」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-af110a768267",
+          "text": "再破纪录、开创新时代",
+          "status": "candidate",
+          "evidence": "源文原样包含「再破纪录、开创新时代」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-645937425f5c",
+      "hints": [
+        {
+          "id": "kw-c552ffd73e92",
+          "text": "激励—保健理论",
+          "status": "candidate",
+          "evidence": "源文原样包含「激励—保健理论」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-d8ed106bb4db",
+          "text": "满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-349e6e0dc65b",
+          "text": "没有满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「没有满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-90c8c0ae5dab",
+          "text": "不满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「不满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5b411cb54a2f",
+          "text": "没有不满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「没有不满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-fe1f317c3ff7",
+          "text": "破纪录特别奖",
+          "status": "candidate",
+          "evidence": "源文原样包含「破纪录特别奖」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-7c8f22b46674",
+      "hints": [
+        {
+          "id": "kw-cf6cb4a489c6",
+          "text": "打破全国纪录",
+          "status": "candidate",
+          "evidence": "源文原样包含「打破全国纪录」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c9fb2c4ea20b",
+          "text": "润滑剂",
+          "status": "candidate",
+          "evidence": "源文原样包含「润滑剂」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-da16e5bcf780",
+          "text": "跳一跳够得着",
+          "status": "candidate",
+          "evidence": "源文原样包含「跳一跳够得着」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-cea7bd433198",
+      "hints": [
+        {
+          "id": "kw-2bae3ff30106",
+          "text": "效价—手段—期望理论",
+          "status": "candidate",
+          "evidence": "源文原样包含「效价—手段—期望理论」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-25da2da62350",
+          "text": "夺冠奖励100 万",
+          "status": "candidate",
+          "evidence": "源文原样包含「夺冠奖励100 万」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2eace20f0203",
+          "text": "练就有用",
+          "status": "candidate",
+          "evidence": "源文原样包含「练就有用」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-cc8b3db1208b",
+          "text": "赢了就兑现",
+          "status": "candidate",
+          "evidence": "源文原样包含「赢了就兑现」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-baaf5de04f93",
+      "hints": [
+        {
+          "id": "kw-18f167064b51",
+          "text": "不患寡而患不均",
+          "status": "candidate",
+          "evidence": "源文原样包含「不患寡而患不均」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-9e4f6a55dbdc",
+      "hints": [
+        {
+          "id": "kw-5990ae8ff128",
+          "text": "表演性抱怨",
+          "status": "candidate",
+          "evidence": "源文原样包含「表演性抱怨」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-cf8478bc6c3a",
+      "hints": [
+        {
+          "id": "kw-cbd1f72d11ce",
+          "text": "最佳拼搏奖",
+          "status": "candidate",
+          "evidence": "源文原样包含「最佳拼搏奖」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f5ffef8d4dab",
+          "text": "降级即失业",
+          "status": "candidate",
+          "evidence": "源文原样包含「降级即失业」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-e5cd9bbcfc1d",
+      "hints": [
+        {
+          "id": "kw-3ff120b09848",
+          "text": "负强化当作惩罚",
+          "status": "candidate",
+          "evidence": "源文原样包含「负强化当作惩罚」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-c5a600f547a7",
+      "hints": [
+        {
+          "id": "kw-7df34f12d7b9",
+          "text": "“满意／不满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「“满意／不满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-cbdc9bdcb34d",
+          "text": "“满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「“满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a8095a692992",
+          "text": "没有满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「没有满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5787b58743f9",
+          "text": "不满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「不满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ed93378908ff",
+          "text": "没…",
+          "status": "candidate",
+          "evidence": "源文原样包含「没…」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5054322cb4ca",
+          "text": "满意／不满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「满意／不满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e9bf30b36d65",
+          "text": "满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「满意」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-60d11ec67c27",
+          "text": "没有不满意",
+          "status": "candidate",
+          "evidence": "源文原样包含「没有不满意」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-1376c424c956",
+      "hints": [
+        {
+          "id": "kw-3f023310de38",
+          "text": "马斯洛五层顺序乱、漏“波浪式演进",
+          "status": "candidate",
+          "evidence": "源文原样包含「马斯洛五层顺序乱、漏“波浪式演进」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-48b09b5805c6",
+          "text": "波浪式演进",
+          "status": "candidate",
+          "evidence": "源文原样包含「波浪式演进」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-4cc4aa737e89",
+      "hints": [
+        {
+          "id": "kw-b255a5bca7f6",
+          "text": "期望理论只写公式漏三关系",
+          "status": "candidate",
+          "evidence": "源文原样包含「期望理论只写公式漏三关系」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-929a83a7d773",
+      "hints": [
+        {
+          "id": "kw-3effe5272107",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-d2f44e12bff5",
+          "text": "每道简答至少配一个体育／赛事例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育／赛事例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-7cd71c3aab4a",
+      "hints": [
+        {
+          "id": "kw-ff53e03987e9",
+          "text": "传递信息、激励、控制、情感表达",
+          "status": "candidate",
+          "evidence": "源文原样包含「传递信息、激励、控制、情感表达」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-cbd0391afb43",
+      "hints": [
+        {
+          "id": "kw-a9385fb9b8d2",
+          "text": "噪声",
+          "status": "candidate",
+          "evidence": "源文原样包含「噪声」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-1fe71a681360",
+          "text": "噪音",
+          "status": "candidate",
+          "evidence": "源文原样包含「噪音」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c39247dde8e9",
+          "text": "理解",
+          "status": "candidate",
+          "evidence": "源文原样包含「理解」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-c47dceaddd9e",
+      "hints": [
+        {
+          "id": "kw-3fb2a6e78c6b",
+          "text": "交易型—变革型",
+          "status": "candidate",
+          "evidence": "源文原样包含「交易型—变革型」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-df054465cc9a",
+      "hints": [
+        {
+          "id": "kw-99a711648323",
+          "text": "“专制",
+          "status": "candidate",
+          "evidence": "源文原样包含「“专制」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a4ed66fdb564",
+          "text": "密歇根大学",
+          "status": "candidate",
+          "evidence": "源文原样包含「密歇根大学」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-d07f010d3c6b",
+          "text": "布莱克—穆顿",
+          "status": "candidate",
+          "evidence": "源文原样包含「布莱克—穆顿」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9ce7d0bfbc15",
+          "text": "专制",
+          "status": "candidate",
+          "evidence": "源文原样包含「专制」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-f887c3a340cb",
+      "hints": [
+        {
+          "id": "kw-3fffdd20468f",
+          "text": "沟通功能写四项",
+          "status": "candidate",
+          "evidence": "源文原样包含「沟通功能写四项」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-5e35b02cd3fe",
+      "hints": [
+        {
+          "id": "kw-419c01fd9ed7",
+          "text": "沟通过程写“噪音",
+          "status": "candidate",
+          "evidence": "源文原样包含「沟通过程写“噪音」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-7b598b4adf33",
+          "text": "图11-1 作“噪声",
+          "status": "candidate",
+          "evidence": "源文原样包含「图11-1 作“噪声」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5b550144163a",
+          "text": "理解",
+          "status": "candidate",
+          "evidence": "源文原样包含「理解」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-099654f492e0",
+          "text": "噪音",
+          "status": "candidate",
+          "evidence": "源文原样包含「噪音」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-dcc09a66ae06",
+          "text": "噪声",
+          "status": "candidate",
+          "evidence": "源文原样包含「噪声」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-c75014bbe877",
+      "hints": [
+        {
+          "id": "kw-1890b4373ec5",
+          "text": "冲突五策略坐标轴写反",
+          "status": "candidate",
+          "evidence": "源文原样包含「冲突五策略坐标轴写反」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-08b1a4fb49bc",
+          "text": "横坐标“合作性",
+          "status": "candidate",
+          "evidence": "源文原样包含「横坐标“合作性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ec0afd9c5b59",
+          "text": "坚持己见",
+          "status": "candidate",
+          "evidence": "源文原样包含「坚持己见」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e63a78bf13aa",
+          "text": "合作性",
+          "status": "candidate",
+          "evidence": "源文原样包含「合作性」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-f745a13de7d0",
+      "hints": [
+        {
+          "id": "kw-a3a7a62668fb",
+          "text": "竞争策略当作好方法",
+          "status": "candidate",
+          "evidence": "源文原样包含「竞争策略当作好方法」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-5eb885be0e5a",
+      "hints": [
+        {
+          "id": "kw-caa92a2c08c6",
+          "text": "相互作用观念写成“接受冲突",
+          "status": "candidate",
+          "evidence": "源文原样包含「相互作用观念写成“接受冲突」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-db6b2baea58c",
+          "text": "不仅接受，而且鼓励冲突的存在",
+          "status": "candidate",
+          "evidence": "源文原样包含「不仅接受，而且鼓励冲突的存在」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-1f8eea5c3f26",
+          "text": "接受冲突",
+          "status": "candidate",
+          "evidence": "源文原样包含「接受冲突」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-c14e5c1df464",
+      "hints": [
+        {
+          "id": "kw-59f6eb7a0c55",
+          "text": "轮式与全通道式的满意度写反",
+          "status": "candidate",
+          "evidence": "源文原样包含「轮式与全通道式的满意度写反」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-243107e560d4",
+      "hints": [
+        {
+          "id": "kw-8b16508d0c0a",
+          "text": "非正式沟通网络漏“单线式最少见",
+          "status": "candidate",
+          "evidence": "源文原样包含「非正式沟通网络漏“单线式最少见」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a5285247e4f5",
+          "text": "单线式最少见",
+          "status": "candidate",
+          "evidence": "源文原样包含「单线式最少见」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-1d8c30f44c56",
+      "hints": [
+        {
+          "id": "kw-7a588225ec3f",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-16c397543324",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-faa5a279d9ca",
+      "hints": [
+        {
+          "id": "kw-22e38adff402",
+          "text": "文化控制",
+          "status": "candidate",
+          "evidence": "源文原样包含「文化控制」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-c340c6a15905",
+      "hints": [
+        {
+          "id": "kw-9ce342577489",
+          "text": "控制过程第一步“确定目标",
+          "status": "candidate",
+          "evidence": "源文原样包含「控制过程第一步“确定目标」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ee06d06c50e6",
+          "text": "确定标准",
+          "status": "candidate",
+          "evidence": "源文原样包含「确定标准」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-00628b6f20ad",
+          "text": "确定目标",
+          "status": "candidate",
+          "evidence": "源文原样包含「确定目标」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-11c972358673",
+      "hints": [
+        {
+          "id": "kw-493626582a9e",
+          "text": "“适中控制",
+          "status": "candidate",
+          "evidence": "源文原样包含「“适中控制」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9a2147ffd534",
+          "text": "适中控制",
+          "status": "candidate",
+          "evidence": "源文原样包含「适中控制」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e021a672b72e",
+          "text": "适中",
+          "status": "candidate",
+          "evidence": "源文原样包含「适中」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a645b93c4032",
+          "text": "事中",
+          "status": "candidate",
+          "evidence": "源文原样包含「事中」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-b4a9e60a5b1b",
+      "hints": [
+        {
+          "id": "kw-17e922db2d3a",
+          "text": "控制过程写“五步",
+          "status": "candidate",
+          "evidence": "源文原样包含「控制过程写“五步」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-724e9970d143",
+          "text": "七步",
+          "status": "candidate",
+          "evidence": "源文原样包含「七步」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-6fe0a2c5f03c",
+          "text": "五步",
+          "status": "candidate",
+          "evidence": "源文原样包含「五步」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-11b2788801f7",
+      "hints": [
+        {
+          "id": "kw-6492c3b1fd53",
+          "text": "纠偏只写“改善工作",
+          "status": "candidate",
+          "evidence": "源文原样包含「纠偏只写“改善工作」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c70e183e761c",
+          "text": "两类：修订标准＋改善工作",
+          "status": "candidate",
+          "evidence": "源文原样包含「两类：修订标准＋改善工作」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-370e2332eb25",
+          "text": "改善工作",
+          "status": "candidate",
+          "evidence": "源文原样包含「改善工作」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-ed07826e4676",
+      "hints": [
+        {
+          "id": "kw-1965e96f9df8",
+          "text": "矛盾B：控制按职能分几类？",
+          "status": "candidate",
+          "evidence": "源文原样包含「矛盾B：控制按职能分几类？」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5ea0942e6fce",
+          "text": "文化控制",
+          "status": "candidate",
+          "evidence": "源文原样包含「文化控制」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-eaa9905f5ce7",
+      "hints": [
+        {
+          "id": "kw-8ba68ecff395",
+          "text": "矛盾A：控制按“集权程度",
+          "status": "candidate",
+          "evidence": "源文原样包含「矛盾A：控制按“集权程度」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f4004cd71372",
+          "text": "集中控制／分散控制／分层控制",
+          "status": "candidate",
+          "evidence": "源文原样包含「集中控制／分散控制／分层控制」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-1b40a952830c",
+          "text": "集权程度",
+          "status": "candidate",
+          "evidence": "源文原样包含「集权程度」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-0c7591479df8",
+      "hints": [
+        {
+          "id": "kw-cdb3239d69cf",
+          "text": "前馈控制说“针对人",
+          "status": "candidate",
+          "evidence": "源文原样包含「前馈控制说“针对人」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-561b7259e0d7",
+          "text": "针对人",
+          "status": "candidate",
+          "evidence": "源文原样包含「针对人」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-72d2909215f3",
+      "hints": [
+        {
+          "id": "kw-d8b78e4fbf69",
+          "text": "反馈控制只写缺点",
+          "status": "candidate",
+          "evidence": "源文原样包含「反馈控制只写缺点」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-7eee8949f307",
+      "hints": [
+        {
+          "id": "kw-146980b8544a",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ac873033ff67",
+          "text": "各举一个体育管理实例",
+          "status": "candidate",
+          "evidence": "源文原样包含「各举一个体育管理实例」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-fc3708b99ea6",
+      "hints": [
+        {
+          "id": "kw-02b3b674f06d",
+          "text": "全面质量管理实施原则七项",
+          "status": "candidate",
+          "evidence": "源文原样包含「全面质量管理实施原则七项」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-1e20099548ab",
+          "text": "教材八项（含“管理的系统方法",
+          "status": "candidate",
+          "evidence": "源文原样包含「教材八项（含“管理的系统方法」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ea766769c85d",
+          "text": "管理的系统方法",
+          "status": "candidate",
+          "evidence": "源文原样包含「管理的系统方法」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-ca9b78af2f8f",
+      "hints": [
+        {
+          "id": "kw-096c8a38030a",
+          "text": "“企业层次",
+          "status": "candidate",
+          "evidence": "源文原样包含「“企业层次」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-d6e4df91fdcb",
+          "text": "公司层、部门层、个人层",
+          "status": "candidate",
+          "evidence": "源文原样包含「公司层、部门层、个人层」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-70c31bbc8371",
+          "text": "企业层次",
+          "status": "candidate",
+          "evidence": "源文原样包含「企业层次」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-5d8d4540bf0e",
+      "hints": [
+        {
+          "id": "kw-c8e250ac2180",
+          "text": "市场控制动因写别的",
+          "status": "candidate",
+          "evidence": "源文原样包含「市场控制动因写别的」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-7a0a0870fdbc",
+          "text": "企业内部组织管理成本过高",
+          "status": "candidate",
+          "evidence": "源文原样包含「企业内部组织管理成本过高」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-6228d8d92a3a",
+      "hints": [
+        {
+          "id": "kw-bef64fae53d9",
+          "text": "团体控制靠“制度",
+          "status": "candidate",
+          "evidence": "源文原样包含「团体控制靠“制度」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-738b4c6e9a6d",
+          "text": "主要依靠组织文化手段",
+          "status": "candidate",
+          "evidence": "源文原样包含「主要依靠组织文化手段」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-63eaaf806114",
+          "text": "制度",
+          "status": "candidate",
+          "evidence": "源文原样包含「制度」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-76c90cb9b40d",
+      "hints": [
+        {
+          "id": "kw-cc1676939b97",
+          "text": "控制的方法",
+          "status": "candidate",
+          "evidence": "源文原样包含「控制的方法」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0845ebbe0a6c",
+          "text": "控制的类型…",
+          "status": "candidate",
+          "evidence": "源文原样包含「控制的类型…」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-3137e0bce2a2",
+          "text": "控制的类型",
+          "status": "candidate",
+          "evidence": "源文原样包含「控制的类型」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-466fc0f9ed08",
+      "hints": [
+        {
+          "id": "kw-191d2fd3e773",
+          "text": "柔性作业系统写老师那五项",
+          "status": "candidate",
+          "evidence": "源文原样包含「柔性作业系统写老师那五项」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-5dd8a04e8fb8",
+          "text": "小型化、模块化、产品化、集成化",
+          "status": "candidate",
+          "evidence": "源文原样包含「小型化、模块化、产品化、集成化」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-d5ad3e89a80b",
+      "hints": [
+        {
+          "id": "kw-b34aa82cddd4",
+          "text": "质量管理四阶段年代写错",
+          "status": "candidate",
+          "evidence": "源文原样包含「质量管理四阶段年代写错」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-24b7bbe20fd5",
+      "hints": [
+        {
+          "id": "kw-d5e5e1fbf7af",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f0f9b3070dd1",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-8c54fe1b5d82",
+      "hints": [
+        {
+          "id": "kw-3f3bf989078d",
+          "text": "风险承担",
+          "status": "candidate",
+          "evidence": "源文原样包含「风险承担」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a2ee369f0a79",
+          "text": "风险分担——“承担",
+          "status": "candidate",
+          "evidence": "源文原样包含「风险分担——“承担」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-65b6899c3cf3",
+          "text": "分担",
+          "status": "candidate",
+          "evidence": "源文原样包含「分担」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f711af7b621b",
+          "text": "承担",
+          "status": "candidate",
+          "evidence": "源文原样包含「承担」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-06dab8e5c5ce",
+      "hints": [
+        {
+          "id": "kw-577f8d1f75bf",
+          "text": "损失降低管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「损失降低管理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-74b0de6084ac",
+          "text": "损失减低管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「损失减低管理」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-3f99720f56de",
+      "hints": [
+        {
+          "id": "kw-c14bd86a61a0",
+          "text": "风险避免写“两种方式",
+          "status": "candidate",
+          "evidence": "源文原样包含「风险避免写“两种方式」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e5426e3e1f8c",
+          "text": "两种方式",
+          "status": "candidate",
+          "evidence": "源文原样包含「两种方式」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-915815844bde",
+      "hints": [
+        {
+          "id": "kw-58bdc7296986",
+          "text": "复制风险单位“降低了风险",
+          "status": "candidate",
+          "evidence": "源文原样包含「复制风险单位“降低了风险」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-34195315c637",
+          "text": "降低了风险",
+          "status": "candidate",
+          "evidence": "源文原样包含「降低了风险」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-dcfa8d8af66e",
+      "hints": [
+        {
+          "id": "kw-92b0c7feaed6",
+          "text": "危机特征写三项",
+          "status": "candidate",
+          "evidence": "源文原样包含「危机特征写三项」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-bf6cf58027b4",
+      "hints": [
+        {
+          "id": "kw-55e89e0b4cd0",
+          "text": "预警系统写三个子系统",
+          "status": "candidate",
+          "evidence": "源文原样包含「预警系统写三个子系统」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-a57226cb135c",
+      "hints": [
+        {
+          "id": "kw-69c7c596cd3b",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-75f56b91f317",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-dec348160664",
+      "hints": [
+        {
+          "id": "kw-38981fa5fa2e",
+          "text": "管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「管理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-1dc92cf4e8ef",
+          "text": "管理创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「管理创新」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-22ae32ff20f0",
+      "hints": [
+        {
+          "id": "kw-a3090f7bf2dd",
+          "text": "新组合",
+          "status": "candidate",
+          "evidence": "源文原样包含「新组合」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-faaa0e1e2e37",
+      "hints": [
+        {
+          "id": "kw-311fd1042bbe",
+          "text": "突破式创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「突破式创新」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e93ada5d28ed",
+          "text": "破坏性",
+          "status": "candidate",
+          "evidence": "源文原样包含「破坏性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-84354aa728f2",
+          "text": "颠覆式",
+          "status": "candidate",
+          "evidence": "源文原样包含「颠覆式」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-60050de7c55e",
+      "hints": [
+        {
+          "id": "kw-f744dcbaa2e1",
+          "text": "第十六章章名“组织变革与创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「第十六章章名“组织变革与创新」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0d16c72f20c2",
+          "text": "组织创新。“组织变革与创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「组织创新。“组织变革与创新」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a4e5d3b80fb9",
+          "text": "组织变革与创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「组织变革与创新」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-fe3b378d67af",
+      "hints": [
+        {
+          "id": "kw-731586b38871",
+          "text": "维持与创新“在空间和时间上分离",
+          "status": "candidate",
+          "evidence": "源文原样包含「维持与创新“在空间和时间上分离」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9dd32140ccf5",
+          "text": "在空间和时间上分离",
+          "status": "candidate",
+          "evidence": "源文原样包含「在空间和时间上分离」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-504e728893fe",
+      "hints": [
+        {
+          "id": "kw-5f33ffdd8dd5",
+          "text": "只写“有效管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写“有效管理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-1f13d6beaaa9",
+          "text": "卓越的管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「卓越的管理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-6f2d012e2cb7",
+          "text": "有效管理",
+          "status": "candidate",
+          "evidence": "源文原样包含「有效管理」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-c54294ee5af2",
+      "hints": [
+        {
+          "id": "kw-d5f48a53f538",
+          "text": "“突破式创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「“突破式创新」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-2f1a4add8b51",
+          "text": "突破式创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「突破式创新」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-9f16644dbdb2",
+      "hints": [
+        {
+          "id": "kw-69b85529cb04",
+          "text": "德鲁克创新来源“企业内外的协调",
+          "status": "candidate",
+          "evidence": "源文原样包含「德鲁克创新来源“企业内外的协调」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-cd6dfc4076f2",
+          "text": "不协调",
+          "status": "candidate",
+          "evidence": "源文原样包含「不协调」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-3622329b08af",
+          "text": "企业内外的协调",
+          "status": "candidate",
+          "evidence": "源文原样包含「企业内外的协调」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-1c893efad1c5",
+      "hints": [
+        {
+          "id": "kw-0c9f4379f393",
+          "text": "科特八环节当教材外内容跳过",
+          "status": "candidate",
+          "evidence": "源文原样包含「科特八环节当教材外内容跳过」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-73400a6acca6",
+      "hints": [
+        {
+          "id": "kw-b6369056f9cf",
+          "text": "勒温三阶段写“解冻—变革—再冻结",
+          "status": "candidate",
+          "evidence": "源文原样包含「勒温三阶段写“解冻—变革—再冻结」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-fae6730bb849",
+          "text": "解冻、转变、冻结",
+          "status": "candidate",
+          "evidence": "源文原样包含「解冻、转变、冻结」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e1b5c2ed2359",
+          "text": "解冻—变革—再冻结",
+          "status": "candidate",
+          "evidence": "源文原样包含「解冻—变革—再冻结」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-192d54e78c79",
+      "hints": [
+        {
+          "id": "kw-5827e2798b06",
+          "text": "演化、适应、革命、转型",
+          "status": "candidate",
+          "evidence": "源文原样包含「演化、适应、革命、转型」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-1b68a9eedbc4",
+      "hints": [
+        {
+          "id": "kw-78ef66fe4476",
+          "text": "“麦纳的三类创新者",
+          "status": "candidate",
+          "evidence": "源文原样包含「“麦纳的三类创新者」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-a97d4e1391b5",
+          "text": "麦纳的三类创新者",
+          "status": "candidate",
+          "evidence": "源文原样包含「麦纳的三类创新者」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9afdc0f850cd",
+          "text": "麦纳",
+          "status": "candidate",
+          "evidence": "源文原样包含「麦纳」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-e2a589ddba9a",
+      "hints": [
+        {
+          "id": "kw-e20ed4e024d9",
+          "text": "第十六章三结构写成“三个阶段",
+          "status": "candidate",
+          "evidence": "源文原样包含「第十六章三结构写成“三个阶段」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-0c58812acb36",
+          "text": "层级结构创新",
+          "status": "candidate",
+          "evidence": "源文原样包含「层级结构创新」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-ebd7e521e640",
+          "text": "三个阶段",
+          "status": "candidate",
+          "evidence": "源文原样包含「三个阶段」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-ebc41ec2208d",
+      "hints": [
+        {
+          "id": "kw-2e298f27de8a",
+          "text": "制度结构＝规章制度",
+          "status": "candidate",
+          "evidence": "源文原样包含「制度结构＝规章制度」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-e938b031a657",
+      "hints": [
+        {
+          "id": "kw-532cebe25a3a",
+          "text": "网络组织“取代",
+          "status": "candidate",
+          "evidence": "源文原样包含「网络组织“取代」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-8212c1ffb7c2",
+          "text": "补充而非取代——网络化的层级组织",
+          "status": "candidate",
+          "evidence": "源文原样包含「补充而非取代——网络化的层级组织」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-8381ed42ab21",
+          "text": "取代",
+          "status": "candidate",
+          "evidence": "源文原样包含「取代」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-0ac33089ab2d",
+      "hints": [
+        {
+          "id": "kw-054449ad9950",
+          "text": "“团队学习",
+          "status": "candidate",
+          "evidence": "源文原样包含「“团队学习」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-149c198b9c12",
+          "text": "迷信式经验学习",
+          "status": "candidate",
+          "evidence": "源文原样包含「迷信式经验学习」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-119194a4ab37",
+          "text": "道德困境",
+          "status": "candidate",
+          "evidence": "源文原样包含「道德困境」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-589c7398f831",
+          "text": "团队学习",
+          "status": "candidate",
+          "evidence": "源文原样包含「团队学习」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-7106be23a742",
+      "hints": [
+        {
+          "id": "kw-75e1940b6294",
+          "text": "五项修炼写“建立共同愿景",
+          "status": "candidate",
+          "evidence": "源文原样包含「五项修炼写“建立共同愿景」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-84e4618f07a6",
+          "text": "团队学习",
+          "status": "candidate",
+          "evidence": "源文原样包含「团队学习」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-df50fa10b948",
+          "text": "建立共同愿景",
+          "status": "candidate",
+          "evidence": "源文原样包含「建立共同愿景」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-redl-90ae2fb77d76",
+      "hints": [
+        {
+          "id": "kw-18e44e0d41a4",
+          "text": "只写理论不举体育例子",
+          "status": "candidate",
+          "evidence": "源文原样包含「只写理论不举体育例子」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-d9acd452f7c7",
+          "text": "每道简答至少配一个体育例证",
+          "status": "candidate",
+          "evidence": "源文原样包含「每道简答至少配一个体育例证」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-1d54543ec988",
+      "hints": [
+        {
+          "id": "kw-c941b378ca50",
+          "text": "认知依赖影响仨",
+          "status": "candidate",
+          "evidence": "源文原样包含「认知依赖影响仨」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-be2aaabf0a27",
+      "hints": [
+        {
+          "id": "kw-647cbb93646f",
+          "text": "麦纳三类创新者",
+          "status": "candidate",
+          "evidence": "源文原样包含「麦纳三类创新者」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-a98a75961c35",
+      "hints": [
+        {
+          "id": "kw-c63d8a23ead8",
+          "text": "学习如何学习",
+          "status": "candidate",
+          "evidence": "源文原样包含「学习如何学习」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-f816a083d44e",
+          "text": "发起巴／对话巴／系统巴／演练巴",
+          "status": "candidate",
+          "evidence": "源文原样包含「发起巴／对话巴／系统巴／演练巴」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-fa8943f19c85",
+          "text": "外在化",
+          "status": "candidate",
+          "evidence": "源文原样包含「外在化」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-91b81f22a8e9",
+      "hints": [
+        {
+          "id": "kw-d829adfb7b08",
+          "text": "团队学习",
+          "status": "candidate",
+          "evidence": "源文原样包含「团队学习」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-skel-0c59760ca702",
+      "hints": [
+        {
+          "id": "kw-92eef2e43c2e",
+          "text": "创客时代的动力",
+          "status": "candidate",
+          "evidence": "源文原样包含「创客时代的动力」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-e84d626ecf77",
+          "text": "需求",
+          "status": "candidate",
+          "evidence": "源文原样包含「需求」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-appe-57f6d7d972be",
+      "hints": [
+        {
+          "id": "kw-4ee4ba4e11d9",
+          "text": "多样性",
+          "status": "candidate",
+          "evidence": "源文原样包含「多样性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-cc678e6cebda",
+          "text": "综合性",
+          "status": "candidate",
+          "evidence": "源文原样包含「综合性」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-9c22c8220249",
+          "text": "保障体系",
+          "status": "candidate",
+          "evidence": "源文原样包含「保障体系」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-appe-223d04a66a5c",
+      "hints": [
+        {
+          "id": "kw-55b7257889c4",
+          "text": "财务风险",
+          "status": "candidate",
+          "evidence": "源文原样包含「财务风险」",
+          "humanTouched": false
+        }
+      ]
+    },
+    {
+      "itemId": "b-appe-913b1d9a2283",
+      "hints": [
+        {
+          "id": "kw-e75f7e454fc6",
+          "text": "管理原理",
+          "status": "candidate",
+          "evidence": "源文原样包含「管理原理」",
+          "humanTouched": false
+        },
+        {
+          "id": "kw-c26899a70def",
+          "text": "简述体育管理的原理",
+          "status": "candidate",
+          "evidence": "源文原样包含「简述体育管理的原理」",
+          "humanTouched": false
+        }
+      ]
+    }
+  ]
+}

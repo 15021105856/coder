@@ -1,0 +1,375 @@
+{
+  "note": "status 为 candidate 的关系不会进入正式提示链。把 humanTouched 设为 true 后，重新解析会保留你改过的 status。",
+  "relations": [
+    {
+      "id": "rel-dee7d814bab7",
+      "aItemId": "a-full-14da5bbf24e0",
+      "bItemId": "b-skel-b63f21e7f2a2",
+      "reason": "B册原句「见第一章第三题」。按章内第 3 题暂对到「三 当代社会发展的主要特征是什么？它对组织管理活动的影响有哪些？」，但是否就是A册题序不能确定",
+      "status": "candidate",
+      "role": "skeleton",
+      "evidenceQuote": "| 管理既是科学也是艺术 | 见第一章第三题（四）——理论与工具是科学的，实践是艺术的 | p.26—27，思考题⑧ |",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-3dfd124ddb75",
+      "aItemId": "a-full-e7c4ffc3bee0",
+      "bItemId": "b-skel-89c8fb3a9b61",
+      "reason": "B册原句「见本章第一题」。暂对到本章 A 题第 1 题，编号体系未必是 A 册",
+      "status": "candidate",
+      "role": "skeleton",
+      "evidenceQuote": "| 预算／审计／财务控制的区别与优缺点 | 见本章第一题（二）第3 条 | 思考题① |",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-e97c037151ba",
+      "aItemId": "a-full-ca475a73df0f",
+      "bItemId": "b-redl-62f28ae543cb",
+      "reason": "同章且标题或别写包含「原理」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 管理活动的基本原理有哪些？简述其主要思想。」；B条目「别写「管理的四大原理里写“动态原理”“责任原理”」→ 要写「人本、系统、效益、适度四项」」；共有原文片段「原理」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-1a851d126f12",
+      "aItemId": "a-full-ad85f8b1dc26",
+      "bItemId": "b-redl-c2969a45c62c",
+      "reason": "同章且标题或别写包含「泰勒」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 评述泰勒科学管理的基本思想。」；B条目「别写「泰勒设“七个”或“九个”职能工长」→ 要写「八个，四个在计划部门、四个在现场」」；共有原文片段「泰勒」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-a1b49cd5794a",
+      "aItemId": "a-full-0f4c11f3e8e8",
+      "bItemId": "b-redl-7ee57d033160",
+      "reason": "同章且邻近原文包含「三大层次」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简述组织环境的三大层次及各自的核心内容。」；B条目「别写「环境写“两大层次”」→ 要写「三大层次：一般（宏观）／具体（微观）／组织内部」」；共有原文片段「三大层次」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-b3253eeb988a",
+      "aItemId": "a-full-db2e3410a82f",
+      "bItemId": "b-skel-fb5ac028dc0b",
+      "reason": "同章且邻近原文包含「有限理性」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "skeleton",
+      "evidenceQuote": "A题「二 什么是有限理性？西蒙为何提出“满意原则”？它与“最优原则”有何区别？」；B条目「行为决策理论」；共有原文片段「有限理性」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-41ebdb979e18",
+      "aItemId": "a-full-355955ac3ab3",
+      "bItemId": "b-redl-cf834493d204",
+      "reason": "同章且红线「别写」包含源文片段「目标管理」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「二 简述目标管理的定义、特点、过程及评价。」；B条目「别写「目标管理只写三个特点」→ 要写「四个，第四个是“建立系统的目标体系”」」；共有原文片段「目标管理」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-00b1de3af209",
+      "aItemId": "a-full-8d1a5e11636c",
+      "bItemId": "b-redl-f6e70ba3c94b",
+      "reason": "同章且邻近原文包含「有效管理幅度」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「二 什么是管理幅度？影响有效管理幅度的因素有哪些？它与管理层级是什么关系？」；B条目「别写「组织设计原则写6条（把“统一指挥”单列）」→ 要写「五条：目标一致、分工与协作、有效管理幅度、权责对等、柔性…」」；共有原文片段「有效管理幅度」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-67ffd46de050",
+      "aItemId": "a-full-8d1a5e11636c",
+      "bItemId": "b-redl-42cf17da57eb",
+      "reason": "同章且标题或别写包含「幅度」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「二 什么是管理幅度？影响有效管理幅度的因素有哪些？它与管理层级是什么关系？」；B条目「别写「幅度与层级“正比”」→ 要写「规模一定时呈反比」」；共有原文片段「幅度」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-1bd25adf6590",
+      "aItemId": "a-full-8d1a5e11636c",
+      "bItemId": "b-redl-2bd0576320fc",
+      "reason": "同章且邻近原文包含「幅度」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「二 什么是管理幅度？影响有效管理幅度的因素有哪些？它与管理层级是什么关系？」；B条目「别写「4096 人例证数字」→ 要写「幅度4 →7 层、1365 人；幅度8 →4 层、585…」」；共有原文片段「幅度」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-faf33f359784",
+      "aItemId": "a-full-b0cba58d80cd",
+      "bItemId": "b-redl-abf158a729ba",
+      "reason": "同章且红线「别写」包含源文片段「外部选聘」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简述内部选聘与外部选聘的优缺点，并说明如何选择。」；B条目「别写「内外部选聘只列优缺点不写“如何选择”」→ 要写「必写教材判据：制度有效风气好想维持→内部；效率低风气差想…」」；共有原文片段「外部选聘」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-f4f322606c2f",
+      "aItemId": "a-full-5259b7147d5d",
+      "bItemId": "b-skel-f1471478b103",
+      "reason": "同章且标题或别写包含「冲突」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "skeleton",
+      "evidenceQuote": "A题「一 简述托马斯提出的五种冲突管理策略及其适用情形。」；B条目「冲突的类型」；共有原文片段「冲突」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-6a5b65789207",
+      "aItemId": "a-full-5259b7147d5d",
+      "bItemId": "b-redl-c75014bbe877",
+      "reason": "同章且标题或别写包含「冲突」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简述托马斯提出的五种冲突管理策略及其适用情形。」；B条目「别写「冲突五策略坐标轴写反」→ 要写「横坐标“合作性”，纵坐标“坚持己见”」」；共有原文片段「冲突」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-819f93c9d601",
+      "aItemId": "a-full-5259b7147d5d",
+      "bItemId": "b-redl-f745a13de7d0",
+      "reason": "同章且邻近原文包含「冲突」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简述托马斯提出的五种冲突管理策略及其适用情形。」；B条目「别写「竞争策略当作好方法」→ 要写「教材明说“很难使对方心悦诚服，并非解决冲突的好方法”，只…」」；共有原文片段「冲突」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-f08cc7f85854",
+      "aItemId": "a-full-5259b7147d5d",
+      "bItemId": "b-redl-5eb885be0e5a",
+      "reason": "同章且标题或别写包含「冲突」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简述托马斯提出的五种冲突管理策略及其适用情形。」；B条目「别写「相互作用观念写成“接受冲突”」→ 要写「不仅接受，而且鼓励冲突的存在」」；共有原文片段「冲突」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-211423a5b35a",
+      "aItemId": "a-full-089d4af66985",
+      "bItemId": "b-redl-243107e560d4",
+      "reason": "同章且红线「别写」包含源文片段「正式沟通网络」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「二 正式沟通网络有哪些类型？各自的特点是什么？」；B条目「别写「非正式沟通网络漏“单线式最少见”」→ 要写「四种：集束式（最普通）、随机式、流言式、单线式（最为少见…」」；共有原文片段「正式沟通网络」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-e5621b8bfe6a",
+      "aItemId": "a-full-f8b38b1b8c48",
+      "bItemId": "b-redl-0c7591479df8",
+      "reason": "同章且红线「别写」包含源文片段「前馈控制」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简述前馈控制、现场控制与反馈控制的含义、优缺点，并各举一个体育管理实例。」；B条目「别写「前馈控制说“针对人”」→ 要写「针对计划所依赖的条件，不针对具体人员——这正是它易被接受…」」；共有原文片段「前馈控制」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-1684527abe66",
+      "aItemId": "a-full-f8b38b1b8c48",
+      "bItemId": "b-redl-72d2909215f3",
+      "reason": "同章且红线「别写」包含源文片段「反馈控制」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简述前馈控制、现场控制与反馈控制的含义、优缺点，并各举一个体育管理实例。」；B条目「别写「反馈控制只写缺点」→ 要写「缺点一句（亡羊补牢）＋四项作用必写」」；共有原文片段「反馈控制」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-a5b667dca2cf",
+      "aItemId": "a-full-f8b38b1b8c48",
+      "bItemId": "b-redl-11c972358673",
+      "reason": "同章且邻近原文包含「现场控制」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简述前馈控制、现场控制与反馈控制的含义、优缺点，并各举一个体育管理实例。」；B条目「别写「“适中控制”」→ 要写「现场控制（教材注明也称同步控制／同期控制）」」；共有原文片段「现场控制」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-7de99262bf0b",
+      "aItemId": "a-full-e7c4ffc3bee0",
+      "bItemId": "b-redl-ca9b78af2f8f",
+      "reason": "同章且红线「别写」包含源文片段「市场控制」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「一 层级控制、市场控制与团体控制各自的含义与动因是什么？」；B条目「别写「“企业层次”（市场控制）」→ 要写「公司层、部门层、个人层」」；共有原文片段「市场控制」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-8c503547f4fc",
+      "aItemId": "a-full-e7c4ffc3bee0",
+      "bItemId": "b-redl-5d8d4540bf0e",
+      "reason": "同章且红线「别写」包含源文片段「市场控制」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「一 层级控制、市场控制与团体控制各自的含义与动因是什么？」；B条目「别写「市场控制动因写别的」→ 要写「企业内部组织管理成本过高」」；共有原文片段「市场控制」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-39cca96f398b",
+      "aItemId": "a-full-e7c4ffc3bee0",
+      "bItemId": "b-redl-6228d8d92a3a",
+      "reason": "同章且红线「别写」包含源文片段「团体控制」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「一 层级控制、市场控制与团体控制各自的含义与动因是什么？」；B条目「别写「团体控制靠“制度”」→ 要写「主要依靠组织文化手段」」；共有原文片段「团体控制」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-e287c6dad22d",
+      "aItemId": "a-full-e7c4ffc3bee0",
+      "bItemId": "b-redl-76c90cb9b40d",
+      "reason": "同章且红线「别写」包含源文片段「层级控制」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「一 层级控制、市场控制与团体控制各自的含义与动因是什么？」；B条目「别写「层级控制、市场控制、团体控制写在第十二章」→ 要写「这三个在第十三章第一节，是“控制的方法”不是“控制的类型…」」；共有原文片段「层级控制」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-a16140d97189",
+      "aItemId": "a-full-809ec998e2a2",
+      "bItemId": "b-redl-fc3708b99ea6",
+      "reason": "同章且红线「别写」包含源文片段「全面质量管理」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「二 简述全面质量管理的内涵与实施原则。」；B条目「别写「全面质量管理实施原则七项」→ 要写「教材八项（含“管理的系统方法”）。七项是ISO 9001…」」；共有原文片段「全面质量管理」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-a603e3fa7d06",
+      "aItemId": "a-full-809ec998e2a2",
+      "bItemId": "b-redl-d5ad3e89a80b",
+      "reason": "同章且红线「别写」包含源文片段「质量管理」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「二 简述全面质量管理的内涵与实施原则。」；B条目「别写「质量管理四阶段年代写错」→ 要写「检验20—30 年代／统计40—50／全面60—70／国…」」；共有原文片段「质量管理」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-70c945c3d78a",
+      "aItemId": "a-full-1746eddac08c",
+      "bItemId": "b-skel-a8be5e8180bc",
+      "reason": "同章且标题或别写包含「风险」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "skeleton",
+      "evidenceQuote": "A题「一 简要说明风险控制的不同策略。」；B条目「风险的内涵与分类」；共有原文片段「风险」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-f374ac3c1db7",
+      "aItemId": "a-full-1746eddac08c",
+      "bItemId": "b-skel-d6273f9a40e5",
+      "reason": "同章且标题或别写包含「风险」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "skeleton",
+      "evidenceQuote": "A题「一 简要说明风险控制的不同策略。」；B条目「风险管理及其目标」；共有原文片段「风险」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-e40bae5f118d",
+      "aItemId": "a-full-1746eddac08c",
+      "bItemId": "b-skel-950bafa09bf4",
+      "reason": "同章且标题或别写包含「风险」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "skeleton",
+      "evidenceQuote": "A题「一 简要说明风险控制的不同策略。」；B条目「风险识别方法」；共有原文片段「风险」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-7c803e405ec6",
+      "aItemId": "a-full-1746eddac08c",
+      "bItemId": "b-skel-13ab86177e40",
+      "reason": "同章且标题或别写包含「风险」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "skeleton",
+      "evidenceQuote": "A题「一 简要说明风险控制的不同策略。」；B条目「风险评估的方法与原则」；共有原文片段「风险」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-42dbc57dad64",
+      "aItemId": "a-full-1746eddac08c",
+      "bItemId": "b-redl-8c54fe1b5d82",
+      "reason": "同章且标题或别写包含「风险」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简要说明风险控制的不同策略。」；B条目「别写「风险承担」→ 要写「风险分担——“承担”是反义（自己扛），“分担”是转移出去」」；共有原文片段「风险」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-943dd894ba0f",
+      "aItemId": "a-full-1746eddac08c",
+      "bItemId": "b-redl-a084a03cc1ea",
+      "reason": "同章且标题或别写包含「风险」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简要说明风险控制的不同策略。」；B条目「别写「风险回避法／减小风险法／风险转移法（张瑞林口径）」→ 要写「马工程四策略：风险避免、风险分担、损失减低管理、风险保留…」」；共有原文片段「风险」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-18929d60ee52",
+      "aItemId": "a-full-1746eddac08c",
+      "bItemId": "b-redl-3f99720f56de",
+      "reason": "同章且标题或别写包含「风险」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简要说明风险控制的不同策略。」；B条目「别写「风险避免写“两种方式”」→ 要写「三种：完全拒绝／试探承担部分／中途放弃」」；共有原文片段「风险」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-fe4fa222c9f9",
+      "aItemId": "a-full-1746eddac08c",
+      "bItemId": "b-redl-915815844bde",
+      "reason": "同章且标题或别写包含「风险」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简要说明风险控制的不同策略。」；B条目「别写「复制风险单位“降低了风险”」→ 要写「并没有使原有风险变小，只是减少一次事故的损失程度」」；共有原文片段「风险」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-5e729079ed12",
+      "aItemId": "a-full-243fcbb88f10",
+      "bItemId": "b-redl-dcfa8d8af66e",
+      "reason": "同章且标题或别写包含「危机」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「二 简要分析危机预警、危机反应与恢复管理的基本内容。」；B条目「别写「危机特征写三项」→ 要写「四项：突发性、危害性、紧迫性、信息资源不充分」」；共有原文片段「危机」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-aeecf04f9464",
+      "aItemId": "a-full-243fcbb88f10",
+      "bItemId": "b-redl-ccbd793ca8da",
+      "reason": "同章且标题或别写包含「危机」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "redline",
+      "evidenceQuote": "A题「二 简要分析危机预警、危机反应与恢复管理的基本内容。」；B条目「别写「危机处理小组与危机恢复小组混为一个」→ 要写「两个不同小组：处理小组控制平息危机，恢复小组修复重建」」；共有原文片段「危机」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-f49392a1a248",
+      "aItemId": "a-full-1a229d9652fa",
+      "bItemId": "b-redl-fe3b378d67af",
+      "reason": "同章且红线「别写」包含源文片段「维持与创新」",
+      "status": "confirmed-by-source",
+      "role": "redline",
+      "evidenceQuote": "A题「一 简述管理工作中维持与创新的关系。」；B条目「别写「维持与创新“在空间和时间上分离”」→ 要写「不分离，组织管理活动是维持和创新的相互融合」」；共有原文片段「维持与创新」。",
+      "humanTouched": false
+    },
+    {
+      "id": "rel-ecfb3be9bc12",
+      "aItemId": "a-full-1a229d9652fa",
+      "bItemId": "b-skel-da390bded3cc",
+      "reason": "同章且标题或别写包含「管理工作」，尚未当作训练提示",
+      "status": "candidate",
+      "role": "skeleton",
+      "evidenceQuote": "A题「一 简述管理工作中维持与创新的关系。」；B条目「创新管理工作的过程」；共有原文片段「管理工作」。",
+      "humanTouched": false
+    }
+  ]
+}
