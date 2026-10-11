@@ -1,0 +1,29 @@
+{
+  "name": "pku346-recall",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "parse": "node scripts/parse-content.mjs",
+    "pretest": "node scripts/parse-content.mjs",
+    "test": "vitest run",
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run parse && tsc --noEmit && vite build",
+    "file-check": "node scripts/file-protocol-check.mjs"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "puppeteer-core": "^24.2.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.2.0",
+    "vite-plugin-singlefile": "^2.1.0",
+    "vitest": "^3.0.8"
+  }
+}
