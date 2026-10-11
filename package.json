@@ -10,7 +10,9 @@
     "dev": "vite",
     "typecheck": "tsc --noEmit",
     "build": "npm run parse && tsc --noEmit && vite build",
-    "file-check": "node scripts/file-protocol-check.mjs"
+    "file-check": "node scripts/file-protocol-check.mjs",
+    "verify-package": "node scripts/verify-package.mjs",
+    "package-release": "node scripts/package-release.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

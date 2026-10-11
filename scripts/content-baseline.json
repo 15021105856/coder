@@ -1,0 +1,20 @@
+{
+  "sourceFiles": [
+    "sources/管理学A册_完整转换.md",
+    "sources/管理学B册_完整转换.md"
+  ],
+  "parse": {
+    "items": 251,
+    "aCore": 26,
+    "aApp": 2,
+    "b9": 7,
+    "b10": 8,
+    "relations": 37,
+    "confirmed": 12
+  },
+  "contentVersion": "2026-10-11-v1",
+  "sourceHashes": {
+    "A": "36a81253ef4497aec2cfa0af6a6746169a24520d6ba176e175a5931ca8a237f8",
+    "B": "6e6c114562f92c5e4771f8db5eea8f1df9b35278cf4620f9732b79eae00ed457"
+  }
+}

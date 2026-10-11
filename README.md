@@ -21,6 +21,30 @@ npm test
 npm run build
 ```
 
+## Build verification
+
+V2.2.2 起，交付前请按顺序验证（教材与学习算法应与 V2.2.1 一致，仅 packaging 与方法论说明有调整）：
+
+```bash
+npm ci          # 或 npm install
+npm run verify-package   # 源 Markdown 中文路径、parse 计数、sourceHash
+npm test
+npm run build
+npm run file-check       # file:// 单文件 smoke（headless Chrome）
+npm run package-release  # 生成 MRC_V2.2.2_…html 与 pku346-recall-v222-source-and-html.zip
+```
+
+`verify-package` 会确认：
+
+- `sources/管理学A册_完整转换.md` 与 `sources/管理学B册_完整转换.md` 存在，且 **没有** `#Uxxxx` 转义替代文件名
+- `parse-content.mjs` 可直接读取上述文件
+- 解析结果：`items=251`，A 核心 `26`，附录完整题 `2`，B 第九/十章 `7/8`，`relations=37`，`confirmed-by-source=12`，`failures=[]`
+- A/B `sourceHash` 与 V2.2.1 冻结值一致（见 `scripts/content-baseline.mjs`）
+
+单文件验证：构建后双击或用浏览器打开 `dist/index.html` 或 `MRC_V2.2.2_沉浸诵读冻结版.html`，地址栏应为 `file://`，网络面板无外链请求。
+
+**V2.2.2 变更范围：** 源码 ZIP 使用 UTF-8 中文文件名；方法论页补全一天参考安排与复测节奏说明。**未改** 教材 `sourceHash`、稳定 `itemId`、recall / evidence / exam / schedule 逻辑。
+
 ## 2. 怎么开始「一日记忆恢复」
 
 打开后在「今日训练」点 **排列今日**。安排分成五段：

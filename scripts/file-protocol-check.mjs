@@ -37,6 +37,8 @@ await clickNav(page, '方法论')
 await page.waitForFunction(() => document.body.innerText.includes('三条铁律'))
 const methodText = await page.$eval('main', (node) => node.textContent)
 if (!methodText?.includes('核心目标')) throw new Error('方法论页缺少核心目标')
+if (!methodText?.includes('08:00–08:40')) throw new Error('方法论页缺少一天参考安排')
+if (!methodText?.includes('复测节奏')) throw new Error('方法论页缺少复测节奏')
 
 await clickNav(page, '资料库')
 await page.waitForSelector('input[placeholder="搜索原文"]')
