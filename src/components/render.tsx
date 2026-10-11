@@ -95,7 +95,9 @@ export function SectionList({ sections, query = '' }: { sections: Section[]; que
             {showTitle ? <h4>{section.title}</h4> : null}
             <div className="layer-label">
               {sports ? <span className="sports-tag">🏃 体育转写</span> : null}
-              {section.emphasis ? '原文强调' : LAYER_LABEL[section.layer]}
+              <span className={`layer-pill layer-pill-${section.emphasis ? 'normal' : section.layer}`}>
+                {section.emphasis ? '原文强调' : LAYER_LABEL[section.layer]}
+              </span>
               {section.emphasis ? <small>不是名解层</small> : null}
             </div>
             {section.sourceText ? <RichText text={section.sourceText} query={query} /> : null}

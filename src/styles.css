@@ -273,36 +273,46 @@ pre { white-space: pre-wrap; font-family: inherit; margin: 0; line-height: var(-
   flex-wrap: wrap;
   margin-bottom: 6px;
 }
-.layer-label span,
+.layer-pill,
 .sports-tag {
   display: inline-flex;
   border-radius: 999px;
-  padding: 2px 8px;
-  background: var(--paper-strong);
-  border: 1px solid var(--line);
+  padding: 2px 10px;
   font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  line-height: 1.35;
 }
-.layer-definition .layer-label span:not(.sports-tag) {
-  background: color-mix(in srgb, var(--cinnabar-bg) 80%, white);
+.layer-pill-definition {
+  background: color-mix(in srgb, var(--cinnabar-bg) 85%, var(--paper-strong));
   border-color: var(--cinnabar-line);
   color: var(--cinnabar);
 }
-.layer-short_answer .layer-label span:not(.sports-tag) {
+.layer-pill-short_answer {
+  background: var(--short-bg);
   border-color: var(--short-line);
+  color: var(--ink);
 }
-.layer-expansion .layer-label span:not(.sports-tag) {
+.layer-pill-expansion {
+  background: color-mix(in srgb, var(--celadon-bg) 90%, var(--paper-strong));
   border-color: var(--celadon-line);
   color: var(--celadon);
 }
-
-.sports-section {
-  background: var(--sport-bg) !important;
-  border-left-color: var(--sport-line) !important;
+.layer-pill-normal {
+  background: color-mix(in srgb, var(--paper) 88%, var(--bg));
+  border-color: var(--line);
+  color: var(--muted);
 }
 .sports-tag {
   background: color-mix(in srgb, var(--sport-bg) 70%, var(--paper-strong));
   border-color: var(--sport-line);
   color: var(--sport);
+  font-weight: 600;
+}
+
+.sports-section {
+  background: var(--sport-bg) !important;
+  border-left-color: var(--sport-line) !important;
 }
 
 .badge, .evidence-independent, .evidence-minor_omission, .evidence-cue_dependent, .evidence-relearned {
