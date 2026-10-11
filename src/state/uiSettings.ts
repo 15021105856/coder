@@ -1,6 +1,6 @@
 import type { ReadingScale, Settings } from '../types'
 
-export const UI_VERSION = '2.2'
+export const UI_VERSION = '2.2.1'
 
 const SCALE_FROM_LEGACY_FONT: [number, ReadingScale][] = [
   [15, 'compact'],

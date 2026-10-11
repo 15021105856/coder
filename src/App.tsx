@@ -7,18 +7,9 @@ import { Mistakes } from './views/Mistakes'
 import { Recall } from './views/Recall'
 import { Settings } from './views/Settings'
 import { Today } from './views/Today'
+import { Methodology } from './views/Methodology'
 import { ReadingToolbar } from './components/ReadingToolbar'
-import type { ViewId } from './types'
-
-const NAV: { id: ViewId; label: string }[] = [
-  { id: 'today', label: '今日训练' },
-  { id: 'recall', label: '主动提取' },
-  { id: 'exam', label: '闭卷考试' },
-  { id: 'library', label: '资料库' },
-  { id: 'mistakes', label: '错漏复测' },
-  { id: 'archive', label: '学习档案' },
-  { id: 'settings', label: '设置数据' },
-]
+import { NAV } from './nav'
 
 export function App() {
   const app = useApp()
@@ -62,6 +53,7 @@ export function App() {
           </div>
         ) : null}
         {app.state.view === 'today' ? <Today /> : null}
+        {app.state.view === 'method' ? <Methodology /> : null}
         {app.state.view === 'recall' ? <Recall /> : null}
         {app.state.view === 'exam' ? <Exam /> : null}
         {app.state.view === 'library' ? <Library /> : null}

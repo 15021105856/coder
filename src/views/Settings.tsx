@@ -79,7 +79,7 @@ export function Settings() {
             沉浸诵读 {settings.focusReading ? '开' : '关'}
           </button>
         </div>
-        <p className="muted">主题仍用 data-theme，不跟随系统深浅色。快捷键：Alt+1–7 切页，Alt+D 换主题。右下角浮动栏可快速切换字号与诵读模式。</p>
+        <p className="muted">主题仍用 data-theme，不跟随系统深浅色。快捷键：Alt+1–8 切页，Alt+D 换主题。右下角浮动栏可快速切换字号与诵读模式。</p>
       </section>
       <section className="card">
         <h2>一日时长</h2>

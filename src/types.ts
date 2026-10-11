@@ -6,7 +6,7 @@ export type EvidenceState = 'independent' | 'minor_omission' | 'cue_dependent' |
 export type SelfConfidence = 1 | 2 | 3 | 4 | 5
 export type SignalType = 'actual_exam' | 'teacher_must' | 'aggregation' | 'mock' | 'material_note'
 export type RelationStatus = 'candidate' | 'confirmed' | 'confirmed-by-source' | 'rejected'
-export type ViewId = 'today' | 'recall' | 'exam' | 'library' | 'mistakes' | 'archive' | 'settings'
+export type ViewId = 'today' | 'method' | 'recall' | 'exam' | 'library' | 'mistakes' | 'archive' | 'settings'
 
 export interface SourceSignal {
   type: SignalType
